@@ -26,8 +26,6 @@ public class ComponentTypeValidationService extends ModelValidationService {
     return (ComponentType) getGenericModel();
   }
 
-  // todo check view ui library
-
   @Override
   public void registerBasicValidators() {
     addBasicValidator(hasTitle(getModel()));
@@ -210,8 +208,6 @@ public class ComponentTypeValidationService extends ModelValidationService {
     };
   }
 
-  // TODO expand supertype validation
-
   ModelValidator doesNotSuperTypeItself() {
     return new ModelValidator() {
       @Override
@@ -254,6 +250,4 @@ public class ComponentTypeValidationService extends ModelValidationService {
       }
     };
   }
-
-  // todo dialogs are valid.
 }

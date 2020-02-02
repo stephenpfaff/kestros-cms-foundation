@@ -105,14 +105,31 @@ public class ComponentTypeTest {
 
     componentType = resource.adaptTo(ComponentType.class);
 
-    componentType.doDetailedValidation();
-
     try {
       componentType.getComponentSuperType();
     } catch (InvalidComponentTypeException e) {
       exception = e;
     }
     assertEquals("Unable to adapt 'components/super-type' to ComponentType. Resource not found.",
+        exception.getMessage());
+  }
+
+  @Test
+  public void testGetComponentSuperTypeWhenAppsIsPassedAndDoesNotExistAndLibsDoes() {
+    componentProperties.put("sling:resourceSuperType", "/apps/components/super-type");
+    resource = context.create().resource("/apps/component", componentProperties);
+    context.create().resource("/libs/components/super-type", componentProperties);
+
+    componentType = resource.adaptTo(ComponentType.class);
+
+    assertEquals("/apps/components/super-type", componentType.getResourceSuperType());
+    try {
+      componentType.getComponentSuperType().getPath();
+    } catch (InvalidComponentTypeException e) {
+      exception = e;
+    }
+    assertEquals(
+        "Unable to adapt '/apps/components/super-type' to ComponentType. Resource not found.",
         exception.getMessage());
   }
 
@@ -325,12 +342,6 @@ public class ComponentTypeTest {
 
     assertEquals(1, componentType.getMissingUiFrameworkCodes().size());
     assertEquals("framework-2", componentType.getMissingUiFrameworkCodes().get(0));
-  }
-
-
-  @Test
-  public void testGetComponentUiFrameworkView() {
-
   }
 
   @Test

@@ -3,7 +3,6 @@ package io.kestros.cms.foundation.componenttypes;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 
@@ -57,6 +56,4 @@ public class ComponentTypeGroup {
       return o1.getTitle().compareTo(o2.getTitle());
     }
   }
-
-
 }

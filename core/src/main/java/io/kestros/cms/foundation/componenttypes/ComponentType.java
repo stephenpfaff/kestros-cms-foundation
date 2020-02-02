@@ -79,7 +79,6 @@ public class ComponentType extends BaseResource {
   @JsonIgnore
   public ComponentType getComponentSuperType() throws InvalidComponentTypeException {
     try {
-      // TODO what to do when /apps is passed here, but does not exist, and /libs does.
       return getResourceAsType(getResourceSuperType(), getResourceResolver(), ComponentType.class);
     } catch (final InvalidResourceTypeException exception) {
       LOG.debug("Unable to retrieve superType of {}: {}", getPath(), exception.getMessage());
@@ -114,7 +113,6 @@ public class ComponentType extends BaseResource {
       LOG.debug("Unable to retrieve 'common' ComponentUiFrameworkView of {}: {}", getPath(),
           exception.getMessage());
     }
-    // TODO clean up when logged.
     throw new InvalidCommonUiFrameworkException(getPath());
   }
 
@@ -310,7 +308,8 @@ public class ComponentType extends BaseResource {
       try {
         componentUiFrameworkView = getComponentUiFrameworkView(uiFramework);
       } catch (final InvalidComponentUiFrameworkViewException e) {
-        // TODO log.
+        LOG.debug("Unable to find ComponentUiFrameworkView '{}' for '{}' while building "
+                  + "missingUiFrameworkCode List", uiFramework.getName(), getPath());
       }
       if (componentUiFrameworkView != null && !componentUiFrameworkView.getName().equals(
           COMMON_UI_FRAMEWORK_VIEW_NAME)) {
