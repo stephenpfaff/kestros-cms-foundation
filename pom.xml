@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.kestros.commons</groupId>
+    <artifactId>kestros-root-project</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>io.kestros.cms</groupId>
+  <artifactId>kestros-cms-foundation</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <name>Kestros Content Management System Foundation</name>
+  <description>Foundational logic for the Kestros CMS. Contains all the models, scripts, and
+    baseline templates/components required for rendering a site.
+  </description>
+  <packaging>pom</packaging>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Kestros Dependencies -->
+      <dependency>
+        <groupId>io.kestros.commons</groupId>
+        <artifactId>structured-sling-models</artifactId>
+        <version>0.0.2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.kestros.commons</groupId>
+        <artifactId>ui-libraries-core</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.kestros.cms</groupId>
+        <artifactId>kestros-user-foundation-core</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
