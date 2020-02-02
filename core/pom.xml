@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.kestros.cms</groupId>
+    <artifactId>kestros-cms-foundation</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <groupId>io.kestros.cms</groupId>
+  <artifactId>kestros-cms-foundation-core</artifactId>
+
+  <packaging>bundle</packaging>
+
+  <name>Kestros Content Management System Foundation - Core Bundle</name>
+
+  <properties>
+    <rootPackage>io.kestros.cms.foundation</rootPackage>
+    <bundleCategory>kestros</bundleCategory>
+  </properties>
+
+  <dependencies>
+
+    <!-- Kestros Commons Dependencies -->
+    <dependency>
+      <groupId>io.kestros.commons</groupId>
+      <artifactId>structured-sling-models</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.kestros.commons</groupId>
+      <artifactId>ui-libraries-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.kestros.cms</groupId>
+      <artifactId>kestros-user-foundation-core</artifactId>
+    </dependency>
+
+    <!-- Sling -->
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.servlets.annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.scripting.sightly.compiler.java</artifactId>
+    </dependency>
+
+    <!-- Less Compilation -->
+    <dependency>
+      <groupId>de.inetsoftware</groupId>
+      <artifactId>jlessc</artifactId>
+    </dependency>
+
+    <!-- HTML Parsing -->
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Embed-Dependency>jlessc;inline=true,jsoup;inline=true</Embed-Dependency>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
