@@ -19,7 +19,12 @@
   <description>Foundational logic for the Kestros CMS. Contains all the models, scripts, and
     baseline templates/components required for rendering a site.
   </description>
+
   <packaging>pom</packaging>
+
+  <modules>
+    <module>core</module>
+  </modules>
 
   <dependencyManagement>
     <dependencies>
