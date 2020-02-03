@@ -59,6 +59,7 @@ public class ComponentType extends BaseResource {
   public static final String PN_EXCLUDED_UI_FRAMEWORKS = "excludedUiFrameworks";
   public static final String PN_EXCLUDED_COMPONENT_TYPES = "excludedComponentTypes";
   public static final String PN_ALLOWED_COMPONENT_TYPES = "allowedComponentTypes";
+  public static final String PN_ALLOW_LIBS_KESTROS_COMMONS = "allowLibsCommons";
 
   /**
    * Group the current ComponentType belongs to. Set by the componentGroup property.
@@ -157,9 +158,15 @@ public class ComponentType extends BaseResource {
         getAllowedComponentTypeGroupNames(), getExcludedComponentTypeGroups());
   }
 
+  /**
+   * Whether to allow components that live under /libs/kestros/commons to be added as children.
+   *
+   * @return Whether to allow components that live under /libs/kestros/commons to be added as
+   *     children.
+   */
   @Nonnull
   public Boolean isAllowLibsCommonsComponents() {
-    return getProperty("allowLibsCommons", Boolean.TRUE);
+    return getProperty(PN_ALLOW_LIBS_KESTROS_COMMONS, Boolean.TRUE);
   }
 
   /**
@@ -204,6 +211,8 @@ public class ComponentType extends BaseResource {
    *     script in.
    * @return the specified HtmlFile script for the specified script name and UiFramework.
    * @throws InvalidScriptException Script was not found, or failed adaption.
+   * @throws InvalidCommonUiFrameworkException ComponentType fell back to 'common' view, but
+   *     common view could not be found, or was invalid.
    */
   @Nonnull
   public HtmlFile getScript(@Nonnull final String scriptName,

@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Model Validation service for Kestros ComponentTypes.
+ */
 public class ComponentTypeValidationService extends ModelValidationService {
 
   @SuppressWarnings("unchecked")
