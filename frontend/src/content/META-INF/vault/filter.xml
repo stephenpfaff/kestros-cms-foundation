@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+
+  <filter root="/" mode="update">
+    <exclude pattern="/.*"/>
+  </filter>
+  <filter root="/libs/" mode="update">
+    <exclude pattern="/libs/.*"/>
+  </filter>
+
+  <filter root="/home">
+    <exclude pattern="/home/.*"/>
+  </filter>
+
+  <filter root="/home/users">
+    <exclude pattern="/home/users/.*"/>
+  </filter>
+
+  <filter root="/home/users/system/kestros-cms">
+    <exclude pattern="/home/users/system/kestros-cms/.*"/>
+  </filter>
+
+  <filter root="/home/users/system/kestros-cms/kestros-resource-manager"/>
+
+
+  <filter root="/apps">
+    <exclude pattern="/apps/.*"/>
+  </filter>
+
+  <filter root="/content/sites">
+    <exclude pattern="/content/sites/.*"/>
+
+  </filter>
+
+  <filter root="/libs/kestros">
+    <exclude pattern="/libs/kestros/.*"/>
+  </filter>
+
+  <filter root="/libs/kestros/commons">
+    <exclude pattern="/libs/kestros/commons/.*"/>
+  </filter>
+
+  <filter root="/libs/kestros/commons/content-area"/>
+  <filter root="/libs/kestros/commons/inherited-content-area"/>
+  <filter root="/libs/kestros/commons/kestros-base-page"/>
+  <filter root="/libs/kestros/commons/kestros-parent"/>
+
+  <filter root="/etc/ui-frameworks">
+    <exclude pattern="/etc/ui-frameworks/.*"/>
+  </filter>
+
+  <filter root="/etc/vendor-libraries">
+    <exclude pattern="/etc/vendor-libraries/.*"/>
+  </filter>
+
+  <filter root="/var/cache/pages"/>
+
+  <filter root="/apps/kestros/cache/compiled-htl-templates"/>
+
+</workspaceFilter>
