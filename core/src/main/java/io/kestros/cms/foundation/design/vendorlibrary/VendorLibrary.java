@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
                      "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
                      "/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework"})
 @Model(adaptables = Resource.class,
-       resourceType = {"kes:VendorLibrary", "kestros/cms/vendor-library"})
+       resourceType = {"kes:VendorLibrary"})
 @Exporter(name = "jackson",
           selector = "vendor-library",
           extensions = "json")
@@ -69,7 +69,8 @@ public class VendorLibrary extends UiLibrary {
     final List<HtlTemplateFile> htlTemplateFiles = new ArrayList<>();
     try {
       final BaseResource templatesRootResource = getChildAsBaseResource("templates", this);
-      for (final BaseResource templateFileResource : getChildrenAsBaseResource(templatesRootResource)) {
+      for (final BaseResource templateFileResource : getChildrenAsBaseResource(
+          templatesRootResource)) {
         try {
           htlTemplateFiles.add(adaptToFileType(templateFileResource, HtlTemplateFile.class));
         } catch (final InvalidResourceTypeException e) {

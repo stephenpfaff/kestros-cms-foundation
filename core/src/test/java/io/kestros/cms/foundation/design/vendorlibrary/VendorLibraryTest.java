@@ -35,7 +35,6 @@ public class VendorLibraryTest {
 
   @Test
   public void testGetDocumentationUrl() throws Exception {
-    properties.put("sling:resourceType", "kestros/cms/vendor-library");
     properties.put("documentationUrl", "http://kestros.io");
 
     resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
@@ -47,8 +46,6 @@ public class VendorLibraryTest {
 
   @Test
   public void testGetTemplates() {
-    properties.put("sling:resourceType", "kestros/cms/vendor-library");
-
     InputStream templateFileInputStream1 = new ByteArrayInputStream(
         ("<template data-sly-template.testTemplateOne=\"${ @ text}\"></template>").getBytes());
     InputStream templateFileInputStream2 = new ByteArrayInputStream(
@@ -80,8 +77,6 @@ public class VendorLibraryTest {
 
   @Test
   public void testGetTemplatesWhenTemplateIsNotValid() {
-    properties.put("sling:resourceType", "kestros/cms/vendor-library");
-
     InputStream templateFileInputStream = new ByteArrayInputStream("<p>123</p>".getBytes());
     fileJcrContentProperties.put("jcr:data", templateFileInputStream);
 
@@ -106,8 +101,6 @@ public class VendorLibraryTest {
 
   @Test
   public void testGetTemplateFiles() {
-    properties.put("sling:resourceType", "kestros/cms/vendor-library");
-
     resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
     context.create().resource("/etc/vendor-libraries/vendor-library/templates");
 
@@ -129,8 +122,6 @@ public class VendorLibraryTest {
 
   @Test
   public void testGetTemplateFilesWhenTemplatesFolderNotFound() {
-    properties.put("sling:resourceType", "kestros/cms/vendor-library");
-
     resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
 
     vendorLibrary = resource.adaptTo(VendorLibrary.class);
@@ -140,9 +131,7 @@ public class VendorLibraryTest {
 
   @Test
   public void testGetTemplateFilesWhenFileTypesAreInvalid() {
-    properties.put("sling:resourceType", "kestros/cms/vendor-library");
-
-    resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
+      resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
     context.create().resource("/etc/vendor-libraries/vendor-library/templates");
 
     context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-1",
