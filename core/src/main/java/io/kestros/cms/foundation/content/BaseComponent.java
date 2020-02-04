@@ -27,9 +27,9 @@ import io.kestros.commons.structuredslingmodels.exceptions.MatchingResourceTypeN
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.kestros.cms.user.KestrosUser;
-import io.kestros.kestros.cms.user.exceptions.UserRetrievalException;
-import io.kestros.kestros.cms.user.services.KestrosUserService;
+import io.kestros.cms.user.KestrosUser;
+import io.kestros.cms.user.exceptions.UserRetrievalException;
+import io.kestros.cms.user.services.KestrosUserService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

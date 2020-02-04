@@ -14,8 +14,8 @@ import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.kestros.cms.user.KestrosUser;
-import io.kestros.kestros.cms.user.services.KestrosUserService;
+import io.kestros.cms.user.KestrosUser;
+import io.kestros.cms.user.services.KestrosUserService;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

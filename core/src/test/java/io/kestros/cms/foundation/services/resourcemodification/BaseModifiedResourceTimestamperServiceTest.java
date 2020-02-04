@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import io.kestros.cms.foundation.content.BaseComponent;
-import io.kestros.kestros.cms.user.KestrosUser;
+import io.kestros.cms.user.KestrosUser;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.sling.api.resource.PersistenceException;

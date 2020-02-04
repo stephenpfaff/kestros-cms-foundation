@@ -2,7 +2,7 @@ package io.kestros.cms.foundation.services.resourcemodification;
 
 import io.kestros.cms.foundation.content.BaseComponent;
 import io.kestros.cms.foundation.services.contentpublication.ContentPublicationService;
-import io.kestros.kestros.cms.user.KestrosUser;
+import io.kestros.cms.user.KestrosUser;
 import javax.annotation.Nonnull;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.PersistenceException;
