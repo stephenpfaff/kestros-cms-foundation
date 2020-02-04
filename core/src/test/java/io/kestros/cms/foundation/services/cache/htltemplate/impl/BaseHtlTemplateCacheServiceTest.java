@@ -129,10 +129,6 @@ public class BaseHtlTemplateCacheServiceTest {
   }
 
   @Test
-  public void testCacheUiFrameworkCompiledHtlTemplates() {
-  }
-
-  @Test
   public void testDoPurge() throws CacheBuilderException, CachePurgeException {
     doReturn(resourceResolver).when(cacheService).getServiceResourceResolver();
 

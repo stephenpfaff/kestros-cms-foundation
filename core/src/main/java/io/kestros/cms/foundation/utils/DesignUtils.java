@@ -144,8 +144,8 @@ public class DesignUtils {
    * @return All UiFrameworks.
    */
   @Nonnull
-  public static List<UiFramework> getAllUiFrameworks(final ResourceResolver resolver, final Boolean includeEtc,
-      final Boolean includeLibs) {
+  public static List<UiFramework> getAllUiFrameworks(final ResourceResolver resolver,
+      final Boolean includeEtc, final Boolean includeLibs) {
     final List<UiFramework> uiFrameworks = new ArrayList<>();
     if (includeEtc) {
       try {
@@ -221,11 +221,12 @@ public class DesignUtils {
    * @return Specified UiFramework.
    * @throws ResourceNotFoundException Specified UiFramework could not be found.
    */
-  public static UiFramework getUiFrameworkByFrameworkCode(@Nonnull final String code, final Boolean includeEtc,
-      final Boolean includeLibs, @Nonnull final ResourceResolver resourceResolver)
-      throws ResourceNotFoundException {
+  public static UiFramework getUiFrameworkByFrameworkCode(@Nonnull final String code,
+      final Boolean includeEtc, final Boolean includeLibs,
+      @Nonnull final ResourceResolver resourceResolver) throws ResourceNotFoundException {
 
-    for (final UiFramework uiFramework : getAllUiFrameworks(resourceResolver, includeEtc, includeLibs)) {
+    for (final UiFramework uiFramework : getAllUiFrameworks(resourceResolver, includeEtc,
+        includeLibs)) {
       if (uiFramework.getFrameworkCode().equals(code)) {
         return uiFramework;
       }
@@ -270,7 +271,7 @@ public class DesignUtils {
           componentUiFrameworkView = getChildAsBaseResource(name,
               libsComponentTypeResource).getResource().adaptTo(ComponentUiFrameworkView.class);
         } catch (final ResourceNotFoundException ex) {
-          // todo debug log
+          LOG.debug(ex.getMessage());
         } catch (final ChildResourceNotFoundException exception) {
           componentUiFrameworkView = getChildAsBaseResource(name,
               componentType).getResource().adaptTo(ComponentUiFrameworkView.class);

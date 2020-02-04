@@ -6,11 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BaseScriptProviderServiceTest {
@@ -37,7 +35,6 @@ public class BaseScriptProviderServiceTest {
   }
 
   @Test
-  @Ignore
   public void testGetServiceUserName() {
     assertEquals("kestros-htl-template-cache-purge", scriptProviderService.getServiceUserName());
   }
@@ -46,16 +43,4 @@ public class BaseScriptProviderServiceTest {
   public void testGetResourceResolverFactory() {
     assertNotNull(scriptProviderService.getResourceResolverFactory());
   }
-
-  @Test
-  @Ignore
-  public void testGetScriptPath() throws InvalidScriptException {
-    context.create().resource("/parent");
-
-    //    assertEquals("", scriptProviderService.getScriptPath("/parent", "content.html"));
-  }
-
-  //  @Test
-  //  public void testGetScriptPath() {
-  //  }
 }

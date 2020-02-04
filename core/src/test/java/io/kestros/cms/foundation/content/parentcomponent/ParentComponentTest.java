@@ -286,8 +286,7 @@ public class ParentComponentTest {
     }
     assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
                  + "'invalid-resource-type': Invalid or missing ComponentType resource.': Script "
-                 + "not found.",
-        exception.getMessage());
+                 + "not found.", exception.getMessage());
   }
 
   @Test
@@ -315,10 +314,6 @@ public class ParentComponentTest {
     assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
                  + "'/etc/ui-frameworks/my-framework/themes/my-theme': Invalid or missing "
                  + "ComponentType " + "resource.': Script not found.", exception.getMessage());
-  }
-
-  @Test
-  public void testGetScriptPathWhenVariablePassed() {
   }
 
   @Test
@@ -399,9 +394,5 @@ public class ParentComponentTest {
         exception.getMessage());
   }
 
-
-  @Test
-  public void testGetContainingPage() throws Exception {
-  }
 
 }

@@ -17,7 +17,6 @@ import java.util.Map;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -509,22 +508,6 @@ public class UiFrameworkTest {
     uiFramework = resource.adaptTo(UiFramework.class);
 
     assertEquals(2, uiFramework.getAllComponentUiFrameworkViewsInADirectory("/apps").size());
-  }
-
-  @Test
-  @Ignore
-  public void testGetAllComponentUiFrameworkViewsInADirectoryWhenCommonIsInvalid() {
-    context.create().resource("/apps/components/component-1", componentTypeProperties);
-    context.create().resource("/apps/components/component-1/common");
-
-    context.create().resource("/apps/components/component-2", componentTypeProperties);
-    context.create().resource("/apps/components/component-2/common");
-
-    properties.put("kes:uiFrameworkCode", "test-code");
-    resource = context.create().resource("/ui-framework", properties);
-    uiFramework = resource.adaptTo(UiFramework.class);
-
-    assertEquals(0, uiFramework.getAllComponentUiFrameworkViewsInADirectory("/apps").size());
   }
 
   @Test
