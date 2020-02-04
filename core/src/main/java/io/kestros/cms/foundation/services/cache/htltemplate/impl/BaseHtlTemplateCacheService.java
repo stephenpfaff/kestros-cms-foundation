@@ -108,9 +108,11 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
     }
   }
 
-  private void cacheAllUiFrameworkCompiledHtlTemplates(final int attempts) throws CacheBuilderException {
+  private void cacheAllUiFrameworkCompiledHtlTemplates(final int attempts)
+      throws CacheBuilderException {
     LOG.debug("Attempting to build HTL Library cache. Attempt {}.", attempts);
-    for (final UiFramework uiFramework : getAllUiFrameworks(getServiceResourceResolver(), true, true)) {
+    for (final UiFramework uiFramework : getAllUiFrameworks(getServiceResourceResolver(), true,
+        true)) {
       cacheUiFrameworkCompiledHtlTemplates(uiFramework);
     }
   }
@@ -141,7 +143,8 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
     return 1000;
   }
 
-  private void cacheOutput(final String output, final UiFramework uiFramework) throws CacheBuilderException {
+  private void cacheOutput(final String output, final UiFramework uiFramework)
+      throws CacheBuilderException {
     final String fileName = uiFramework.getPath() + ".html";
     createCacheFile(output, fileName, new HtmlFileType());
   }
