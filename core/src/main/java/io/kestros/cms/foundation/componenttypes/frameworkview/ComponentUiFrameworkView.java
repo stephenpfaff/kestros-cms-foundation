@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Component view that is specific to a single UiFramework.  Create a folder
+ * Component view that is specific to a single UiFramework.  Created as a child resource to
+ * ComponentTypes.
  */
-// TODO cleanup javadocs
 @StructuredModel(validationService = ComponentUiFrameworkViewValidationService.class,
                  docPaths = {
                      "/content/guide-articles/kestros-cms/site-building/implementing-ui-framework"

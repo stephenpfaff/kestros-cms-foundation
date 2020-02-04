@@ -18,12 +18,12 @@ public class HtlTemplate {
 
   public static final String ATTRIBUTE_DATA_SLY_TEMPLATE = "data-sly-template.";
 
-  private Node node;
-  private String sourcePath;
+  private final Node node;
+  private final String sourcePath;
 
-  private static String CALL_VARIABLES_INDENT = "     ";
+  private static final String CALL_VARIABLES_INDENT = "     ";
 
-  HtlTemplate(Node node, String sourcePath) {
+  HtlTemplate(final Node node, final String sourcePath) {
     this.node = node;
     this.sourcePath = sourcePath;
   }
@@ -43,10 +43,10 @@ public class HtlTemplate {
    * @return HTL Template name.
    */
   public String getName() {
-    Attributes attributes = this.node.attributes();
+    final Attributes attributes = this.node.attributes();
 
-    for (Attribute attribute : attributes) {
-      String key = attribute.getKey();
+    for (final Attribute attribute : attributes) {
+      final String key = attribute.getKey();
       if (key.startsWith(ATTRIBUTE_DATA_SLY_TEMPLATE)) {
         return key.split(ATTRIBUTE_DATA_SLY_TEMPLATE)[1];
       }
@@ -60,8 +60,8 @@ public class HtlTemplate {
    * @return Title of the current template.
    */
   public String getTitle() {
-    Attributes attributes = this.node.attributes();
-    String title = attributes.get("data-title");
+    final Attributes attributes = this.node.attributes();
+    final String title = attributes.get("data-title");
     if (StringUtils.isNotBlank(title)) {
       return title;
     }
@@ -74,8 +74,8 @@ public class HtlTemplate {
    * @return Description of the current template.
    */
   public String getDescription() {
-    Attributes attributes = this.node.attributes();
-    String title = attributes.get("data-description");
+    final Attributes attributes = this.node.attributes();
+    final String title = attributes.get("data-description");
     if (StringUtils.isNotBlank(title)) {
       return title;
     }
@@ -97,8 +97,8 @@ public class HtlTemplate {
    * @return HTML Output of the current template after it is called from the implementing script.
    */
   public String getHtmlOutput() {
-    StringBuilder htmlOutputStringBuilder = new StringBuilder();
-    for (Node child : this.node.childNodes()) {
+    final StringBuilder htmlOutputStringBuilder = new StringBuilder();
+    for (final Node child : this.node.childNodes()) {
       String childHtml = child.toString();
       childHtml = childHtml.replaceAll("data-", "\ndata-");
       htmlOutputStringBuilder.append(childHtml);
@@ -108,7 +108,7 @@ public class HtlTemplate {
     if (htmlOutput.startsWith("\n")) {
       htmlOutput = htmlOutput.replaceFirst("\n", "");
     }
-    Document htmlOutputDocument = Jsoup.parseBodyFragment(htmlOutput);
+    final Document htmlOutputDocument = Jsoup.parseBodyFragment(htmlOutput);
     htmlOutputDocument.outputSettings().outline(true);
     htmlOutputDocument.outputSettings().prettyPrint(false);
 
@@ -121,11 +121,11 @@ public class HtlTemplate {
    * @return List of variables required to implement the current Template.
    */
   public List<String> getVariables() {
-    Attributes attributes = this.node.attributes();
+    final Attributes attributes = this.node.attributes();
 
     String value = "";
-    for (Attribute attribute : attributes) {
-      String key = attribute.getKey();
+    for (final Attribute attribute : attributes) {
+      final String key = attribute.getKey();
       if (key.startsWith(ATTRIBUTE_DATA_SLY_TEMPLATE)) {
         value = attribute.getValue();
       }
@@ -146,18 +146,18 @@ public class HtlTemplate {
    * @return Sample usage script.
    */
   public String getSampleUsage() {
-    StringBuilder sampleUsage = new StringBuilder();
+    final StringBuilder sampleUsage = new StringBuilder();
     sampleUsage.append("<sly data-sly-call=\"${templates.");
     sampleUsage.append(getName());
     sampleUsage.append(" @");
     String prefix = "\n" + CALL_VARIABLES_INDENT;
-    for (String variable : getVariables()) {
+    for (final String variable : getVariables()) {
       sampleUsage.append(prefix);
       prefix = ",\n" + CALL_VARIABLES_INDENT;
       sampleUsage.append(variable);
       sampleUsage.append("=");
-      String value = "my" + variable.substring(0, 1).toUpperCase(Locale.ENGLISH)
-                     + variable.substring(1);
+      final String value = "my" + variable.substring(0, 1).toUpperCase(Locale.ENGLISH)
+                           + variable.substring(1);
       sampleUsage.append(value);
     }
     sampleUsage.append("}\" />");

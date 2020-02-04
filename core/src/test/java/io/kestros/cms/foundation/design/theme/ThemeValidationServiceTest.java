@@ -32,7 +32,7 @@ public class ThemeValidationServiceTest {
 
   @Before
   public void setUp() {
-    context.addModelsForPackage("com.slingware");
+    context.addModelsForPackage("io.kestros");
     validationService = new ThemeValidationService();
     validationService = spy(validationService);
 

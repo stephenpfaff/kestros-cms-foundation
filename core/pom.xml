@@ -74,6 +74,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
+            <!-- todo is jlessc needed? -->
             <Embed-Dependency>jlessc;inline=true,jsoup;inline=true</Embed-Dependency>
           </instructions>
         </configuration>

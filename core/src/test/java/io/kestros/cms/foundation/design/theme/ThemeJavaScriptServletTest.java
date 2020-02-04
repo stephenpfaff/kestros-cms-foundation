@@ -23,7 +23,7 @@ public class ThemeJavaScriptServletTest {
 
   @Before
   public void setUp() throws Exception {
-    context.addModelsForPackage("com.slingware");
+    context.addModelsForPackage("io.kestros");
 
     uiLibraryConfigurationService = mock(UiLibraryConfigurationService.class);
     uiLibraryCacheService = mock(UiLibraryCacheService.class);

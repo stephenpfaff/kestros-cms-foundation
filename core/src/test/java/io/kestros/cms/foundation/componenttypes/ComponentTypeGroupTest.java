@@ -21,7 +21,7 @@ public class ComponentTypeGroupTest {
 
   @Before
   public void setup() {
-    context.addModelsForPackage("com.slingware");
+    context.addModelsForPackage("io.kestros");
   }
 
   @Test

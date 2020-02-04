@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.jackrabbit.JcrConstants;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
 import org.jsoup.Jsoup;
@@ -19,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * HTML File that contains HTL Templates.
  */
 @Model(adaptables = Resource.class,
-       resourceType = "nt:file")
+       resourceType = JcrConstants.NT_FILE)
 public class HtlTemplateFile extends HtmlFile {
 
   private static final Logger LOG = LoggerFactory.getLogger(HtlTemplateFile.class);
@@ -48,20 +49,20 @@ public class HtlTemplateFile extends HtmlFile {
    * @return All HTL Templates in the current files.
    */
   public List<HtlTemplate> getTemplates() {
-    List<HtlTemplate> templates = new ArrayList<>();
+    final List<HtlTemplate> templates = new ArrayList<>();
     try {
-      Document templateFile = Jsoup.parse(getOutput());
+      final Document templateFile = Jsoup.parse(getOutput());
       templateFile.outputSettings().outline(true);
       templateFile.outputSettings().prettyPrint(false);
-      for (Node node : templateFile.child(0).childNodes().get(1).childNodes()) {
+      for (final Node node : templateFile.child(0).childNodes().get(1).childNodes()) {
         if (StringUtils.isNotBlank(node.toString())) {
-          HtlTemplate template = new HtlTemplate(node, getPath());
+          final HtlTemplate template = new HtlTemplate(node, getPath());
           if (template.getName() != null) {
             templates.add(template);
           }
         }
       }
-    } catch (IOException exception) {
+    } catch (final IOException exception) {
       LOG.warn(
           "Unable to get HtlTemplates for HTL Template compilation file {} due to IOException. {}",
           getPath(), exception.getMessage());

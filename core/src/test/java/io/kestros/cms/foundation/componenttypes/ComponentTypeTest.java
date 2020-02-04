@@ -42,7 +42,7 @@ public class ComponentTypeTest {
 
   @Before
   public void setUp() throws Exception {
-    context.addModelsForPackage("com.slingware");
+    context.addModelsForPackage("io.kestros");
 
     componentProperties.put("jcr:primaryType", "kes:ComponentType");
 

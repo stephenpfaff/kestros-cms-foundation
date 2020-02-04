@@ -32,7 +32,7 @@ public class ComponentTypeValidationServiceTest {
 
   @Before
   public void setUp() throws Exception {
-    context.addModelsForPackage("com.slingware");
+    context.addModelsForPackage("io.kestros");
 
     validationService = new ComponentTypeValidationService();
     validationService = spy(validationService);

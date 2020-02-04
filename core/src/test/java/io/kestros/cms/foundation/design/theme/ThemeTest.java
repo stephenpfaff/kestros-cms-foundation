@@ -37,7 +37,7 @@ public class ThemeTest {
 
   @Before
   public void setUp() {
-    context.addModelsForPackage("com.slingware");
+    context.addModelsForPackage("io.kestros");
     frameworkProperties.put("jcr:primaryType", "kes:UiFramework");
     fileJcrContentProperties.put("jcr:mimeType", "text/css");
   }

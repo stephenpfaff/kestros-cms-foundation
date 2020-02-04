@@ -30,7 +30,7 @@ public class HtlTemplateTest {
 
   @Before
   public void setUp() throws Exception {
-    context.addModelsForPackage("com.slingware");
+    context.addModelsForPackage("io.kestros");
 
     properties.put("jcr:primaryType", "nt:file");
     jcrContentProperties.put("jcr:mimeType", "text/html");
