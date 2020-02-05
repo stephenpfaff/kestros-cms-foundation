@@ -1,0 +1,27 @@
+<sly
+    data-sly-use.contentArea="${'io.kestros.cms.foundation.content.components.contentarea.ContentArea'}"
+    data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
+
+<sly data-sly-test="${parentComponentEditContext.editMode}">
+  <div class="kestros-content-area">
+    <div class="component-wrapper" data-path="${contentArea.getPath}"
+         data-method="destination"></div>
+
+    <div class="kestros-components" data-path="${contentArea.path}" data-method="destination">
+      <sly data-sly-list.child="${contentArea.childrenAsBaseComponent}">
+        <sly data-sly-resource="${child.path @ resourceType=child.resourceType}"/>
+      </sly>
+    </div>
+    <div class="content-area-new-component"
+         data-create-dialog-path="${contentArea.componentType.path}/create"
+         data-resource-path="${contentArea.path}">
+      <p>Add Content</p>
+    </div>
+  </div>
+</sly>
+
+<sly data-sly-test="${!parentComponentEditContext.editMode}">
+  <sly data-sly-list.child="${contentArea.childrenAsBaseComponent}">
+    <sly data-sly-resource="${child.path @ resourceType=child.resourceType}"/>
+  </sly>
+</sly>
