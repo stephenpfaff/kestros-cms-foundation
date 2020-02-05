@@ -22,7 +22,6 @@
 
   <filter root="/home/users/system/kestros-cms/kestros-resource-manager"/>
 
-
   <filter root="/apps">
     <exclude pattern="/apps/.*"/>
   </filter>
