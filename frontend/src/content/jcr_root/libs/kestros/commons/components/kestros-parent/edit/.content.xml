@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+  jcr:primaryType="nt:unstructured"
+  sling:resourceType="kestros/cms/dialog"
+  jcr:title="Edit Component">
+  <content-area jcr:primaryType="nt:unstructured">
+    <tabs
+      jcr:primaryType="nt:unstructured"
+      sling:resourceType="kestros/cms/general/tabs"
+      container="true">
+      <general jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/cms/general/container"
+        jcr:title="General"
+        container="true">
+      </general>
+      <styles jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/cms/general/container"
+        jcr:title="Styles"
+        container="true">
+        <component-variation-picker
+          jcr:primaryType="nt:unstructured"
+          sling:resourceType="kestros/cms/dialog-fields/general/component-variations-picker"
+          label="Variations"
+          propertyName="variations"
+          autofocus="false"/>
+        <id
+          jcr:primaryType="nt:unstructured"
+          sling:resourceType="kestros/cms/fields/textfield"
+          label="ID"
+          propertyName="id"
+          autofocus="false"/>
+        <css-class
+          jcr:primaryType="nt:unstructured"
+          sling:resourceType="kestros/cms/fields/textfield"
+          label="CSS Classes"
+          propertyName="class"
+          autofocus="false"/>
+      </styles>
+    </tabs>
+  </content-area>
+</jcr:root>

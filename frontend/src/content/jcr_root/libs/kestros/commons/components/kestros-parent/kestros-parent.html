@@ -1,0 +1,21 @@
+<sly
+    data-sly-use.parentComponent="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent'}"
+    data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
+
+<sly data-sly-test="${parentComponentEditContext.editMode}">
+  <!-- ${parentComponent.path} -->
+  <!-- ${parentComponent.componentType.name} -->
+  <div id="${parentComponent.id}"
+       data-resource-path="${parentComponent.path}"
+       class="kestros-component-editable component-${parentComponent.componentType.name} ${parentComponent.cssClass} ${parentComponent.appliedVariationsAsString}">
+    <sly data-sly-include="${parentComponent.contentScriptPath}"/>
+  </div>
+</sly>
+
+<sly data-sly-test="${!parentComponentEditContext.editMode}">
+  <div id="${parentComponent.id}"
+       class="component-${parentComponent.componentType.name} ${parentComponent.cssClass} ${parentComponent.appliedVariationsAsString}">
+    <sly data-sly-include="${parentComponent.contentScriptPath}"/>
+  </div>
+</sly>
+<!--/* TODO developer mode with debug info */-->
