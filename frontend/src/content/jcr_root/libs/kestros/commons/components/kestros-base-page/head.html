@@ -1,0 +1,20 @@
+<sly data-sly-use.uiLibs="ui-library-includes.html"/>
+
+<sly data-sly-use.page="${'io.kestros.cms.foundation.content.pages.BaseContentPage'}"
+     data-sly-use.parentComponent="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent'}"
+     data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
+
+<meta name="viewport"
+      content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="format-detection" content="telephone=no"/>
+
+<title>${page.metaTitle}</title>
+<meta name="description" content="${page.description}"/>
+
+<sly data-sly-call="${uiLibs.includeHeadLibs @ page=page}"/>
+
+<sly data-sly-test="${parentComponentEditContext.editMode}">
+  <sly data-sly-use.lib="/libs/kestros/commons/ui-libraries.html">
+    <sly data-sly-call="${lib.includeCss @ uiLibrary=parentComponentEditContext.editTheme}"/>
+  </sly>
+</sly>

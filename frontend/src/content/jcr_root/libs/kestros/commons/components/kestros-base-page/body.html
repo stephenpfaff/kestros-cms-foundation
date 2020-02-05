@@ -1,0 +1,14 @@
+<sly data-sly-use.uiLibs="ui-library-includes.html"
+     data-sly-use.page="${'io.kestros.cms.foundation.content.pages.BaseContentPage'}"
+     data-sly-use.parentComponent="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent'}"
+     data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
+
+<sly data-sly-include="${parentComponent.contentScriptPath}"/>
+
+<sly data-sly-call="${uiLibs.includeScripts @ page=page}"/>
+
+<sly data-sly-test="${parentComponentEditContext.editMode}">
+  <sly data-sly-use.lib="/libs/kestros/commons/ui-libraries.html">
+    <sly data-sly-call="${lib.includeJs @ uiLibrary=parentComponentEditContext.editTheme}"/>
+  </sly>
+</sly>
