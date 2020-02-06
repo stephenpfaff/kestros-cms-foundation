@@ -53,7 +53,7 @@ public class BaseHeadlessRenderServiceTest {
     Map output = mapper.readValue(context.response().getOutputAsString(), Map.class);
 
     assertEquals(200, context.response().getStatus());
-    assertEquals(9, output.size());
+    assertEquals(10, output.size());
     assertEquals("kes:Page", output.get("resourceType"));
   }
 
@@ -72,7 +72,7 @@ public class BaseHeadlessRenderServiceTest {
     Map output = mapper.readValue(context.response().getOutputAsString(), Map.class);
 
     assertEquals(200, context.response().getStatus());
-    assertEquals(9, output.size());
+    assertEquals(10, output.size());
     assertEquals("kes:Site", output.get("resourceType"));
   }
 
@@ -91,8 +91,7 @@ public class BaseHeadlessRenderServiceTest {
     }
     assertEquals(
         "Unable to adapt '/page' to BaseContentPage: Unable to adapt to BaseContentPage or Site "
-        + "while building headless response.",
-        exception.getMessage());
+        + "while building headless response.", exception.getMessage());
 
     assertEquals(400, context.response().getStatus());
     assertEquals("", context.response().getOutputAsString());

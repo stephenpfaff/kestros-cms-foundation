@@ -14,6 +14,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.jackrabbit.JcrConstants.JCR_CONTENT;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -184,7 +185,8 @@ public class BaseContentPage extends BasePage {
    * @return All Child Pages of the current Page.
    */
   @Nonnull
-  @JsonIgnore
+  @JsonProperty("childPages")
+  @JsonIgnoreProperties("childPages")
   public List<BaseContentPage> getChildPages() {
     return getChildrenOfType(this, BaseContentPage.class);
   }
