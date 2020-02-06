@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
                ResourceChangeListener.CHANGES + "=PROVIDER_ADDED",
                ResourceChangeListener.CHANGES + "=PROVIDER_REMOVED",
                ResourceChangeListener.PATHS + "=/etc", ResourceChangeListener.PATHS + "=/libs",
-               ResourceChangeListener.PATHS + "=/apps"})
+               ResourceChangeListener.PATHS + "=/apps", ResourceChangeListener.PATHS + "=/content"})
 public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeEventListener
     implements ResourceChangeListener {
 
@@ -60,3 +60,4 @@ public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeE
     return resourceResolverFactory;
   }
 }
+
