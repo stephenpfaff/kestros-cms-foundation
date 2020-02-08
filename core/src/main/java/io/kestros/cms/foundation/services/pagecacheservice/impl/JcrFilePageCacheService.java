@@ -17,6 +17,9 @@ import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+/**
+ * Caches pages by storing their HTML output as a new nt:file under /var/cache/pages.
+ */
 @Component(immediate = true,
            service = {ManagedCacheService.class, GeneralPageCacheService.class,
                PageCacheService.class},

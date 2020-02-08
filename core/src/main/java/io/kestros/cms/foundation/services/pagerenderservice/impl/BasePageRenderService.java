@@ -15,6 +15,10 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Looks to all registered {@link PageRenderMethod} instances to determine how to render a page or
+ * site request.
+ */
 @Component(immediate = true,
            service = PageRenderService.class,
            property = "service.ranking:Integer=200")
@@ -26,6 +30,11 @@ public class BasePageRenderService implements PageRenderService {
 
   private ComponentContext componentContext;
 
+  /**
+   * Activates the service.
+   *
+   * @param ctx ComponentContext.
+   */
   @Activate
   public void activate(final ComponentContext ctx) {
     componentContext = ctx;
@@ -44,6 +53,11 @@ public class BasePageRenderService implements PageRenderService {
     }
   }
 
+  /**
+   * List of all registered {@link PageRenderMethod} instances.
+   *
+   * @return List of all registered {@link PageRenderMethod} instances.
+   */
   public List<PageRenderMethod> getPageRenderMethods() {
     return getAllOsgiServicesOfType(componentContext, PageRenderMethod.class);
   }

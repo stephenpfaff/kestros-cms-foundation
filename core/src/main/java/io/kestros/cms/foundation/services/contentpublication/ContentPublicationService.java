@@ -3,10 +3,10 @@ package io.kestros.cms.foundation.services.contentpublication;
 import io.kestros.cms.foundation.content.BaseComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
 import java.util.List;
 import org.apache.sling.api.resource.PersistenceException;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 /**
@@ -45,11 +45,12 @@ public interface ContentPublicationService {
       throws PersistenceException, NoParentResourceException;
 
   /**
-   * Publishes the specified Component.
+   * Publishes the specified Page.
    *
    * @param page Page to publish.
    * @param resourceResolver ResourceResolver.
    * @param publishChildPages Whether to publish child pages.
+   * @param publishAllComponents Whether to publish all Components on the given page.
    * @param publishReferences Whether to publish referenced Resources.
    * @throws NoParentResourceException Failed to publish the Resource because the destination
    *     parent did not exist.
@@ -57,18 +58,44 @@ public interface ContentPublicationService {
    */
   void publishPage(BaseContentPage page, ResourceResolver resourceResolver,
       Boolean publishChildPages, Boolean publishAllComponents, Boolean publishReferences)
-      throws InvalidResourceTypeException, NoParentResourceException, PersistenceException;
+      throws NoParentResourceException, PersistenceException;
 
-  void unpublishResource(BaseResource resource, ResourceResolver resourceResolver);
+  /**
+   * Unpublishes the specified Page.
+   *
+   * @param page Page to unpublish.
+   * @param resourceResolver ResourceResolver.
+   */
+  void unpublishPage(BaseContentPage page, ResourceResolver resourceResolver);
 
-  void setResourceToOutOfDate(BaseResource component);
+  /**
+   * Sets a Resource publication status to out of date.
+   *
+   * @param resource Resource to update the publication status of.
+   */
+  void setResourceToOutOfDate(BaseResource resource);
 
-  void setComponentToOutOfDate(BaseComponent component);
+  /**
+   * Moves the published copy of a page to the specified destination.
+   *
+   * @param page Page to move.
+   * @param destinationResource Destination resource.
+   */
+  void movePublishedPage(BaseContentPage page, Resource destinationResource);
 
-  void movePublishedResource();
+  /**
+   * Deletes the published copy of a page.
+   *
+   * @param page Page to delete the published copy of.
+   */
+  void deletePublishedPage(BaseContentPage page);
 
-  void deletePublishedResource();
-
+  /**
+   * Rewrites Resource reference properties on the specified resource so that they look to the
+   * published copy of the reference Resource.
+   *
+   * @param resource Resource to update referenced values of.
+   */
   void rewriteReferenceValues(BaseResource resource);
 
 }

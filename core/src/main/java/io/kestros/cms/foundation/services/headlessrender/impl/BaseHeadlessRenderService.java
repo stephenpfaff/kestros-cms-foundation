@@ -12,6 +12,9 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.osgi.service.component.annotations.Component;
 
+/**
+ * Service which determines how headless json responses will be rendered.
+ */
 @Component(immediate = true,
            service = HeadlessRenderService.class,
            property = "service.ranking:Integer=1")

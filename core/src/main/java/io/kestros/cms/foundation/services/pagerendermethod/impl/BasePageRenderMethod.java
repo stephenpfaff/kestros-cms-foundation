@@ -26,6 +26,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Baseline strategy for rendering content pages in Kestros.
+ */
 @Component(immediate = true,
            service = PageRenderMethod.class,
            property = "service.ranking:Integer=1")
@@ -61,7 +64,7 @@ public class BasePageRenderMethod implements PageRenderMethod {
         if (requestDispatcher != null) {
           response.setContentType("text/html");
 
-          final CustomResponseWrapper wrapper = new CustomResponseWrapper(response);
+          final PageResponseWrapper wrapper = new PageResponseWrapper(response);
           requestDispatcher.include(request, wrapper);
 
           final CharArrayWriter writer = new CharArrayWriter();
@@ -99,19 +102,37 @@ public class BasePageRenderMethod implements PageRenderMethod {
     return true;
   }
 
-  public static class CustomResponseWrapper extends HttpServletResponseWrapper {
+  /**
+   * Response wrapper used for storing HTML output, for caching pages.
+   */
+  public static class PageResponseWrapper extends HttpServletResponseWrapper {
 
     private final CharArrayWriter output;
 
-    public CustomResponseWrapper(final HttpServletResponse response) {
+    /**
+     * Constructs the PageResponseWrapper.
+     *
+     * @param response Response to write to.
+     */
+    public PageResponseWrapper(final HttpServletResponse response) {
       super(response);
       output = new CharArrayWriter();
     }
 
+    /**
+     * Response content.
+     *
+     * @return Response content.
+     */
     public String getResponseContent() {
       return output.toString();
     }
 
+    /**
+     * Response writer.
+     *
+     * @return Response writer.
+     */
     public PrintWriter getWriter() {
       return new PrintWriter(output);
     }
