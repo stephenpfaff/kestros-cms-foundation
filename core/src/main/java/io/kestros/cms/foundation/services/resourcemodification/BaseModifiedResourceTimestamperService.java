@@ -62,7 +62,7 @@ public class BaseModifiedResourceTimestamperService implements ModifiedResourceT
       resourceResolver.commit();
 
       if (contentPublicationService != null) {
-        contentPublicationService.setComponentToOutOfDate(component);
+        contentPublicationService.setResourceToOutOfDate(component);
       }
     } else {
       LOG.error("Failed to add/updated last modified properties on {}.", component.getPath());
