@@ -12,8 +12,12 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Provides logic for updating creation and lastModified properties for Components.
+ */
 @Component(service = ModifiedResourceTimestamperService.class,
-           immediate = true)
+           immediate = true,
+           property = "service.ranking:Integer=100")
 public class BaseModifiedResourceTimestamperService implements ModifiedResourceTimestamperService {
 
   private static final Logger LOG = LoggerFactory.getLogger(
@@ -22,14 +26,7 @@ public class BaseModifiedResourceTimestamperService implements ModifiedResourceT
   @Reference
   private ContentPublicationService contentPublicationService;
 
-  /**
-   * Updates kes:created (Date) and kes:createdBy (UserID) properties on a specified BaseComponent.
-   *
-   * @param component BaseComponent to update.
-   * @param user User to write in kes:createdBy.
-   * @param resourceResolver ResourceResolver.
-   * @throws PersistenceException Values could not be persisted to Resource Properties.
-   */
+  @Override
   public void handleComponentCreationProperties(@Nonnull final BaseComponent component,
       @Nonnull final String user, @Nonnull final ResourceResolver resourceResolver)
       throws PersistenceException {
@@ -44,24 +41,17 @@ public class BaseModifiedResourceTimestamperService implements ModifiedResourceT
     }
   }
 
+  @Override
   public void handleComponentCreationProperties(@Nonnull final BaseComponent component,
       @Nonnull final KestrosUser user, @Nonnull final ResourceResolver resourceResolver)
       throws PersistenceException {
     handleComponentCreationProperties(component, user.getId(), resourceResolver);
   }
 
-  /**
-   * Updates kes:lastModified (Date) and kes:lastModifiedBy (UserID) properties on a specified
-   * BaseComponent.
-   *
-   * @param component BaseComponent to update.
-   * @param user User to write in kes:lastModifiedBy.
-   * @param resourceResolver ResourceResolver.
-   * @throws PersistenceException Values could not be persisted to Resource Properties.
-   */
-  public void updateComponentLastModified(@Nonnull final BaseComponent component, @Nonnull
-  final String user,
-      @Nonnull final ResourceResolver resourceResolver) throws PersistenceException {
+  @Override
+  public void updateComponentLastModified(@Nonnull final BaseComponent component,
+      @Nonnull final String user, @Nonnull final ResourceResolver resourceResolver)
+      throws PersistenceException {
     LOG.debug("Adding/updating last modified properties on {}.", component.getPath());
     final ModifiableValueMap map = component.getResource().adaptTo(ModifiableValueMap.class);
 
@@ -79,6 +69,7 @@ public class BaseModifiedResourceTimestamperService implements ModifiedResourceT
     }
   }
 
+  @Override
   public void updateComponentLastModified(@Nonnull final BaseComponent component,
       @Nonnull final KestrosUser user, @Nonnull final ResourceResolver resourceResolver)
       throws PersistenceException {

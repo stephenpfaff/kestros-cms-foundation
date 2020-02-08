@@ -7,6 +7,14 @@ import org.apache.sling.models.factory.ModelFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+/**
+ * Servlet that provides basic and detailed validation messages for a given resource.
+ *
+ * Attempts to match the requested to resource to the closest matching Sling Model that extends
+ * {@link BaseSlingModel} in order to determine
+ * {@link io.kestros.commons.structuredslingmodels.validation.ModelValidator}s
+ * that will be processed.
+ */
 @Component(service = {Servlet.class},
            property = {"sling.servlet.resourceTypes=sling/servlet/default",
                "sling.servlet.selectors=detailed-validation", "sling.servlet.extensions=json",

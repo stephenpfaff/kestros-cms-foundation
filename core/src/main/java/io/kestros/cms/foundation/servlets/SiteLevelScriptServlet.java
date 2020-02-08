@@ -15,10 +15,25 @@ import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Baseline servlet logic for scripts that are rendered at the site level.  UiFramework name and
+ * Theme name are retrieved as selector, and the ScriptType is determined by the extension.
+ *
+ * Sample path - /content/site.ui-framework-name.theme-name.css
+ *
+ * Sample path - /content/site.ui-framework-name.theme-name.js
+ */
 public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
 
   private static final Logger LOG = LoggerFactory.getLogger(SiteLevelScriptServlet.class);
   private static final long serialVersionUID = -5328841199087488311L;
+
+  /**
+   * {@link ScriptType} to render.
+   *
+   * @return {@link ScriptType} to render.
+   */
+  public abstract ScriptType getScriptType();
 
   @Override
   public void doGet(@Nonnull final SlingHttpServletRequest request,
@@ -45,7 +60,5 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
       response.setStatus(400);
     }
   }
-
-  public abstract ScriptType getScriptType();
 
 }

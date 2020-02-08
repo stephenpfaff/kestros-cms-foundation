@@ -29,6 +29,10 @@ import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+/**
+ * ResourceChangeListener which listens for changes to /etc, /libs, /apps, /content and purges the
+ * cache for all PageCacheServices when any change is detected.
+ */
 @Component(service = ResourceChangeListener.class,
            property = {ResourceChangeListener.CHANGES + "=ADDED",
                ResourceChangeListener.CHANGES + "=CHANGED",

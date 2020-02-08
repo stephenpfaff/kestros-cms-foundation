@@ -31,7 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Log for Kestros Components.  Provides logic for dynamic script resolution, component variations
+ * Provides logic for dynamic script resolution, component variations and HTML attributes to the
+ * kestros-parent wrapper component.
  */
 @StructuredModel(docPaths = {
     "/content/guide-articles/kestros-cms/foundation/extending-the-parent-component",
@@ -57,14 +58,54 @@ public class ParentComponent extends BaseComponent {
 
   private UiFramework uiFramework;
 
+  /**
+   * HTML element ID to give to the component.
+   *
+   * @return HTML element ID to give to the component.
+   */
   @Nonnull
   public String getId() {
     return getProperties().get("id", StringUtils.EMPTY);
   }
 
+  /**
+   * Additional CSS classes to add to the component.
+   *
+   * @return Additional CSS classes to add to the component.
+   */
   @Nonnull
   public String getCssClass() {
     return getProperties().get("class", StringUtils.EMPTY);
+  }
+
+  /**
+   * Retrieves the ComponentUiFramework the current Component will use to render.
+   *
+   * @return The ComponentUiFramework the current Component will use to render
+   * @throws InvalidComponentUiFrameworkViewException ComponentUiFramework could not be found,
+   *     or failed adaption.
+   * @throws InvalidComponentTypeException ComponentType could not be found, or failed
+   *     adaption.
+   * @throws InvalidThemeException Theme could not be found, or failed adaption.
+   * @throws InvalidUiFrameworkException UiFramework for the current component failed
+   *     adaptation.
+   * @throws ResourceNotFoundException UiFramework for the current component could not be
+   *     found.
+   */
+  public ComponentUiFrameworkView getComponentUiFrameworkView()
+      throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException,
+             InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
+    LOG.trace("Getting Component UiFrameworkView.");
+    try {
+      final ComponentUiFrameworkView componentUiFrameworkView
+          = getComponentType().getComponentUiFrameworkView(getUiFramework());
+      LOG.trace("Retrieved Component UI FrameworkView.");
+      return componentUiFrameworkView;
+    } catch (final Exception exception) {
+      LOG.debug("Unable to retrieve ComponentUiFrameworkView for {}. {}.", getPath(),
+          exception.getMessage());
+      throw exception;
+    }
   }
 
   /**
@@ -115,11 +156,11 @@ public class ParentComponent extends BaseComponent {
   }
 
   /**
-   * The current Theme for the current Page/Component.
+   * The current {@link Theme} for the current Page/Component.
    *
    * @return The current Theme.
-   * @throws InvalidThemeException Theme resource was missing, or could not be adapted to
-   *     Theme.
+   * @throws InvalidThemeException Theme could not be adapted to Theme.
+   * @throws ResourceNotFoundException Component's expected Theme resource was missing.
    */
   @Nullable
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
@@ -170,30 +211,5 @@ public class ParentComponent extends BaseComponent {
     return uiFramework;
   }
 
-  /**
-   * Retrieves the ComponentUiFramework the current Component will use to render.
-   *
-   * @return The ComponentUiFramework the current Component will use to render
-   * @throws InvalidComponentUiFrameworkViewException ComponentUiFramework could not be found,
-   *     or failed adaption.
-   * @throws InvalidComponentTypeException ComponentType could not be found, or failed
-   *     adaption.
-   * @throws InvalidThemeException Theme could not be found, or failed adaption.
-   */
-  public ComponentUiFrameworkView getComponentUiFrameworkView()
-      throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException,
-             InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
-    LOG.trace("Getting Component UiFrameworkView.");
-    try {
-      final ComponentUiFrameworkView componentUiFrameworkView
-          = getComponentType().getComponentUiFrameworkView(getUiFramework());
-      LOG.trace("Retrieved Component UI FrameworkView.");
-      return componentUiFrameworkView;
-    } catch (final Exception exception) {
-      LOG.debug("Unable to retrieve ComponentUiFrameworkView for {}. {}.", getPath(),
-          exception.getMessage());
-      throw exception;
-    }
-  }
 
 }

@@ -6,6 +6,9 @@ import io.kestros.cms.foundation.content.pages.BaseContentPageValidationService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
 
+/**
+ * ModelValidationService for {@link BaseSite} models.
+ */
 public class BaseSiteValidationService extends BaseContentPageValidationService {
 
   @Override
@@ -17,7 +20,7 @@ public class BaseSiteValidationService extends BaseContentPageValidationService 
     return new ModelValidator() {
       @Override
       public boolean isValid() {
-        return !getModel().getTopLevelPages().isEmpty();
+        return !getModel().getChildPages().isEmpty();
       }
 
       @Override

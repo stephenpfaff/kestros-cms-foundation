@@ -18,12 +18,34 @@ import org.apache.sling.models.factory.ModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Baseline servlet logic to provides basic or detailed validation messages for a given resource.
+ *
+ * Attempts to match the requested to resource to the closest matching Sling Model that extends
+ * {@link BaseSlingModel} in order to determine
+ * {@link io.kestros.commons.structuredslingmodels.validation.ModelValidator}s
+ * that will be processed.
+ */
 public abstract class BaseValidationServlet extends SlingAllMethodsServlet {
 
   private static final Logger LOG = LoggerFactory.getLogger(BaseValidationServlet.class);
   private static final long serialVersionUID = 8033781512563632444L;
 
+  /**
+   * Performs validation on the given model.
+   *
+   * @param model Model to validate.
+   */
   public abstract void doValidation(BaseSlingModel model);
+
+  /**
+   * {@link ModelFactory} used to determine the closest matching Sling Model type for the given
+   * resource.
+   *
+   * @return {@link ModelFactory} used to determine the closest matching Sling Model type for the
+   *     given resource.
+   */
+  public abstract ModelFactory getModelFactory();
 
   @Override
   protected void doGet(@Nonnull final SlingHttpServletRequest request,
@@ -50,5 +72,4 @@ public abstract class BaseValidationServlet extends SlingAllMethodsServlet {
     }
   }
 
-  public abstract ModelFactory getModelFactory();
 }

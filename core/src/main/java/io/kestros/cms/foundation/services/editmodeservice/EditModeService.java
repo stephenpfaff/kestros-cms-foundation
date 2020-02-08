@@ -23,6 +23,9 @@ import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import org.apache.sling.api.SlingHttpServletRequest;
 
+/**
+ * Provides edit mode activation status, properties and {@link} Theme.
+ */
 public interface EditModeService {
 
   /**
@@ -34,9 +37,12 @@ public interface EditModeService {
   boolean isEditModeActive();
 
   /**
-   * Current edit mode Theme.
+   * Current edit mode {@link Theme}.
    *
+   * @param request Request to determine the edit mode status of.
    * @return Current edit mode Theme.
+   * @throws InvalidThemeException Edit mode them was not found, or could not be adapted to
+   *     {@link Theme}
    */
   Theme getEditModeTheme(SlingHttpServletRequest request) throws InvalidThemeException;
 

@@ -12,6 +12,9 @@ import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+/**
+ * Servlet for rendering a headless JSON response for a given page or site.
+ */
 @Component(service = {Servlet.class},
            property = {"sling.servlet.resourceTypes=kes:Page",
                "sling.servlet.resourceTypes=kes:Site", "sling.servlet.resourceTypes=kes:Site",

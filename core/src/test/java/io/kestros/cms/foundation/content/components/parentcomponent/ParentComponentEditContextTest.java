@@ -2,10 +2,15 @@ package io.kestros.cms.foundation.content.components.parentcomponent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
+import io.kestros.cms.foundation.services.editmodeservice.EditModeService;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.sling.api.resource.Resource;
@@ -21,11 +26,13 @@ public class ParentComponentEditContextTest {
 
   private ParentComponentEditContext parentComponentEditContext;
 
+  private EditModeService editModeService;
+
+  private Theme editModeTheme;
+
   private Resource resource;
 
   private Map<String, Object> uiFrameworkProperties = new HashMap<>();
-
-  private Map<String, Object> themeProperties = new HashMap<>();
 
   private Exception exception = null;
 
@@ -33,10 +40,16 @@ public class ParentComponentEditContextTest {
   public void setUp() throws Exception {
     context.addModelsForPackage("io.kestros");
     uiFrameworkProperties.put("jcr:primaryType", "kes:UiFramework");
+
+    editModeService = mock(EditModeService.class);
+    context.registerService(EditModeService.class, editModeService);
+
+    editModeTheme = mock(Theme.class);
   }
 
   @Test
   public void testIsEditMode() {
+    when(editModeService.isEditModeActive()).thenReturn(true);
     context.request().setAttribute("editMode", true);
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertTrue(parentComponentEditContext.isEditMode());
@@ -44,6 +57,7 @@ public class ParentComponentEditContextTest {
 
   @Test
   public void testIsEditModeWhenFalse() {
+    when(editModeService.isEditModeActive()).thenReturn(true);
     context.request().setAttribute("editMode", false);
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertFalse(parentComponentEditContext.isEditMode());
@@ -51,6 +65,7 @@ public class ParentComponentEditContextTest {
 
   @Test
   public void testIsEditModeWhenStringTrue() {
+    when(editModeService.isEditModeActive()).thenReturn(true);
     context.request().setAttribute("editMode", "true");
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertTrue(parentComponentEditContext.isEditMode());
@@ -58,65 +73,70 @@ public class ParentComponentEditContextTest {
 
   @Test
   public void testIsEditModeWhenStringFalse() {
+    when(editModeService.isEditModeActive()).thenReturn(true);
     context.request().setAttribute("editMode", "false");
+    parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
+    assertFalse(parentComponentEditContext.isEditMode());
+  }
+
+
+  @Test
+  public void testIsEditModeWhenAttributeNotFound() {
+    when(editModeService.isEditModeActive()).thenReturn(true);
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertFalse(parentComponentEditContext.isEditMode());
   }
 
   @Test
   public void testIsEditModeWhenNull() {
+    when(editModeService.isEditModeActive()).thenReturn(true);
     context.request().setAttribute("editMode", null);
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertFalse(parentComponentEditContext.isEditMode());
   }
 
+
   @Test
-  public void testIsEditModeWhenAttributeNotFound() {
+  public void testIsEditModeWhenEditModeIsNotActive() {
+    when(editModeService.isEditModeActive()).thenReturn(false);
+    context.request().setAttribute("editMode", true);
+    parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
+    assertFalse(parentComponentEditContext.isEditMode());
+  }
+
+  @Test
+  public void testIsEditModeWhenEditModeServiceIsNull() {
+    editModeService = null;
+    context.request().setAttribute("editMode", true);
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertFalse(parentComponentEditContext.isEditMode());
   }
 
   @Test
   public void testGetEditTheme() throws InvalidThemeException {
-    themeProperties.put("jcr:primaryType", "kes:Theme");
-    context.create().resource("/libs/kestros/ui-frameworks/kestros-editor-include",
-        uiFrameworkProperties);
-    context.create().resource("/libs/kestros/ui-frameworks/kestros-editor-include/themes/default",
-        themeProperties);
+    when(editModeService.isEditModeActive()).thenReturn(true);
+    when(editModeService.getEditModeTheme(any())).thenReturn(editModeTheme);
+
+    when(editModeTheme.getPath()).thenReturn("/edit-mode-theme");
+
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
-    assertEquals("/libs/kestros/ui-frameworks/kestros-editor-include/themes/default",
-        parentComponentEditContext.getEditTheme().getPath());
+    assertEquals("/edit-mode-theme", parentComponentEditContext.getEditTheme().getPath());
   }
 
   @Test
-  public void testGetEditThemeWhenInvalidResourceType() {
-    context.create().resource("/libs/kestros/ui-frameworks/kestros-editor-include/themes/default",
-        themeProperties).adaptTo(Theme.class);
+  public void testGetEditThemeWhenEditModeIsNotActive() throws InvalidThemeException {
+    when(editModeService.isEditModeActive()).thenReturn(false);
+
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
-    try {
-      assertEquals("/libs/kestros/ui-frameworks/kestros-editor-include/themes/default",
-          parentComponentEditContext.getEditTheme().getPath());
-    } catch (InvalidThemeException e) {
-      exception = e;
-    }
-    assertEquals("Unable to retrieve theme 'default' under UiFramework "
-                 + "'/libs/kestros/ui-frameworks/kestros-editor-include'. Unable to adapt "
-                 + "'/libs/kestros/ui-frameworks/kestros-editor-include' to UiFramework: Invalid "
-                 + "resource " + "type.", exception.getMessage());
+    assertNull(parentComponentEditContext.getEditTheme());
   }
 
   @Test
-  public void testGetEditThemeWhenResourceNotFound() {
+  public void testGetEditThemeWhenEditModeServiceIsNull() throws InvalidThemeException {
+    editModeService = null;
+
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
-    try {
-      assertEquals("/libs/kestros/ui-frameworks/kestros-editor-include/themes/default",
-          parentComponentEditContext.getEditTheme().getPath());
-    } catch (InvalidThemeException e) {
-      exception = e;
-    }
-    assertEquals("Unable to retrieve theme 'default' under UiFramework "
-                 + "'/libs/kestros/ui-frameworks/kestros-editor-include'. Unable to adapt "
-                 + "'/libs/kestros/ui-frameworks/kestros-editor-include': Resource not found.",
-        exception.getMessage());
+    assertNull(parentComponentEditContext.getEditTheme());
   }
+
 }

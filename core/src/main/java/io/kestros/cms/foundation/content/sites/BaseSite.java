@@ -22,6 +22,11 @@ import org.apache.sling.models.factory.ModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Sling Model for site root pages. Adapted from resources with jcr:primaryType 'kes:Site'
+ *
+ * @param <T> Extends {@link BaseContentPage}
+ */
 @StructuredModel(validationService = BaseSiteValidationService.class)
 @Model(adaptables = Resource.class,
        resourceType = "kes:Site")
@@ -61,11 +66,6 @@ public class BaseSite<T extends BaseContentPage> extends BaseContentPage {
       }
     }
     return allPagesOfClosestType;
-  }
-
-  @JsonIgnore
-  public List<BaseContentPage> getTopLevelPages() {
-    return this.getChildPages();
   }
 
   /**

@@ -10,7 +10,11 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Provides script paths for {@link ParentComponent}.  Looks up the {@link
+ * io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView} for the current
+ * page checks if a matching script is found. Falls back to the `common` ComponentUiFrameworkView.
+ */
 @Component(immediate = true,
            service = ScriptProviderService.class,
            property = "service.ranking:Integer=1")

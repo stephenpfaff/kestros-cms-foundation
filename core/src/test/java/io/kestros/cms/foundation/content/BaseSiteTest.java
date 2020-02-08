@@ -105,7 +105,7 @@ public class BaseSiteTest {
 
     assertFalse(baseSite.getErrorMessages().contains("Site has no pages."));
 
-    assertEquals(2, baseSite.getTopLevelPages().size());
+    assertEquals(2, baseSite.getChildPages().size());
   }
 
   @Test

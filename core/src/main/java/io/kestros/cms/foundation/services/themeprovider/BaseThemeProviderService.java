@@ -18,6 +18,10 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Provides {@link Theme} to {@link BaseComponent} and {@link BaseContentPage}. Looks up the Theme
+ * base on the 'kes:Theme' property on the closest ancestor page with the property set.
+ */
 @Component(immediate = true,
            service = ThemeProviderService.class,
            property = "service.ranking:Integer=1")

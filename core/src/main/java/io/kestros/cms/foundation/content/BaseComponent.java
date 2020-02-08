@@ -19,6 +19,9 @@ import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.utils.RelativeDate;
+import io.kestros.cms.user.KestrosUser;
+import io.kestros.cms.user.exceptions.UserRetrievalException;
+import io.kestros.cms.user.services.KestrosUserService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.Property;
 import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
@@ -27,9 +30,6 @@ import io.kestros.commons.structuredslingmodels.exceptions.MatchingResourceTypeN
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.cms.user.KestrosUser;
-import io.kestros.cms.user.exceptions.UserRetrievalException;
-import io.kestros.cms.user.services.KestrosUserService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -197,6 +197,11 @@ public class BaseComponent extends BaseResource {
     return children;
   }
 
+  /**
+   * Retrieves all child Resources, adapted to BaseComponent.
+   *
+   * @return All child Resources, adapted to BaseComponent.
+   */
   @JsonIgnore
   public List<BaseComponent> getChildrenAsBaseComponent() {
     return getChildrenOfType(this, BaseComponent.class);
