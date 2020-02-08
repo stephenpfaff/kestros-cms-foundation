@@ -12,13 +12,13 @@ import org.junit.Test;
 
 public class ThemeJavaScriptServletTest {
 
-
   @Rule
   public SlingContext context = new SlingContext();
 
   private ThemeJavaScriptServlet servlet;
 
   private UiLibraryCacheService uiLibraryCacheService;
+
   private UiLibraryConfigurationService uiLibraryConfigurationService;
 
   @Before
