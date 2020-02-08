@@ -1,0 +1,29 @@
+<template data-sly-template.includeHeadLibs="${ @ page}">
+  <sly
+      data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
+
+
+  <sly data-sly-test="${parentComponentEditContext.editMode}">
+    <sly data-sly-use.lib="/libs/kestros/commons/ui-libraries.html">
+      <sly data-sly-call="${lib.includeCss @ uiLibrary=page.theme}"/>
+    </sly>
+  </sly>
+  <sly data-sly-test="${!parentComponentEditContext.editMode}">
+    <link rel="stylesheet" type="text/css"
+          href="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.css">
+  </sly>
+</template>
+
+<template data-sly-template.includeScripts="${ @ page}">
+  <sly
+      data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
+  <sly data-sly-test="${parentComponentEditContext.editMode}">
+    <sly data-sly-use.lib="/libs/kestros/commons/ui-libraries.html">
+      <sly data-sly-call="${lib.includeJs @ uiLibrary=page.theme}"/>
+    </sly>
+  </sly>
+  <sly data-sly-test="${!parentComponentEditContext.editMode}">
+    <script
+        src="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.js"></script>
+  </sly>
+</template>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
+  jcr:primaryType="rep:ACL">
+  <allow-kestros-resource-manager
+    jcr:primaryType="rep:GrantACE"
+    rep:principalName="kestros-resource-manager"
+    rep:privileges="{Name}[jcr:all]">
+  </allow-kestros-resource-manager>
+</jcr:root>

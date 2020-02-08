@@ -19,7 +19,13 @@
   <description>Foundational logic for the Kestros CMS. Contains all the models, scripts, and
     baseline templates/components required for rendering a site.
   </description>
+
   <packaging>pom</packaging>
+
+  <modules>
+    <module>core</module>
+    <module>frontend</module>
+  </modules>
 
   <dependencyManagement>
     <dependencies>
@@ -38,6 +44,16 @@
         <groupId>io.kestros.cms</groupId>
         <artifactId>kestros-user-foundation-core</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>de.inetsoftware</groupId>
+        <artifactId>jlessc</artifactId>
+        <version>1.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.12.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
