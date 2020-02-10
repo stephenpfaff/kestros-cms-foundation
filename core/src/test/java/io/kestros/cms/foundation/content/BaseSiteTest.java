@@ -42,7 +42,6 @@ public class BaseSiteTest {
 
   private Exception exception;
 
-  // TODO make theme provider service optional
   @Before
   public void setUp() throws Exception {
     context.addModelsForPackage("io.kestros");

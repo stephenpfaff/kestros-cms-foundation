@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Servlet used for associating jcr:content resources to a kes:Page request.
  */
-//TODO clean up the annotation
 @Component(service = {Servlet.class},
            property = {"sling.servlet.resourceTypes=kes:Page",
                "sling.servlet.resourceTypes=kes:Site", "sling.servlet.extensions=html",

@@ -2,6 +2,7 @@ package io.kestros.cms.foundation.services.pagecacheservice.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
@@ -76,7 +77,7 @@ public class JcrFilePageCacheServiceTest {
 
   @Test
   public void testGetCacheCreationJobName() {
-    assertEquals("jcr-file-page-cache-creation", cacheService.getCacheCreationJobName());
+    assertNull(cacheService.getCacheCreationJobName());
   }
 
   @Test
