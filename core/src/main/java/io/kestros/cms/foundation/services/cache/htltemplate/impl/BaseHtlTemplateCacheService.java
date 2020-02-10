@@ -53,6 +53,8 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
 
   private static final String HTL_TEMPLATE_CACHE_SERVICE_USER = "kestros-htl-template-cache";
 
+  private static final long serialVersionUID = 6704602826025832237L;
+
   @Reference
   private ResourceResolverFactory resourceResolverFactory;
 

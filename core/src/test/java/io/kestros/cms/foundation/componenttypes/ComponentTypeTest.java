@@ -230,7 +230,6 @@ public class ComponentTypeTest {
 
   @Test
   public void testGetUiFrameworkViewsWhenExcludedFrameworks() throws Exception {
-    // TODO test in validation class.
     componentProperties.put("excludedUiFrameworks", new String[]{"excluded-1", "excluded-2"});
 
     resource = context.create().resource("/apps/component", componentProperties);

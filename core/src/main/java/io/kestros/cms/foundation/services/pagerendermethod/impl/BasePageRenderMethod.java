@@ -48,8 +48,9 @@ public class BasePageRenderMethod implements PageRenderMethod {
     if (page != null) {
       try {
         if (getPageCacheService() != null) {
+          String pageOutput = getPageCacheService().getCachedOutput(page);
           response.setContentType("text/html");
-          response.getWriter().write(getPageCacheService().getCachedOutput(page));
+          response.getWriter().write(pageOutput);
           return;
         }
       } catch (final CacheRetrievalException e) {

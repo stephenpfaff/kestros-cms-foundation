@@ -29,6 +29,7 @@ public class JcrFilePageCacheService extends JcrFileCacheService
 
   // todo clean up user name
   public static final String KESTROS_PAGE_CACHE_PURGE_SERVICE_USER = "kestros-page-cache-purge";
+  private static final long serialVersionUID = 7298277513481005750L;
 
   @Reference
   private ResourceResolverFactory resourceResolverFactory;
@@ -63,7 +64,7 @@ public class JcrFilePageCacheService extends JcrFileCacheService
 
   @Override
   protected String getCacheCreationJobName() {
-    return "jcr-file-page-cache-creation";
+    return null;
   }
 
   @Override
