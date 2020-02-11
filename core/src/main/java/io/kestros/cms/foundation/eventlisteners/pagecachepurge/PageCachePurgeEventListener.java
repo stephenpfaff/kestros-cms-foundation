@@ -42,8 +42,7 @@ import org.osgi.service.component.annotations.Reference;
                ResourceChangeListener.CHANGES + "=PROVIDER_REMOVED",
                ResourceChangeListener.PATHS + "=/etc", ResourceChangeListener.PATHS + "=/libs",
                ResourceChangeListener.PATHS + "=/apps", ResourceChangeListener.PATHS + "=/content"})
-public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeEventListener
-    implements ResourceChangeListener {
+public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeEventListener {
 
   public static final String KESTROS_PAGE_CACHE_PURGE_SERVICE_USER = "kestros-page-cache-purge";
 

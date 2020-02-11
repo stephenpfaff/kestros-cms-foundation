@@ -58,7 +58,7 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
 
   @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
-  private ResourceResolverFactory resourceResolverFactory;
+  private transient ResourceResolverFactory resourceResolverFactory;
 
   @Override
   public String getServiceCacheRootPath() {

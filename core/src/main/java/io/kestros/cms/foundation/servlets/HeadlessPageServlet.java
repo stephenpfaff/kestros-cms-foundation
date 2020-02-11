@@ -27,7 +27,7 @@ public class HeadlessPageServlet extends SlingAllMethodsServlet {
 
   @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
-  private HeadlessRenderService headlessRenderService;
+  private transient HeadlessRenderService headlessRenderService;
 
   @Override
   protected void doGet(@Nonnull final SlingHttpServletRequest request,
