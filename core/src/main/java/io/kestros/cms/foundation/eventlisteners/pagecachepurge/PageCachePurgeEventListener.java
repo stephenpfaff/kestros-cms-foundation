@@ -21,6 +21,7 @@ package io.kestros.cms.foundation.eventlisteners.pagecachepurge;
 
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.services.pagecacheservice.PageCacheService;
 import io.kestros.commons.osgiserviceutils.services.eventlisteners.impl.BaseCachePurgeOnResourceChangeEventListener;
 import java.util.List;
@@ -46,8 +47,9 @@ public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeE
 
   public static final String KESTROS_PAGE_CACHE_PURGE_SERVICE_USER = "kestros-page-cache-purge";
 
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
-  private ResourceResolverFactory resourceResolverFactory;
+  private transient ResourceResolverFactory resourceResolverFactory;
 
   @Override
   protected String getServiceUserName() {

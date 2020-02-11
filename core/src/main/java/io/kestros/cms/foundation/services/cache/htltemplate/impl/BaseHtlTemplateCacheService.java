@@ -21,6 +21,7 @@ package io.kestros.cms.foundation.services.cache.htltemplate.impl;
 
 import static io.kestros.cms.foundation.utils.DesignUtils.getAllUiFrameworks;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.componenttypes.HtmlFileType;
 import io.kestros.cms.foundation.design.htltemplate.HtlTemplate;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
@@ -55,6 +56,7 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
 
   private static final long serialVersionUID = 6704602826025832237L;
 
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
   private ResourceResolverFactory resourceResolverFactory;
 
