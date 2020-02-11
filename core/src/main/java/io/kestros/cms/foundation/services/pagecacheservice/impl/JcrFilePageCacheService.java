@@ -1,5 +1,6 @@
 package io.kestros.cms.foundation.services.pagecacheservice.impl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.componenttypes.HtmlFileType;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.services.pagecacheservice.GeneralPageCacheService;
@@ -31,11 +32,13 @@ public class JcrFilePageCacheService extends JcrFileCacheService
   public static final String KESTROS_PAGE_CACHE_PURGE_SERVICE_USER = "kestros-page-cache-purge";
   private static final long serialVersionUID = 7298277513481005750L;
 
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
-  private ResourceResolverFactory resourceResolverFactory;
+  private transient ResourceResolverFactory resourceResolverFactory;
 
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
-  private JobManager jobManager;
+  private transient JobManager jobManager;
 
   @Override
   public String getServiceCacheRootPath() {

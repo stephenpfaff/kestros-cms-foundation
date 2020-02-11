@@ -1,5 +1,6 @@
 package io.kestros.cms.foundation.servlets.validation;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
 import javax.servlet.Servlet;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -23,8 +24,9 @@ public class BasicValidationServlet extends BaseValidationServlet {
 
   private static final long serialVersionUID = -6880653266429090069L;
 
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
-  private ModelFactory modelFactory;
+  private transient ModelFactory modelFactory;
 
   @Override
   public void doValidation(final BaseSlingModel model) {

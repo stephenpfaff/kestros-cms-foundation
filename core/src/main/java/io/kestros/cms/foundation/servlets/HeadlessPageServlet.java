@@ -1,5 +1,6 @@
 package io.kestros.cms.foundation.servlets;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.services.headlessrender.HeadlessRenderService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class HeadlessPageServlet extends SlingAllMethodsServlet {
 
   private static final long serialVersionUID = 9009795847660986763L;
 
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
   private HeadlessRenderService headlessRenderService;
 

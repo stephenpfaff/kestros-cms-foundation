@@ -2,6 +2,7 @@ package io.kestros.cms.foundation.services.pagerenderservice.impl;
 
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.services.pagerendermethod.PageRenderMethod;
 import io.kestros.cms.foundation.services.pagerenderservice.PageRenderService;
 import java.io.IOException;
@@ -28,7 +29,8 @@ public class BasePageRenderService implements PageRenderService {
 
   private static final long serialVersionUID = 7897119235609576690L;
 
-  private ComponentContext componentContext;
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+  private transient ComponentContext componentContext;
 
   /**
    * Activates the service.
