@@ -21,9 +21,8 @@ import org.slf4j.LoggerFactory;
 public class BaseScriptProviderService extends BaseServiceResolverService
     implements ScriptProviderService {
 
-  // TODO make this unique to this service.
   public static final String KESTROS_HTL_TEMPLATE_CACHE_PURGE_SERVICE_USER
-      = "kestros-htl-template-cache-purge";
+      = "kestros-script-provider";
 
   private static final Logger LOG = LoggerFactory.getLogger(BaseScriptProviderService.class);
 

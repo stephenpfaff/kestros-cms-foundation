@@ -28,8 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 public class JcrFilePageCacheService extends JcrFileCacheService
     implements GeneralPageCacheService {
 
-  // todo clean up user name
-  public static final String KESTROS_PAGE_CACHE_PURGE_SERVICE_USER = "kestros-page-cache-purge";
+  public static final String KESTROS_PAGE_CACHE_PURGE_SERVICE_USER = "kestros-page-cache";
   private static final long serialVersionUID = 7298277513481005750L;
 
   @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
