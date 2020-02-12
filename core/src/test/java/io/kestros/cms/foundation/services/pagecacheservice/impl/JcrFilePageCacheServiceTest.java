@@ -57,7 +57,7 @@ public class JcrFilePageCacheServiceTest {
 
   @Test
   public void testGetServiceUserName() {
-    assertEquals("kestros-page-cache-purge", cacheService.getServiceUserName());
+    assertEquals("kestros-page-cache", cacheService.getServiceUserName());
   }
 
   @Test

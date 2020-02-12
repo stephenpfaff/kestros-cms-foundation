@@ -480,7 +480,6 @@ public class UiFrameworkTest {
 
   @Test
   public void testGetAllComponentUiFrameworkViewsInADirectoryWhenInvalidAndViewMatchesName() {
-    // TODO is this test needed anymore?
     context.create().resource("/apps/components/component-1", componentTypeProperties);
     context.create().resource("/apps/components/component-1/ui-framework");
 

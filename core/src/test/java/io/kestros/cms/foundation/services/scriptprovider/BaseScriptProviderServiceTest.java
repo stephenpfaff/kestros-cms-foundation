@@ -36,7 +36,7 @@ public class BaseScriptProviderServiceTest {
 
   @Test
   public void testGetServiceUserName() {
-    assertEquals("kestros-htl-template-cache-purge", scriptProviderService.getServiceUserName());
+    assertEquals("kestros-script-provider", scriptProviderService.getServiceUserName());
   }
 
   @Test

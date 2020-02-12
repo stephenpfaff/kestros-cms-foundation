@@ -6,8 +6,6 @@
   selector="create-page"
   submitButtonText="Create">
   <content-area jcr:primaryType="nt:unstructured">
-    <!-- todo is there a better name than create? to signify that this is for offspring instead of creating the particular thing -->
-    <!-- TODO  change dialog field directory structure-->
     <tabs
       jcr:primaryType="nt:unstructured"
       sling:resourceType="kestros/cms/general/tabs"
@@ -32,10 +30,10 @@
           required="true"
           initialValue="">
           <validators jcr:primaryType="nt:unstructured">
-<!--            <lower-case jcr:primaryType="nt:unstructured"-->
-<!--              sling:resourceType="kestros/cms/validators/regex-validator"-->
-<!--              message="Must be lower case"-->
-<!--              pattern="^[a-z]*$"/>-->
+            <lower-case jcr:primaryType="nt:unstructured"
+              sling:resourceType="kestros/cms/validators/regex-validator"
+              message="Must be lower case"
+              pattern="^[a-z]*$"/>
             <no-spaces jcr:primaryType="nt:unstructured"
               sling:resourceType="kestros/cms/validators/regex-validator"
               message="No spaces allowed"
@@ -48,7 +46,6 @@
           label="Description"
           propertyName="jcr:description"
           initialValue=""/>
-        <!-- TODO base page should live under sitemanagement -->
         <template
           jcr:primaryType="nt:unstructured"
           sling:resourceType="kestros/cms/dialog-fields/general/template-picker"
@@ -94,7 +91,6 @@
           sling:resourceType="kestros/cms/fields/textarea"
           label="Metadata Description"
           propertyName="metaDescription"/>
-        <!-- TODO this shouldn't live here? -->
         <font-awesome-icon
           jcr:primaryType="nt:unstructured"
           sling:resourceType="kestros/cms/fields/textfield"
