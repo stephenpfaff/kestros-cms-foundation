@@ -49,6 +49,7 @@ public class BasePageRenderMethod implements PageRenderMethod {
       try {
         if (getPageCacheService() != null) {
           String pageOutput = getPageCacheService().getCachedOutput(page);
+          pageOutput = pageOutput.replaceAll("\\s+", " ");
           response.setContentType("text/html");
           response.getWriter().write(pageOutput);
           return;
