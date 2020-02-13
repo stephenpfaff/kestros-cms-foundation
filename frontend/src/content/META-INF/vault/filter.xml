@@ -39,6 +39,10 @@
     <exclude pattern="/libs/kestros/commons/.*"/>
   </filter>
 
+  <filter root="/libs/kestros/commons/config" mode="update">
+    <exclude pattern="/libs/kestros/commons/config.*"/>
+  </filter>
+
   <filter root="/libs/kestros/commons/content-area"/>
   <filter root="/libs/kestros/commons/inherited-content-area"/>
   <filter root="/libs/kestros/commons/kestros-base-page"/>
