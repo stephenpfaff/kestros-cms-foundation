@@ -19,6 +19,7 @@
 package io.kestros.cms.foundation.design.uiframework;
 
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
+import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -77,9 +78,9 @@ public class UiFrameworkValidationServiceTest {
     when(validationService.getGenericModel()).thenReturn(uiFramework);
 
     assertTrue(validationService.hasFrameworkCode().isValid());
-    assertEquals("UiFramework code must be configured.",
+    assertEquals("UiFramework code is configured.",
         validationService.hasFrameworkCode().getMessage());
-    assertEquals(ERROR, validationService.hasFrameworkCode().getType());
+    assertEquals(WARNING, validationService.hasFrameworkCode().getType());
   }
 
   @Test

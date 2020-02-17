@@ -21,6 +21,7 @@ package io.kestros.cms.foundation.design.uiframework;
 import static io.kestros.cms.foundation.design.DesignConstants.THEME_PRIMARY_TYPE;
 import static io.kestros.cms.foundation.utils.DesignUtils.getAllUiFrameworks;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
+import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
@@ -29,7 +30,6 @@ import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessag
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidatorBundle;
 import io.kestros.commons.uilibraries.UiLibraryValidationService;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Model Validation service for UiFrameworks.
@@ -54,17 +54,17 @@ public class UiFrameworkValidationService extends UiLibraryValidationService {
     return new ModelValidator() {
       @Override
       public boolean isValid() {
-        return StringUtils.isNotEmpty(getModel().getFrameworkCode());
+        return !"common".equals(getModel().getFrameworkCode());
       }
 
       @Override
       public String getMessage() {
-        return "UiFramework code must be configured.";
+        return "UiFramework code is configured.";
       }
 
       @Override
       public ModelValidationMessageType getType() {
-        return ERROR;
+        return WARNING;
       }
     };
   }
