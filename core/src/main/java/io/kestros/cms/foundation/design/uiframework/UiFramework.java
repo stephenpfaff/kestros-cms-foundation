@@ -95,7 +95,7 @@ public class UiFramework extends UiLibrary {
    */
   @Nonnull
   public String getFrameworkCode() {
-    return getProperties().get(PN_UI_FRAMEWORK_CODE, StringUtils.EMPTY);
+    return getProperties().get(PN_UI_FRAMEWORK_CODE, "common");
   }
 
   /**
