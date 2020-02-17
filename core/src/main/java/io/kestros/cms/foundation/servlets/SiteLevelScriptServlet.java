@@ -1,3 +1,21 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.servlets;
 
 import static io.kestros.cms.foundation.utils.DesignUtils.getUiFrameworkByFrameworkCode;
@@ -16,12 +34,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * <p>
  * Baseline servlet logic for scripts that are rendered at the site level.  UiFramework name and
  * Theme name are retrieved as selector, and the ScriptType is determined by the extension.
- *
+ * </p>
+ * <p>
  * Sample path - /content/site.ui-framework-name.theme-name.css
- *
+ * </p>
+ * <p>
  * Sample path - /content/site.ui-framework-name.theme-name.js
+ * </p>
  */
 public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
 
@@ -48,7 +70,8 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
         response.setStatus(200);
         response.getWriter().write(
             uiFramework.getTheme(selectors[1]).getOutput(getScriptType(), false));
-      } catch (final ResourceNotFoundException | IOException | ChildResourceNotFoundException | InvalidResourceTypeException exception) {
+      } catch (final ResourceNotFoundException | IOException | ChildResourceNotFoundException
+                                   | InvalidResourceTypeException exception) {
         LOG.error("Unable to render site level {} response for {}. {}", getScriptType().getName(),
             request.getResource().getPath(), exception.getMessage());
         response.setStatus(400);
