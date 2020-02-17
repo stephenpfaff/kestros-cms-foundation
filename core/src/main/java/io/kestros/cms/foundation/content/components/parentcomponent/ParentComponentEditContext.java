@@ -59,7 +59,7 @@ public class ParentComponentEditContext extends BaseSlingRequest {
   }
 
   /**
-   * Current edit mode {@link Theme}
+   * Current edit mode {@link Theme}.
    *
    * @return Current edit mode Theme.
    * @throws InvalidThemeException Expected edit mode Theme was not found, or was not a valid

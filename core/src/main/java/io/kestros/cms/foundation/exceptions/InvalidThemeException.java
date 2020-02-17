@@ -39,7 +39,8 @@ public class InvalidThemeException extends ModelAdaptionException {
    * @param themeName Expected Theme name.
    * @param message Cause message.
    */
-  public InvalidThemeException(final UiFramework uiFramework, final String themeName, final String message) {
+  public InvalidThemeException(final UiFramework uiFramework, final String themeName,
+      final String message) {
     this(uiFramework.getPath(), themeName, message);
   }
 
@@ -50,7 +51,8 @@ public class InvalidThemeException extends ModelAdaptionException {
    * @param themeName Expected Theme name.
    * @param message Cause message.
    */
-  public InvalidThemeException(final String uiFrameworkPath, final String themeName, final String message) {
+  public InvalidThemeException(final String uiFrameworkPath, final String themeName,
+      final String message) {
     super(String.format("Unable to retrieve theme '%s' under UiFramework '%s'. %s", themeName,
         uiFrameworkPath, message));
   }

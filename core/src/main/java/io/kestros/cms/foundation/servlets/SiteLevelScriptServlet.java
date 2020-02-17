@@ -34,12 +34,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * <p>
  * Baseline servlet logic for scripts that are rendered at the site level.  UiFramework name and
  * Theme name are retrieved as selector, and the ScriptType is determined by the extension.
- *
+ * </p>
+ * <p>
  * Sample path - /content/site.ui-framework-name.theme-name.css
- *
+ * </p>
+ * <p>
  * Sample path - /content/site.ui-framework-name.theme-name.js
+ * </p>
  */
 public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
 
@@ -66,7 +70,8 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
         response.setStatus(200);
         response.getWriter().write(
             uiFramework.getTheme(selectors[1]).getOutput(getScriptType(), false));
-      } catch (final ResourceNotFoundException | IOException | ChildResourceNotFoundException | InvalidResourceTypeException exception) {
+      } catch (final ResourceNotFoundException | IOException | ChildResourceNotFoundException
+                                   | InvalidResourceTypeException exception) {
         LOG.error("Unable to render site level {} response for {}. {}", getScriptType().getName(),
             request.getResource().getPath(), exception.getMessage());
         response.setStatus(400);

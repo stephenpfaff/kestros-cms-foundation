@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Baseline servlet logic to provides basic or detailed validation messages for a given resource.
- *
  * Attempts to match the requested to resource to the closest matching Sling Model that extends
  * {@link BaseSlingModel} in order to determine
  * {@link io.kestros.commons.structuredslingmodels.validation.ModelValidator}s

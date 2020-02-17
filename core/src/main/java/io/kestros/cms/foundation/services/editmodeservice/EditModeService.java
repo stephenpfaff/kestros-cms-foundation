@@ -23,7 +23,7 @@ import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import org.apache.sling.api.SlingHttpServletRequest;
 
 /**
- * Provides edit mode activation status, properties and {@link} Theme.
+ * Provides edit mode activation status, properties and {@link Theme}.
  */
 public interface EditModeService {
 

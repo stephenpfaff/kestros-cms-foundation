@@ -26,10 +26,13 @@ import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Component;
 
 /**
+ * <p>
  * Servlet for rendering a sites {@link io.kestros.cms.foundation.design.theme.Theme} JavaScript
  * from requests made to the .js extension of the site root.
- *
+ * </p>
+ * <p>
  * Sample path - /content/site.ui-framework-name.theme-name.js
+ * </p>
  */
 @Component(service = {Servlet.class},
            property = {"sling.servlet.resourceTypes=kes:Site", "sling.servlet.extensions=js",

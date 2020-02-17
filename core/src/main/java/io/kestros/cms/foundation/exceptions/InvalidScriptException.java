@@ -33,6 +33,9 @@ public class InvalidScriptException extends ModelAdaptionException {
   }
 
   /**
+   * Exception thrown when sightly scripts are invalid. Potentially caused by missing Resource, or *
+   * invalid file type.
+   *
    * @param scriptName Resource name of script that was invalid.
    * @param uiFrameworkViewPath Path of UiFramework that script was being retrieved from.
    */

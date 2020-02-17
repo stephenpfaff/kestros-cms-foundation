@@ -230,7 +230,7 @@ public class UiFramework extends UiLibrary {
             getResourceResolver()).getPath();
       } catch (final ResourceNotFoundException e) {
         try {
-           htlTemplateCacheService.cacheAllUiFrameworkCompiledHtlTemplates();
+          htlTemplateCacheService.cacheAllUiFrameworkCompiledHtlTemplates();
           return getResourceAsBaseResource(
               htlTemplateCacheService.getServiceCacheRootPath() + getPath() + EXTENSION_HTML,
               getResourceResolver()).getPath();

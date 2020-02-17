@@ -55,8 +55,8 @@ public interface ModifiedResourceTimestamperService {
       throws PersistenceException;
 
   /**
-   * Adds 'kes:lastModified' {@link java.util.Date} property and 'kes:lastModifiedBy' userId property to a
-   * Component or Page.
+   * Adds 'kes:lastModified' {@link java.util.Date} property and 'kes:lastModifiedBy' userId
+   * property to a Component or Page.
    *
    * @param component Component to update
    * @param user User which created to resource.
@@ -67,8 +67,8 @@ public interface ModifiedResourceTimestamperService {
       ResourceResolver resourceResolver) throws PersistenceException;
 
   /**
-   * Adds 'kes:lastModified' {@link java.util.Date} property and 'kes:lastModifiedBy' userId property to a
-   * Component or Page.
+   * Adds 'kes:lastModified' {@link java.util.Date} property and 'kes:lastModifiedBy' userId
+   * property to a Component or Page.
    *
    * @param component Component to update
    * @param user User which created to resource.

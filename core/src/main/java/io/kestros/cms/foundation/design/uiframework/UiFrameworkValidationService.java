@@ -169,12 +169,13 @@ public class UiFrameworkValidationService extends UiLibraryValidationService {
     return new ModelValidator() {
       @Override
       public boolean isValid() {
-        for (final UiFramework framework : getAllUiFrameworks(getModel().getResourceResolver(), true,
-            false)) {
+        for (final UiFramework framework : getAllUiFrameworks(getModel().getResourceResolver(),
+            true, false)) {
           if (!framework.getPath().equals(getModel().getPath()) && (framework.getName().equals(
               getModel().getName()) || framework.getFrameworkCode().equals(getModel().getName())
-              || framework.getName().equals(getModel().getFrameworkCode())
-              || framework.getFrameworkCode().equals(getModel().getFrameworkCode()))) {
+                                                                    || framework.getName().equals(
+              getModel().getFrameworkCode()) || framework.getFrameworkCode().equals(
+              getModel().getFrameworkCode()))) {
             return false;
           }
         }
