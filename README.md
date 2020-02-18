@@ -38,10 +38,10 @@ Under `/etc/ui-frameworks`, create a new resource for your UiFramework and add t
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
   xmlns:kes="http://kestros.slingware.com/kes/1.0"
   jcr:primaryType="kes:UiFramework"
-  jcr:title=""
+  jcr:title="My UI Framework"
+  jcr:description
   kes:uiFrameworkCode=""
-  kes:vendorLibraries="[]"/>
-
+  kes:vendorLibraries="[my-vendor-library-1,my-vendor-library-2]"/>
 ```
 
 ### Configure
