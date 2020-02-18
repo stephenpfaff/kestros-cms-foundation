@@ -1,4 +1,5 @@
 # Kestros CMS Foundation
+Foundational logic for the Kestros CMS. Contains all the models, scripts, and baseline templates/components required for rendering a site.
 
 - [Getting Started](#getting-started)
 - [UI Frameworks](#ui-frameworks)
