@@ -53,8 +53,14 @@ Under `/etc/ui-frameworks`, create a new resource for your UiFramework and add t
 |kes:vendorLibraries | | `[ ]` |
 
 ### Vendor Libraries
-
+A `VendorLibrary` is standalone UI Library, which can be compiled within a `UiFramework`.  A `VendorLibrary` can be reused by multiple `UiFramework` instances.
 ```
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root
+  xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  jcr:primaryType="kes:VendorLibrary"
+  jcr:title="My Vendor Library"
+  jcr:description=""/>
 
 ```
 
