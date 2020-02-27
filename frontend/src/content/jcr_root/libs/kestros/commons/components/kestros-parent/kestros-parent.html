@@ -26,13 +26,13 @@
   <div id="${parentComponent.id}"
        data-resource-path="${parentComponent.path}"
        class="kestros-component-editable component-${parentComponent.componentType.name} ${parentComponent.cssClass} ${parentComponent.appliedVariationsAsString}">
-    <sly data-sly-include="${parentComponent.contentScriptPath}"/>
+    <sly data-sly-include="${parentComponentEditContext.contentScriptPath}"/>
   </div>
 </sly>
 
 <sly data-sly-test="${!parentComponentEditContext.editMode}">
   <div id="${parentComponent.id}"
        class="component-${parentComponent.componentType.name} ${parentComponent.cssClass} ${parentComponent.appliedVariationsAsString}">
-    <sly data-sly-include="${parentComponent.contentScriptPath}"/>
+    <sly data-sly-include="${parentComponentEditContext.contentScriptPath}"/>
   </div>
 </sly>

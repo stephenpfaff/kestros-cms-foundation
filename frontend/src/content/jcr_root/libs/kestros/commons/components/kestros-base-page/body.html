@@ -21,7 +21,7 @@
      data-sly-use.parentComponent="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent'}"
      data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
 
-<sly data-sly-include="${parentComponent.contentScriptPath}"/>
+<sly data-sly-include="${parentComponentEditContext.contentScriptPath}"/>
 
 <sly data-sly-call="${uiLibs.includeScripts @ page=page}"/>
 
