@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+
+  <filter root="/content/guide-articles/kestros/getting-started"/>
+
+  <filter root="/content/guide-articles/kestros/sling/structured-models"/>
+
+  <filter root="/content/guide-articles/kestros/ui-frameworks"/>
+
+  <filter root="/content/guide-articles/kestros/components"/>
+
+  <filter root="/content/guide-articles/kestros/contributing-to-kestros"/>
+
+</workspaceFilter>

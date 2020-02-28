@@ -50,6 +50,7 @@
   <modules>
     <module>core</module>
     <module>frontend</module>
+    <module>docs</module>
   </modules>
 
   <dependencyManagement>
