@@ -43,7 +43,7 @@ public class ParentComponentTest {
   public final SlingContext context = new SlingContext();
 
   private ThemeProviderService themeProviderService = new BaseThemeProviderService();
-  private BaseScriptProviderService baseScriptProviderService = new BaseScriptProviderService();
+
 
   private Resource resource;
 
@@ -69,7 +69,6 @@ public class ParentComponentTest {
   public void setUp() throws Exception {
     context.addModelsForPackage("io.kestros");
     context.registerService(ThemeProviderService.class, themeProviderService);
-    context.registerService(ScriptProviderService.class, baseScriptProviderService);
 
     properties.put("sling:resourceType", "my-app");
 
@@ -258,80 +257,6 @@ public class ParentComponentTest {
     assertEquals(1, parentComponent.getAppliedVariations().size());
     assertEquals("variation-1", parentComponent.getAppliedVariations().get(0).getName());
     assertEquals("variation-1 ", parentComponent.getAppliedVariationsAsString());
-  }
-
-  @Test
-  public void testGetScriptPathWhenUsingFramework() throws Exception {
-
-    pageContentProperties.put("kes:theme", "/etc/ui-frameworks/my-framework/themes/my-theme");
-
-    context.create().resource("/content/page-with-framework", pageProperties);
-    context.create().resource("/content/page-with-framework/jcr:content", pageContentProperties);
-    resource = context.create().resource("/content/page-with-framework/jcr:content/component",
-        properties);
-
-    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
-    context.create().resource("/apps/my-app/my-framework/content.html", fileProperties);
-    context.create().resource("/apps/my-app/my-framework/content.html/jcr:content",
-        fileJcrContentProperties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    assertEquals("/apps/my-app/my-framework/content.html", parentComponent.getContentScriptPath());
-  }
-
-  @Test
-  public void testGetScriptPathWhenComponentTypeMissing() {
-
-    pageContentProperties.put("kes:theme", "/etc/ui-frameworks/my-framework/themes/my-theme");
-
-    context.create().resource("/content/page-with-framework", pageProperties);
-    context.create().resource("/content/page-with-framework/jcr:content", pageContentProperties);
-
-    properties.put("sling:resourceType", "invalid-resource-type");
-    resource = context.create().resource("/content/page-with-framework/jcr:content/component",
-        properties);
-
-    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
-    context.create().resource("/apps/my-app/my-framework/content.html", fileProperties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    try {
-      parentComponent.getContentScriptPath();
-    } catch (InvalidScriptException e) {
-      exception = e;
-    }
-    assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
-                 + "'invalid-resource-type': Invalid or missing ComponentType resource.': Script "
-                 + "not found.", exception.getMessage());
-  }
-
-  @Test
-  public void testGetScriptPathWhenComponentTypeIsInvalid() {
-
-    pageContentProperties.put("kes:theme", "/etc/ui-frameworks/my-framework/themes/my-theme");
-
-    context.create().resource("/content/page-with-framework", pageProperties);
-    context.create().resource("/content/page-with-framework/jcr:content", pageContentProperties);
-
-    properties.put("sling:resourceType", "/etc/ui-frameworks/my-framework/themes/my-theme");
-    resource = context.create().resource("/content/page-with-framework/jcr:content/component",
-        properties);
-
-    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
-    context.create().resource("/apps/my-app/my-framework/content.html", fileProperties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    try {
-      assertNull(parentComponent.getContentScriptPath());
-    } catch (InvalidScriptException e) {
-      exception = e;
-    }
-    assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
-                 + "'/etc/ui-frameworks/my-framework/themes/my-theme': Invalid or missing "
-                 + "ComponentType " + "resource.': Script not found.", exception.getMessage());
   }
 
   @Test

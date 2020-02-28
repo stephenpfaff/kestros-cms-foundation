@@ -19,9 +19,17 @@
 package io.kestros.cms.foundation.services.scriptprovider;
 
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
+import io.kestros.cms.foundation.content.pages.BaseContentPage;
+import io.kestros.cms.foundation.content.sites.BaseSite;
+import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
+import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
+import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
+import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -63,16 +71,50 @@ public class BaseScriptProviderService extends BaseServiceResolverService
    *
    * @param parentComponent Component to retrieve the script for.
    * @param scriptName Script to retrieve.
+   * @param request current SlingHttpServletRequest. Used to find script paths for referenced
+   *     components.
    * @return The path to a specified script.
    * @throws InvalidScriptException The script was not found, or could not be adapt to *
    *     HtmlFile.
    */
-  public String getScriptPath(final ParentComponent parentComponent, final String scriptName)
-      throws InvalidScriptException {
+  public String getScriptPath(ParentComponent parentComponent, final String scriptName,
+      SlingHttpServletRequest request) throws InvalidScriptException {
     LOG.trace("Getting Script Path {}", scriptName);
+
+    Theme theme = null;
+    String requestContext = request.getRequestURI().split(".html")[0];
     try {
+      theme = SlingModelUtils.getResourceAsType(requestContext, request.getResourceResolver(),
+          BaseContentPage.class).getTheme();
+    } catch (ResourceNotFoundException e) {
+      try {
+        theme = parentComponent.getTheme();
+      } catch (ResourceNotFoundException | InvalidThemeException exception) {
+        LOG.trace(exception.getMessage());
+      }
+    } catch (InvalidThemeException exception) {
+      LOG.trace(exception.getMessage());
+    } catch (InvalidResourceTypeException e) {
+      try {
+        theme = SlingModelUtils.getResourceAsType(requestContext, request.getResourceResolver(),
+            BaseSite.class).getTheme();
+      } catch (ResourceNotFoundException | InvalidThemeException exception) {
+        LOG.trace(exception.getMessage());
+      } catch (InvalidResourceTypeException ex) {
+        try {
+          theme = parentComponent.getTheme();
+        } catch (ResourceNotFoundException | InvalidThemeException exception) {
+          LOG.trace(exception.getMessage());
+        }
+      }
+    }
+
+    try {
+      if (theme == null) {
+        theme = parentComponent.getTheme();
+      }
       return parentComponent.getComponentType().getScript(scriptName,
-          parentComponent.getTheme().getUiFramework()).getPath();
+          theme.getUiFramework()).getPath();
     } catch (final Exception exception) {
       try {
         return parentComponent.getComponentType().getScript(scriptName, null).getPath();

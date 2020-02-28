@@ -27,10 +27,8 @@ import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
-import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
-import io.kestros.cms.foundation.services.scriptprovider.ScriptProviderService;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -68,9 +66,6 @@ public class ParentComponent extends BaseComponent {
 
   @OSGiService
   private ThemeProviderService themeProviderService;
-
-  @OSGiService
-  private ScriptProviderService scriptProviderService;
 
   private Theme theme;
 
@@ -192,34 +187,6 @@ public class ParentComponent extends BaseComponent {
     this.theme = theme;
   }
 
-  /**
-   * The path to the content.html script.
-   *
-   * @return The path to the content.html script.
-   * @throws InvalidScriptException The script was not found, or could not be adapt to
-   *     HtmlFile.
-   */
-  @Nonnull
-  public String getContentScriptPath() throws InvalidScriptException {
-    LOG.trace("Getting Content Script Path for {}", getPath());
-    final String contentScriptPath = getScriptPath("content.html");
-    LOG.trace("Retrieved Content Script Path for {}", getPath());
-    return contentScriptPath;
-  }
-
-  /**
-   * Retrieves the path to a specified script name, resolved proper to the ComponentUiFramework
-   * view.
-   *
-   * @param scriptName Script to retrieve.
-   * @return The path to a specified script.
-   * @throws InvalidScriptException The script was not found, or could not be adapt to *
-   *     HtmlFile.
-   */
-  @Nonnull
-  public String getScriptPath(final String scriptName) throws InvalidScriptException {
-    return scriptProviderService.getScriptPath(this, scriptName);
-  }
 
   private UiFramework getUiFramework()
       throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {

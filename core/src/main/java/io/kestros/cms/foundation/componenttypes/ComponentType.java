@@ -40,6 +40,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -131,6 +132,22 @@ public class ComponentType extends BaseResource {
     } catch (final Exception exception) {
       LOG.debug("Unable to retrieve 'common' ComponentUiFrameworkView of {}: {}", getPath(),
           exception.getMessage());
+    }
+    String libsComponentTypePath = getPath().replaceFirst("/apps/", "/libs/");
+    ComponentType libsComponentType = null;
+    try {
+      libsComponentType = SlingModelUtils.getResourceAsType(libsComponentTypePath,
+          getResourceResolver(), ComponentType.class);
+
+      ComponentUiFrameworkView commonView = getChildAsBaseResource(COMMON_UI_FRAMEWORK_VIEW_NAME,
+          libsComponentType).getResource().adaptTo(ComponentUiFrameworkView.class);
+      if (commonView != null) {
+        return commonView;
+      }
+    } catch (InvalidResourceTypeException | ResourceNotFoundException
+                         | ChildResourceNotFoundException e) {
+      LOG.debug("Unable to retrieve common UI Framework View for {}. {}", getPath(),
+          e.getMessage());
     }
     throw new InvalidCommonUiFrameworkException(getPath());
   }
