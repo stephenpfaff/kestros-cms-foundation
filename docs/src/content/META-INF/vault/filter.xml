@@ -19,6 +19,10 @@
 
 <workspaceFilter version="1.0">
 
+  <filter root="/content/guide-articles/kestros" mode="update">
+    <exclude pattern="/content/guide-articles/kestros/.*"/>
+  </filter>
+
   <filter root="/content/guide-articles/kestros/getting-started"/>
 
   <filter root="/content/guide-articles/kestros/sling/structured-models"/>

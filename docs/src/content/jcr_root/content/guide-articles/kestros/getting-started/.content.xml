@@ -31,7 +31,7 @@
         level="h3"/>
       <text jcr:primaryType="nt:unstructured"
         sling:resourceType="kestros/commons/components/content/richtext"
-        text="In order to run Kestros, you will need to install &lt;a href=&quot;https://docs.docker.com/install&quot;&gt;Docker&lt;/a&gt;"/>
+        text="&lt;p&gt;In order to run Kestros, you will need to install &lt;a href=&quot;https://docs.docker.com/install&quot;&gt;Docker&lt;/a&gt;.&lt;/p&gt;"/>
       <create-container jcr:primaryType="nt:unstructured"
         sling:resourceType="kestros/commons/components/content-area">
         <docker-command jcr:primaryType="nt:unstructured"
@@ -55,7 +55,7 @@
             level="h4"/>
           <text jcr:primaryType="nt:unstructured"
             sling:resourceType="kestros/commons/components/content/richtext"
-            text="To run Kestros with &lt;a href=&quot;https://docs.docker.com/compose/&quot;&gt;Docker Compose&lt;/a&gt; add the following to your Docker Compose file:"/>
+            text="&lt;p&gt;To run Kestros with &lt;a href=&quot;https://docs.docker.com/compose/&quot;&gt;Docker Compose&lt;/a&gt; add the following to your Docker Compose file:&lt;/p&gt;"/>
           <code jcr:primaryType="nt:unstructured"
             sling:resourceType="kestros/commons/components/content/code"
             text="kestros:\\n\\timage: kestros/kestros-platform-beta:latest\\n\\tcontainer_name: kestros\\n\\tports:\\n\\t\\t- 8080:8080:\\n\\t\\t- 30303:30303:\\n\\tvolumes:\\n\\t\\t- /srv/docker/kestros:/opt/sling/sling/logs\\n\\tenvironment:\\n\\t\\t- JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=30303"/>
