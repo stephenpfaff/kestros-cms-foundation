@@ -39,6 +39,7 @@ import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.cache.htltemplate.HtlTemplateCacheService;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
+import io.kestros.commons.structuredslingmodels.annotation.Property;
 import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
@@ -94,6 +95,11 @@ public class UiFramework extends UiLibrary {
    * @return Unique code associated with the current UiFramework.
    */
   @Nonnull
+  @Property(description = "Unique code associated with the current UiFramework. ComponentTypes "
+                          + "use this to render the proper content script.",
+            jcrPropertyName = PN_UI_FRAMEWORK_CODE,
+            defaultValue = "common",
+            configurable = true)
   public String getFrameworkCode() {
     return getProperties().get(PN_UI_FRAMEWORK_CODE, "common");
   }
@@ -104,6 +110,8 @@ public class UiFramework extends UiLibrary {
    * @return All Vendor Libraries compiled into the current UiFramework.
    */
   @Nonnull
+  @Property(description = "All Vendor Libraries that are to be compiled into the UiFramework",
+            defaultValue = "[]")
   public List<VendorLibrary> getVendorLibraries() {
     final List<VendorLibrary> vendorLibraries = new ArrayList<>();
     for (final String vendorLibraryName : getIncludedVendorLibraryNames()) {
@@ -244,7 +252,11 @@ public class UiFramework extends UiLibrary {
   }
 
   @Nonnull
-  List<String> getIncludedVendorLibraryNames() {
+  @Property(description = "Vendor libraries to compile in the UiFramework.",
+            jcrPropertyName = PN_VENDOR_LIBRARIES,
+            defaultValue = "[]",
+            configurable = true)
+  public List<String> getIncludedVendorLibraryNames() {
     return Arrays.asList(getProperties().get(PN_VENDOR_LIBRARIES, new String[]{}));
   }
 
