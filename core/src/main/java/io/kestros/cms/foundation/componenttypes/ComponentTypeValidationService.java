@@ -271,4 +271,5 @@ public class ComponentTypeValidationService extends ModelValidationService {
       }
     };
   }
+  // todo add property definition check
 }

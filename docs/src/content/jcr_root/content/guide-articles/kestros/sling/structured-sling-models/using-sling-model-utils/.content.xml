@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  jcr:primaryType="kes:GuideArticle">
+  <jcr:content jcr:primaryType="nt:unstructured"
+    jcr:title="Using Sling Model Utils"
+    group="Structured Sling Models"
+    sling:resourceType="kestros/components/guides/pages/guide-article">
+    <content jcr:primaryType="nt:unstructured">
+      <text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/text"
+        text="Creating new guides text"/>
+    </content>
+
+  </jcr:content>
+
+
+</jcr:root>

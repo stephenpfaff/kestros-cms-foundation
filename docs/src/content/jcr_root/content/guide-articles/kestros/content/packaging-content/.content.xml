@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  jcr:primaryType="kes:GuideArticle">
+  <jcr:content jcr:primaryType="nt:unstructured"
+    jcr:title="Creating Component Variations"
+    group="Component Development"
+    sling:resourceType="kestros/components/guides/pages/guide-article">
+    <content jcr:primaryType="nt:unstructured"
+      sling:resourceType="kestros/commons/components/content-area">
+      <sites jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content-area">
+        <configurable-properties
+          jcr:primaryType="nt:unstructured"
+          sling:resourceType="kestros/components/guides/content/configurable-properties-table"
+          classPath="io.kestros.cms.foundation.content.sites.BaseSite"
+          includeSuperMethods="true"/>
+
+        <text jcr:primaryType="nt:unstructured"
+          sling:resourceType="kestros/commons/components/content/text"
+          text="Creating new guides text"/>
+      </sites>
+      <pages jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content-area">
+        <configurable-properties
+          jcr:primaryType="nt:unstructured"
+          sling:resourceType="kestros/components/guides/content/configurable-properties-table"
+          classPath="io.kestros.cms.foundation.content.pages.BaseContentPage"
+          includeSuperMethods="true"/>
+      </pages>
+      <components jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content-area">
+      </components>
+
+    </content>
+
+  </jcr:content>
+
+
+</jcr:root>
