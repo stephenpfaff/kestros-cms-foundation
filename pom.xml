@@ -63,8 +63,8 @@
       </dependency>
       <dependency>
         <groupId>io.kestros.commons</groupId>
-        <artifactId>ui-libraries-core</artifactId>
-        <version>0.0.1</version>
+        <artifactId>kestros-sling-ui-libraries-core</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.kestros.cms</groupId>
