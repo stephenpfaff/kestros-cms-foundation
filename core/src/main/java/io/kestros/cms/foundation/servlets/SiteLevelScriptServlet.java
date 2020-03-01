@@ -21,12 +21,16 @@ package io.kestros.cms.foundation.servlets;
 import static io.kestros.cms.foundation.utils.DesignUtils.getUiFrameworkByFrameworkCode;
 
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
+import io.kestros.commons.uilibraries.services.cache.UiLibraryCacheService;
 import java.io.IOException;
 import javax.annotation.Nonnull;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
@@ -50,6 +54,8 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
   private static final Logger LOG = LoggerFactory.getLogger(SiteLevelScriptServlet.class);
   private static final long serialVersionUID = -5328841199087488311L;
 
+  public abstract UiLibraryCacheService getUiLibraryCacheService();
+
   /**
    * {@link ScriptType} to render.
    *
@@ -63,13 +69,41 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
     final String[] selectors = request.getRequestPathInfo().getSelectors();
     if (selectors.length == 2) {
       try {
+
+        boolean performCache = false;
+        String output = null;
+
         final UiFramework uiFramework = getUiFrameworkByFrameworkCode(selectors[0], true, false,
             request.getResourceResolver());
 
+        if (getUiLibraryCacheService() != null) {
+          try {
+            output = getUiLibraryCacheService().getCachedOutput(uiFramework.getTheme(selectors[1]),
+                getScriptType(), isMinified(request));
+          } catch (CacheRetrievalException e) {
+            performCache = true;
+          }
+        }
+
+        if (StringUtils.isEmpty(output)) {
+          output = uiFramework.getTheme(selectors[1]).getOutput(getScriptType(),
+              isMinified(request));
+        }
+
         response.setContentType(getScriptType().getOutputContentType());
         response.setStatus(200);
-        response.getWriter().write(
-            uiFramework.getTheme(selectors[1]).getOutput(getScriptType(), false));
+        response.getWriter().write(output);
+
+        if (StringUtils.isNotEmpty(output)) {
+          if (getUiLibraryCacheService() != null && performCache) {
+            try {
+              getUiLibraryCacheService().cacheUiLibraryScripts(uiFramework.getTheme(selectors[1]),
+                  isMinified(request));
+            } catch (final CacheBuilderException e) {
+              LOG.warn("Unable to build UiFramework Cache. {}", e.getMessage());
+            }
+          }
+        }
       } catch (final ResourceNotFoundException | IOException | ChildResourceNotFoundException
                                    | InvalidResourceTypeException exception) {
         LOG.error("Unable to render site level {} response for {}. {}", getScriptType().getName(),
@@ -82,6 +116,10 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
           + "selectors", request.getContextPath());
       response.setStatus(400);
     }
+  }
+
+  boolean isMinified(SlingHttpServletRequest request) {
+    return request.getRequestURI().startsWith("/public/");
   }
 
 }
