@@ -80,11 +80,26 @@ public class ComponentType extends BaseResource {
   public static final String PN_ALLOWED_COMPONENT_TYPES = "allowedComponentTypes";
   public static final String PN_ALLOW_LIBS_KESTROS_COMMONS = "allowLibsCommons";
 
+  @Override
+  @Property(description = "Path to the extended ComponentType. Baseline components should extend "
+                          + "the Kestros Parent ComponentType",
+            jcrPropertyName = "sling:resourceSuperType",
+            defaultValue = "",
+            sampleValue = "kestros/commons/components/kestros-parent",
+            configurable = true)
+  public String getResourceSuperType() {
+    return super.getResourceSuperType();
+  }
+
   /**
    * Group the current ComponentType belongs to. Set by the componentGroup property.
    *
    * @return Group the current ComponentType belongs to.
    */
+  @Property(description = "Group the component belongs to.",
+            jcrPropertyName = PN_COMPONENT_GROUP,
+            defaultValue = "",
+            configurable = true)
   public String getComponentGroup() {
     return getProperties().get(PN_COMPONENT_GROUP, StringUtils.EMPTY);
   }
@@ -152,8 +167,14 @@ public class ComponentType extends BaseResource {
     throw new InvalidCommonUiFrameworkException(getPath());
   }
 
-  @Property(description = "")
-  boolean isBypassUiFrameworks() {
+  @Property(description = "Whether the ComponentType is allowed to bypass validators that check "
+                          + "if the ComponentType has views for all UiFrameworks, or a view for "
+                          + "common.",
+            jcrPropertyName = "bypassUiFrameworks",
+            defaultValue = "false",
+            configurable = true,
+            sampleValue = "false")
+  public boolean isBypassUiFrameworks() {
     return getProperties().get("bypassUiFrameworks", Boolean.FALSE);
   }
 
@@ -274,6 +295,11 @@ public class ComponentType extends BaseResource {
    *
    * @return Font Awesome Icon class.
    */
+  @Property(description = "Font awesome icon class, used in the Kestros Site Admin UI",
+            jcrPropertyName = "fontAwesomeIcon",
+            defaultValue = "fa fa-cube",
+            configurable = true,
+            sampleValue = "fa fa-cube")
   public String getFontAwesomeIcon() {
     String fontAwesomeIcon = getProperty("fontAwesomeIcon", StringUtils.EMPTY);
     if (StringUtils.isBlank(fontAwesomeIcon)) {
@@ -382,4 +408,6 @@ public class ComponentType extends BaseResource {
              InvalidCommonUiFrameworkException {
     return this.getComponentSuperType().getScript(scriptName, uiFramework);
   }
+
+
 }
