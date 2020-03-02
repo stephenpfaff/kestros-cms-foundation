@@ -127,6 +127,10 @@ public class BaseContentPage extends BasePage {
    *
    * @return Metadata title. Defaults to display title.
    */
+  @Property(description = "Metadata title. Defaults to display title.",
+            jcrPropertyName = "metaTitle",
+            defaultValue = "",
+            configurable = true)
   public String getMetaTitle() {
     return getProperties().get("metaTitle", getDisplayTitle());
   }
@@ -136,6 +140,10 @@ public class BaseContentPage extends BasePage {
    *
    * @return Description to be used in a page's meta description tag.
    */
+  @Property(description = "Description to be used in a page's meta description tag",
+            jcrPropertyName = "metaDescription",
+            defaultValue = "",
+            configurable = true)
   public String getMetaDescription() {
     return getProperties().get("metaDescription", getDescription());
   }
@@ -171,6 +179,10 @@ public class BaseContentPage extends BasePage {
    */
   @Nullable
   @JsonIgnore
+  @Property(description = "Theme currently applied to the page.",
+            jcrPropertyName = "kes:theme",
+            defaultValue = "",
+            configurable = true)
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
     return themeProviderService.getThemeForPage(this);
   }
@@ -400,6 +412,11 @@ public class BaseContentPage extends BasePage {
    * @return Font Awesome Icon class.
    */
   @JsonIgnore
+  @Property(description = "Font awesome icon class, used in the Kestros Site Admin UI",
+            jcrPropertyName = "fontAwesomeIcon",
+            defaultValue = "fa fa-file",
+            configurable = true,
+            sampleValue = "fa fa-file")
   public String getFontAwesomeIcon() {
     try {
       final String fontAwesomeIcon = getComponentType().getFontAwesomeIcon();

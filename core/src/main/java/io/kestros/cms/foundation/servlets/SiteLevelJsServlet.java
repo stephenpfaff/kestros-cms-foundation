@@ -21,9 +21,13 @@ package io.kestros.cms.foundation.servlets;
 import static io.kestros.commons.uilibraries.filetypes.ScriptType.JAVASCRIPT;
 
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
+import io.kestros.commons.uilibraries.services.cache.UiLibraryCacheService;
 import javax.servlet.Servlet;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * <p>
@@ -40,6 +44,15 @@ import org.osgi.service.component.annotations.Component;
 public class SiteLevelJsServlet extends SiteLevelScriptServlet {
 
   private static final long serialVersionUID = -372985760220947749L;
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private UiLibraryCacheService uiLibraryCacheService;
+
+  @Override
+  public UiLibraryCacheService getUiLibraryCacheService() {
+    return uiLibraryCacheService;
+  }
 
   @Override
   public ScriptType getScriptType() {

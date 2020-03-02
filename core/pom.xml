@@ -45,12 +45,12 @@
     <!-- Kestros Commons Dependencies -->
     <dependency>
       <groupId>io.kestros.commons</groupId>
-      <artifactId>structured-sling-models</artifactId>
+      <artifactId>kestros-structured-sling-models</artifactId>
     </dependency>
 
     <dependency>
       <groupId>io.kestros.commons</groupId>
-      <artifactId>ui-libraries-core</artifactId>
+      <artifactId>kestros-sling-ui-libraries-core</artifactId>
     </dependency>
 
     <dependency>

@@ -27,7 +27,7 @@ Foundational logic for the Kestros CMS. Contains all the models, scripts, and ba
 
 ## UI Frameworks
 
-UI Frameworks provide CSS and JS libraries to a site by compiling from reusable `VendorLibraries`, one-off `ComponentUiFrameworkView` scripts, and and its own contained scripts.
+UI Frameworks provide CSS and JS libraries to a site by compiling scripts from reusable `VendorLibraries`, one-off `ComponentUiFrameworkView` scripts, and and its own contained scripts.
 
 ### Creating a new UiFramework
 
