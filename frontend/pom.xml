@@ -45,24 +45,6 @@
       <plugin>
         <groupId>org.apache.jackrabbit</groupId>
         <artifactId>filevault-package-maven-plugin</artifactId>
-        <version>1.0.3</version>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate-metadata</goal>
-              <goal>package</goal>
-              <goal>analyze-classes</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <packageType>mixed</packageType>
-          <failOnMissingEmbed>true</failOnMissingEmbed>
-          <accessControlHandling>merge</accessControlHandling>
-          <allowIndexDefinitions>true</allowIndexDefinitions>
-          <filterSource>${basedir}/src/content/META-INF/vault/filter.xml</filterSource>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.sling</groupId>
