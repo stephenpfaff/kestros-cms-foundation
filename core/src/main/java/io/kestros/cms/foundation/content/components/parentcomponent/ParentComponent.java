@@ -122,20 +122,27 @@ public class ParentComponent extends BaseComponent {
   }
 
   /**
-   * Applied ComponentVariation names, to be read by the HTML class attribute.
+   * Applied ComponentVariation names, to be read by the HTML class attribute. Only variations to be
+   * applied on the component's wrapper div are included.
    *
-   * @return Applied ComponentVariation names.
+   * @return Applied ComponentVariation names.  Only variations to be applied on the component's
+   *     wrapper div are included.
    */
   @Nonnull
-  public String getAppliedVariationsAsString() {
-    LOG.trace("Getting Applied Variations as String.");
-    final StringBuilder variationsStringBuffer = new StringBuilder();
+  public String getAppliedWrapperVariationsAsString() {
+    LOG.trace("Getting applied wrapper variations as String.");
+    final StringBuilder variationsStringBuilder = new StringBuilder();
     for (final ComponentVariation variation : getAppliedVariations()) {
-      variationsStringBuffer.append(variation.getName());
-      variationsStringBuffer.append(" ");
+      if (!variation.isInlineVariation()) {
+        variationsStringBuilder.append(variation.getName());
+        variationsStringBuilder.append(" ");
+      }
     }
-    LOG.trace("Retrieved AppliedVariations as string.");
-    return variationsStringBuffer.toString();
+    if (variationsStringBuilder.length() > 1) {
+      variationsStringBuilder.setLength(variationsStringBuilder.length() - 1);
+    }
+    LOG.trace("Retrieved applied wrapper variations as string.");
+    return variationsStringBuilder.toString();
   }
 
   /**
@@ -167,6 +174,7 @@ public class ParentComponent extends BaseComponent {
 
     return appliedVariations;
   }
+
 
   /**
    * The current {@link Theme} for the current Page/Component.

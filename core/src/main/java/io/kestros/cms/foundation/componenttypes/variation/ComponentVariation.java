@@ -18,6 +18,7 @@
 
 package io.kestros.cms.foundation.componenttypes.variation;
 
+import io.kestros.commons.structuredslingmodels.annotation.Property;
 import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
 import io.kestros.commons.uilibraries.UiLibrary;
 import org.apache.sling.api.resource.Resource;
@@ -35,5 +36,23 @@ import org.apache.sling.models.annotations.Model;
 @Model(adaptables = Resource.class,
        resourceType = "kes:ComponentVariation")
 public class ComponentVariation extends UiLibrary {
+
+  /**
+   * Whether the variation must be included in a componentTypes's content script. When false, the
+   * variation's class will be added to a component's wrapper div.
+   *
+   * @return Whether the variation must be included in a componentTypes's content script. When
+   *     false, the variation's class will be added to a component's wrapper div.
+   */
+  @Property(description = "When set to true, the variation will not be added to a component's "
+                          + "wrapper div when applied, and must be included in the component's "
+                          + "content script using appliedInlineVariationsAsString.",
+            jcrPropertyName = "inline",
+            configurable = true,
+            defaultValue = "false",
+            sampleValue = "false")
+  public boolean isInlineVariation() {
+    return getProperty("inline", false);
+  }
 
 }
