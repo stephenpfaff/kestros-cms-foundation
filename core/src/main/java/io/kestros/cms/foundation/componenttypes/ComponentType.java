@@ -159,7 +159,8 @@ public class ComponentType extends BaseResource {
       if (commonView != null) {
         return commonView;
       }
-    } catch (InvalidResourceTypeException | ResourceNotFoundException | ChildResourceNotFoundException e) {
+    } catch (InvalidResourceTypeException | ResourceNotFoundException
+                         | ChildResourceNotFoundException e) {
       LOG.debug("Unable to retrieve common UI Framework View for {}. {}", getPath(),
           e.getMessage());
     }

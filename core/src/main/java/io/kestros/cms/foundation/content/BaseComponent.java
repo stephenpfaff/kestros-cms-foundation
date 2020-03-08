@@ -18,6 +18,7 @@
 
 package io.kestros.cms.foundation.content;
 
+import static io.kestros.cms.foundation.utils.JcrPropertyUtils.getRelativeDate;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.adaptTo;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
@@ -25,15 +26,21 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsClosestType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 import static org.apache.jackrabbit.JcrConstants.JCR_CONTENT;
+import static org.apache.jackrabbit.JcrConstants.NT_UNSTRUCTURED;
+import static org.apache.sling.jcr.resource.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
+import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
+import io.kestros.cms.foundation.utils.RelativeDate;
+import io.kestros.cms.user.KestrosUser;
+import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
@@ -44,12 +51,18 @@ import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionExceptio
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.apache.sling.models.annotations.Exporter;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.Optional;
@@ -240,13 +253,11 @@ public class BaseComponent extends BaseResource {
   @KestrosProperty(description = "All applied inline variation CSS classes")
   @Nonnull
   public String getAppliedInlineVariationsAsString() {
-    LOG.
-           trace("Getting applied inline variations as String.");
+    LOG.trace("Getting applied inline variations as String.");
     final StringBuilder variationsStringBuilder = new StringBuilder();
     ParentComponent parentComponent = getResource().adaptTo(ParentComponent.class);
     if (parentComponent != null) {
-      for (final ComponentVariation variation : parentComponent.
-                                                                   getAppliedVariations()) {
+      for (final ComponentVariation variation : parentComponent.getAppliedVariations()) {
         if (variation.isInlineVariation()) {
           variationsStringBuilder.append(variation.getName());
           variationsStringBuilder.append(" ");
