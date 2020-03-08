@@ -44,13 +44,14 @@ public class ComponentVariation extends UiLibrary {
    * @return Whether the variation must be included in a componentTypes's content script. When
    *     false, the variation's class will be added to a component's wrapper div.
    */
-  @KestrosProperty(description = "When set to true, the variation will not be added to a component's "
-                          + "wrapper div when applied, and must be included in the component's "
-                          + "content script using appliedInlineVariationsAsString.",
-            jcrPropertyName = "inline",
-            configurable = true,
-            defaultValue = "false",
-            sampleValue = "false")
+  @KestrosProperty(description =
+                       "When set to true, the variation will not be added to a component's "
+                       + "wrapper div when applied, and must be included in the component's "
+                       + "content script using appliedInlineVariationsAsString.",
+                   jcrPropertyName = "inline",
+                   configurable = true,
+                   defaultValue = "false",
+                   sampleValue = "false")
   public boolean isInlineVariation() {
     return getProperty("inline", false);
   }

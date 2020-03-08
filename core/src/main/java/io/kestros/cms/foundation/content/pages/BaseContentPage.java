@@ -49,8 +49,8 @@ import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;
 import io.kestros.commons.structuredslingmodels.BasePage;
-import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -78,9 +78,9 @@ import org.slf4j.LoggerFactory;
  */
 @KestrosModel(validationService = BaseContentPageValidationService.class,
               docPaths = {"/content/guide-articles/kestros/site-management/creating-pages",
-                     "/content/guide-articles/kestros/site-management/editing-page-properties",
-                     "/content/guide-articles/kestros/site-management/creating-components",
-                     "/content/guide-articles/kestros/getting-started/understanding-validation"})
+                  "/content/guide-articles/kestros/site-management/editing-page-properties",
+                  "/content/guide-articles/kestros/site-management/creating-components",
+                  "/content/guide-articles/kestros/getting-started/understanding-validation"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:Page")
 @Exporter(name = "jackson",
