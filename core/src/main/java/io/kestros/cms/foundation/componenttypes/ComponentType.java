@@ -34,8 +34,8 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewExcep
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.utils.DesignUtils;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.Property;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -56,8 +56,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Model for resource that will be implemented by Components via sling:resourceType property.
  */
-@StructuredModel(validationService = ComponentTypeValidationService.class,
-                 docPaths = {
+@KestrosModel(validationService = ComponentTypeValidationService.class,
+              docPaths = {
                      "/content/guide-articles/kestros/components/creating-new-component-types",
                      "/content/guide-articles/kestros/components/implementing-ui-framework-views",
                      "/content/guide-articles/kestros/components/defining-content-areas",
@@ -81,12 +81,12 @@ public class ComponentType extends BaseResource {
   public static final String PN_ALLOW_LIBS_KESTROS_COMMONS = "allowLibsCommons";
 
   @Override
-  @Property(description = "Path to the extended ComponentType. Baseline components should extend "
-                          + "the Kestros Parent ComponentType",
-            jcrPropertyName = "sling:resourceSuperType",
-            defaultValue = "",
-            sampleValue = "kestros/commons/components/kestros-parent",
-            configurable = true)
+  @KestrosProperty(description = "Path to the extended ComponentType. Baseline components should extend "
+                                 + "the Kestros Parent ComponentType",
+                   jcrPropertyName = "sling:resourceSuperType",
+                   defaultValue = "",
+                   sampleValue = "kestros/commons/components/kestros-parent",
+                   configurable = true)
   public String getResourceSuperType() {
     return super.getResourceSuperType();
   }
@@ -96,10 +96,10 @@ public class ComponentType extends BaseResource {
    *
    * @return Group the current ComponentType belongs to.
    */
-  @Property(description = "Group the component belongs to.",
-            jcrPropertyName = PN_COMPONENT_GROUP,
-            defaultValue = "",
-            configurable = true)
+  @KestrosProperty(description = "Group the component belongs to.",
+                   jcrPropertyName = PN_COMPONENT_GROUP,
+                   defaultValue = "",
+                   configurable = true)
   public String getComponentGroup() {
     return getProperties().get(PN_COMPONENT_GROUP, StringUtils.EMPTY);
   }
@@ -167,13 +167,13 @@ public class ComponentType extends BaseResource {
     throw new InvalidCommonUiFrameworkException(getPath());
   }
 
-  @Property(description = "Whether the ComponentType is allowed to bypass validators that check "
-                          + "if the ComponentType has views for all UiFrameworks, or a view for "
-                          + "common.",
-            jcrPropertyName = "bypassUiFrameworks",
-            defaultValue = "false",
-            configurable = true,
-            sampleValue = "false")
+  @KestrosProperty(description = "Whether the ComponentType is allowed to bypass validators that check "
+                                 + "if the ComponentType has views for all UiFrameworks, or a view for "
+                                 + "common.",
+                   jcrPropertyName = "bypassUiFrameworks",
+                   defaultValue = "false",
+                   configurable = true,
+                   sampleValue = "false")
   public boolean isBypassUiFrameworks() {
     return getProperties().get("bypassUiFrameworks", Boolean.FALSE);
   }
@@ -295,11 +295,11 @@ public class ComponentType extends BaseResource {
    *
    * @return Font Awesome Icon class.
    */
-  @Property(description = "Font awesome icon class, used in the Kestros Site Admin UI",
-            jcrPropertyName = "fontAwesomeIcon",
-            defaultValue = "fa fa-cube",
-            configurable = true,
-            sampleValue = "fa fa-cube")
+  @KestrosProperty(description = "Font awesome icon class, used in the Kestros Site Admin UI",
+                   jcrPropertyName = "fontAwesomeIcon",
+                   defaultValue = "fa fa-cube",
+                   configurable = true,
+                   sampleValue = "fa fa-cube")
   public String getFontAwesomeIcon() {
     String fontAwesomeIcon = getProperty("fontAwesomeIcon", StringUtils.EMPTY);
     if (StringUtils.isBlank(fontAwesomeIcon)) {

@@ -18,7 +18,7 @@
 
 package io.kestros.cms.foundation.componenttypes.variation;
 
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.uilibraries.UiLibrary;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
@@ -26,7 +26,7 @@ import org.apache.sling.models.annotations.Model;
 /**
  * Style variation types for ComponentUiFrameworkViews.
  */
-@StructuredModel(docPaths = {
+@KestrosModel(docPaths = {
     "/content/guide-articles/kestros-cms/foundation/creating-new-component-types",
     "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",
     "/content/guide-articles/kestros-cms/foundation/defining-content-areas",

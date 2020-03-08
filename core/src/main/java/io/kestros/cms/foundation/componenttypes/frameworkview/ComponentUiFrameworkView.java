@@ -27,7 +27,7 @@ import io.kestros.cms.foundation.componenttypes.HtmlFile;
 import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -45,8 +45,8 @@ import org.slf4j.LoggerFactory;
  * Component view that is specific to a single UiFramework.  Created as a child resource to
  * ComponentTypes.
  */
-@StructuredModel(validationService = ComponentUiFrameworkViewValidationService.class,
-                 docPaths = {
+@KestrosModel(validationService = ComponentUiFrameworkViewValidationService.class,
+              docPaths = {
                      "/content/guide-articles/kestros-cms/site-building/implementing-ui-framework"
                      + "-views",
                      "/content/guide-articles/kestros-cms/site-building/creating-new-component"

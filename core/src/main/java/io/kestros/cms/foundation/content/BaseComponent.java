@@ -41,8 +41,8 @@ import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.Property;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.MatchingResourceTypeNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -72,7 +72,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Baseline Component implementation, meant to be extended by other Components.
  */
-@StructuredModel(docPaths = {"/content/guide-articles/kestros/site-management/creating-components",
+@KestrosModel(docPaths = {"/content/guide-articles/kestros/site-management/creating-components",
     "/content/guide-articles/kestros/site-management/editing-components",
     "/content/guide-articles/kestros/getting-started/understanding-validation"})
 @Model(adaptables = Resource.class,
@@ -145,8 +145,8 @@ public class BaseComponent extends BaseResource {
    *     Component.
    */
   @JsonIgnore
-  @Property(description = "Page that the current Component lives on.  If referenced from another "
-                          + "page, will show its real parent.")
+  @KestrosProperty(description = "Page that the current Component lives on.  If referenced from another "
+                                 + "page, will show its real parent.")
   @Nonnull
   public BaseContentPage getContainingPage() throws NoValidAncestorException {
     LOG.trace("Getting containing Page for {}", getPath());
@@ -187,7 +187,7 @@ public class BaseComponent extends BaseResource {
    * @param <T> extends BaseComponent.
    * @return All child Components.
    */
-  @Property(description = "Direct child Components.")
+  @KestrosProperty(description = "Direct child Components.")
   @JsonInclude(Include.NON_EMPTY)
   public <T extends BaseComponent> List<T> getChildren() {
     final List<T> children = new ArrayList<>();
@@ -232,7 +232,7 @@ public class BaseComponent extends BaseResource {
    * @param <T> Extends BaseComponent.
    * @return All descendent components, as their closest matching SlingModel.
    */
-  @Property(description = "All descendant Components.")
+  @KestrosProperty(description = "All descendant Components.")
   @JsonIgnore
   public <T extends BaseComponent> List<T> getAllDescendantComponents() {
     final List<T> descendantComponents = new ArrayList<>();
