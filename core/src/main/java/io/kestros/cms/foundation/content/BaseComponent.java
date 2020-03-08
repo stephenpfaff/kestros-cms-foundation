@@ -33,6 +33,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
+import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
+import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
@@ -246,6 +248,26 @@ public class BaseComponent extends BaseResource {
 
     return descendantComponents;
   }
+
+  @Property(description = "All applied inline variation CSS classes")
+  @Nonnull
+  public String getAppliedInlineVariationsAsString() {
+    LOG.trace("Getting applied inline variations as String.");
+    final StringBuilder variationsStringBuilder = new StringBuilder();
+    ParentComponent parentComponent = getResource().adaptTo(ParentComponent.class);
+    if (parentComponent != null) {
+      for (final ComponentVariation variation : parentComponent.getAppliedVariations()) {
+        if (variation.isInlineVariation()) {
+          variationsStringBuilder.append(variation.getName());
+          variationsStringBuilder.append(" ");
+        }
+      }
+    }
+    variationsStringBuilder.setLength(variationsStringBuilder.length() - 1);
+    LOG.trace("Retrieved applied inline variations as string.");
+    return variationsStringBuilder.toString();
+  }
+
 
   /**
    * The current component's path, with characters escaped.
