@@ -30,7 +30,7 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewExcep
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * Provides logic for dynamic script resolution, component variations and HTML attributes to the
  * kestros-parent wrapper component.
  */
-@StructuredModel(docPaths = {
+@KestrosModel(docPaths = {
     "/content/guide-articles/kestros-cms/foundation/extending-the-parent-component",
     "/content/guide-articles/kestros-cms/foundation/creating-new-component-types",
     "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",

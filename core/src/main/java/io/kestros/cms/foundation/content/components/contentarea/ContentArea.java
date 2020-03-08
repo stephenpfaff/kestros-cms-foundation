@@ -19,7 +19,7 @@
 package io.kestros.cms.foundation.content.components.contentarea;
 
 import io.kestros.cms.foundation.content.BaseComponent;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
@@ -29,7 +29,7 @@ import org.apache.sling.models.annotations.Model;
  * resource, it will attempt to create itself, and assign the proper sling:resourceType property
  * value.
  */
-@StructuredModel(docPaths = {
+@KestrosModel(docPaths = {
     "/content/guide-articles/kestros-cms/site-building/defining-content-areas"})
 @Model(adaptables = Resource.class,
        resourceType = "kestros/commons/components/content-area")

@@ -18,8 +18,8 @@
 
 package io.kestros.cms.foundation.componenttypes.variation;
 
-import io.kestros.commons.structuredslingmodels.annotation.Property;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.uilibraries.UiLibrary;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
@@ -27,7 +27,7 @@ import org.apache.sling.models.annotations.Model;
 /**
  * Style variation types for ComponentUiFrameworkViews.
  */
-@StructuredModel(docPaths = {
+@KestrosModel(docPaths = {
     "/content/guide-articles/kestros-cms/foundation/creating-new-component-types",
     "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",
     "/content/guide-articles/kestros-cms/foundation/defining-content-areas",
@@ -44,7 +44,7 @@ public class ComponentVariation extends UiLibrary {
    * @return Whether the variation must be included in a componentTypes's content script. When
    *     false, the variation's class will be added to a component's wrapper div.
    */
-  @Property(description = "When set to true, the variation will not be added to a component's "
+  @KestrosProperty(description = "When set to true, the variation will not be added to a component's "
                           + "wrapper div when applied, and must be included in the component's "
                           + "content script using appliedInlineVariationsAsString.",
             jcrPropertyName = "inline",
