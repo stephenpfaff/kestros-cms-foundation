@@ -34,8 +34,8 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewExcep
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.utils.DesignUtils;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -57,12 +57,11 @@ import org.slf4j.LoggerFactory;
  * Model for resource that will be implemented by Components via sling:resourceType property.
  */
 @KestrosModel(validationService = ComponentTypeValidationService.class,
-              docPaths = {
-                     "/content/guide-articles/kestros/components/creating-new-component-types",
-                     "/content/guide-articles/kestros/components/implementing-ui-framework-views",
-                     "/content/guide-articles/kestros/components/defining-content-areas",
-                     "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
-                     "/content/guide-articles/kestros-cms/foundation/grouping-components"})
+              docPaths = {"/content/guide-articles/kestros/components/creating-new-component-types",
+                  "/content/guide-articles/kestros/components/implementing-ui-framework-views",
+                  "/content/guide-articles/kestros/components/defining-content-areas",
+                  "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
+                  "/content/guide-articles/kestros-cms/foundation/grouping-components"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:ComponentType")
 @Exporter(name = "jackson",
@@ -81,8 +80,9 @@ public class ComponentType extends BaseResource {
   public static final String PN_ALLOW_LIBS_KESTROS_COMMONS = "allowLibsCommons";
 
   @Override
-  @KestrosProperty(description = "Path to the extended ComponentType. Baseline components should extend "
-                                 + "the Kestros Parent ComponentType",
+  @KestrosProperty(description =
+                       "Path to the extended ComponentType. Baseline components should extend "
+                       + "the Kestros Parent ComponentType",
                    jcrPropertyName = "sling:resourceSuperType",
                    defaultValue = "",
                    sampleValue = "kestros/commons/components/kestros-parent",
@@ -167,9 +167,10 @@ public class ComponentType extends BaseResource {
     throw new InvalidCommonUiFrameworkException(getPath());
   }
 
-  @KestrosProperty(description = "Whether the ComponentType is allowed to bypass validators that check "
-                                 + "if the ComponentType has views for all UiFrameworks, or a view for "
-                                 + "common.",
+  @KestrosProperty(description =
+                       "Whether the ComponentType is allowed to bypass validators that check "
+                       + "if the ComponentType has views for all UiFrameworks, or a view for "
+                       + "common.",
                    jcrPropertyName = "bypassUiFrameworks",
                    defaultValue = "false",
                    configurable = true,

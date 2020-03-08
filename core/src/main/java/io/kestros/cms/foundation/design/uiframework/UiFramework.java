@@ -39,8 +39,8 @@ import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.cache.htltemplate.HtlTemplateCacheService;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -70,10 +70,9 @@ import org.slf4j.LoggerFactory;
  * to it, and ComponentUiFrameworkViews that match its framework code.
  */
 @KestrosModel(validationService = UiFrameworkValidationService.class,
-              docPaths = {
-                     "/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework",
-                     "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
-                     "/content/guide-articles/kestros/ui-frameworks/creating-themes"})
+              docPaths = {"/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework",
+                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
+                  "/content/guide-articles/kestros/ui-frameworks/creating-themes"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:UiFramework")
 @Exporter(name = "jackson",
@@ -95,8 +94,9 @@ public class UiFramework extends UiLibrary {
    * @return Unique code associated with the current UiFramework.
    */
   @Nonnull
-  @KestrosProperty(description = "Unique code associated with the current UiFramework. ComponentTypes "
-                                 + "use this to render the proper content script.",
+  @KestrosProperty(description =
+                       "Unique code associated with the current UiFramework. ComponentTypes "
+                       + "use this to render the proper content script.",
                    jcrPropertyName = PN_UI_FRAMEWORK_CODE,
                    defaultValue = "common",
                    configurable = true)
@@ -110,7 +110,8 @@ public class UiFramework extends UiLibrary {
    * @return All Vendor Libraries compiled into the current UiFramework.
    */
   @Nonnull
-  @KestrosProperty(description = "All Vendor Libraries that are to be compiled into the UiFramework",
+  @KestrosProperty(description = "All Vendor Libraries that are to be compiled into the "
+                                 + "UiFramework",
                    defaultValue = "[]")
   public List<VendorLibrary> getVendorLibraries() {
     final List<VendorLibrary> vendorLibraries = new ArrayList<>();

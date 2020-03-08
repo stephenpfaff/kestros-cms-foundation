@@ -43,8 +43,8 @@ import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.MatchingResourceTypeNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -147,8 +147,9 @@ public class BaseComponent extends BaseResource {
    *     Component.
    */
   @JsonIgnore
-  @KestrosProperty(description = "Page that the current Component lives on.  If referenced from another "
-                                 + "page, will show its real parent.")
+  @KestrosProperty(description =
+                       "Page that the current Component lives on.  If referenced from another "
+                       + "page, will show its real parent.")
   @Nonnull
   public BaseContentPage getContainingPage() throws NoValidAncestorException {
     LOG.trace("Getting containing Page for {}", getPath());
@@ -249,7 +250,7 @@ public class BaseComponent extends BaseResource {
     return descendantComponents;
   }
 
-  @Property(description = "All applied inline variation CSS classes")
+  @KestrosProperty(description = "All applied inline variation CSS classes")
   @Nonnull
   public String getAppliedInlineVariationsAsString() {
     LOG.trace("Getting applied inline variations as String.");
@@ -267,7 +268,6 @@ public class BaseComponent extends BaseResource {
     LOG.trace("Retrieved applied inline variations as string.");
     return variationsStringBuilder.toString();
   }
-
 
   /**
    * The current component's path, with characters escaped.
@@ -347,7 +347,7 @@ public class BaseComponent extends BaseResource {
             getPath());
       }
     } catch (final PersistenceException exception) {
-      LOG.error("Unable to create ContentArea resource {} due to persistence exception.",
+      LOG.error("Unable to create ContentArea resource {} due to persistence" + " exception.",
           getPath());
     }
   }
