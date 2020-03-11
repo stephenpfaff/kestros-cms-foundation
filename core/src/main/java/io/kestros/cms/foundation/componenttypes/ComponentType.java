@@ -32,6 +32,7 @@ import io.kestros.cms.foundation.exceptions.InvalidCommonUiFrameworkException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
+import io.kestros.cms.foundation.services.scriptprovider.CachedScriptProviderService;
 import io.kestros.cms.foundation.utils.DesignUtils;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
@@ -50,6 +51,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Exporter;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.Optional;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +66,8 @@ import org.slf4j.LoggerFactory;
                   "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
                   "/content/guide-articles/kestros-cms/foundation/grouping-components"})
 @Model(adaptables = Resource.class,
-       resourceType = "kes:ComponentType")
+       resourceType = "kes:ComponentType",
+       cache = true)
 @Exporter(name = "jackson",
           selector = "component-type",
           extensions = "json")
@@ -78,6 +82,14 @@ public class ComponentType extends BaseResource {
   public static final String PN_EXCLUDED_COMPONENT_TYPES = "excludedComponentTypes";
   public static final String PN_ALLOWED_COMPONENT_TYPES = "allowedComponentTypes";
   public static final String PN_ALLOW_LIBS_KESTROS_COMMONS = "allowLibsCommons";
+
+  @OSGiService
+  @Optional
+  private CachedScriptProviderService cachedScriptProviderService;
+
+  private List<ComponentUiFrameworkView> componentUiFrameworkViews;
+
+  private ComponentUiFrameworkView commonUiFrameworkView;
 
   @Override
   @KestrosProperty(description =
@@ -137,11 +149,16 @@ public class ComponentType extends BaseResource {
   public ComponentUiFrameworkView getCommonUiFrameworkView()
       throws InvalidCommonUiFrameworkException {
 
+    if (this.commonUiFrameworkView != null) {
+      return this.commonUiFrameworkView;
+    }
+
     try {
       final ComponentUiFrameworkView commonUiFrameworkView = getChildAsBaseResource(
           COMMON_UI_FRAMEWORK_VIEW_NAME, this).getResource().adaptTo(
           ComponentUiFrameworkView.class);
       if (commonUiFrameworkView != null) {
+        this.commonUiFrameworkView = commonUiFrameworkView;
         return commonUiFrameworkView;
       }
     } catch (final Exception exception) {
@@ -157,6 +174,7 @@ public class ComponentType extends BaseResource {
       ComponentUiFrameworkView commonView = getChildAsBaseResource(COMMON_UI_FRAMEWORK_VIEW_NAME,
           libsComponentType).getResource().adaptTo(ComponentUiFrameworkView.class);
       if (commonView != null) {
+        this.commonUiFrameworkView = commonView;
         return commonView;
       }
     } catch (InvalidResourceTypeException | ResourceNotFoundException
@@ -187,6 +205,9 @@ public class ComponentType extends BaseResource {
   @JsonIgnore
   @Nonnull
   public List<ComponentUiFrameworkView> getUiFrameworkViews() {
+    if (this.componentUiFrameworkViews != null) {
+      return this.componentUiFrameworkViews;
+    }
     final List<ComponentUiFrameworkView> uiFrameworkViews = new ArrayList<>();
 
     for (final BaseResource uiFrameworkViewResource : getChildrenAsBaseResource(this)) {
@@ -197,7 +218,8 @@ public class ComponentType extends BaseResource {
       }
     }
 
-    return uiFrameworkViews;
+    this.componentUiFrameworkViews = uiFrameworkViews;
+    return this.componentUiFrameworkViews;
   }
 
   /**
@@ -239,6 +261,7 @@ public class ComponentType extends BaseResource {
   @Nonnull
   public ComponentUiFrameworkView getComponentUiFrameworkView(
       @Nonnull final UiFramework uiFramework) throws InvalidComponentUiFrameworkViewException {
+
     try {
       return DesignUtils.getComponentUiFrameworkView(uiFramework.getFrameworkCode(), this);
 
