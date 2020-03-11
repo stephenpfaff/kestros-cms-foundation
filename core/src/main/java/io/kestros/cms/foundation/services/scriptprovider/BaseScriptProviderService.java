@@ -24,6 +24,7 @@ import io.kestros.cms.foundation.content.sites.BaseSite;
 import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -33,6 +34,8 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,10 @@ public class BaseScriptProviderService extends BaseServiceResolverService
 
   @Reference
   ResourceResolverFactory resourceResolverFactory;
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private ComponentViewScriptResolutionCacheService componentViewScriptResolutionCacheService;
 
   @Override
   protected String getServiceUserName() {
@@ -79,7 +86,23 @@ public class BaseScriptProviderService extends BaseServiceResolverService
    */
   public String getScriptPath(ParentComponent parentComponent, final String scriptName,
       SlingHttpServletRequest request) throws InvalidScriptException {
-    LOG.trace("Getting Script Path {}", scriptName);
+    LOG.trace("Retrieving Script Path {}", scriptName);
+
+    if (componentViewScriptResolutionCacheService != null) {
+      try {
+        LOG.trace("Finished retrieving Script Path {}", scriptName);
+        return componentViewScriptResolutionCacheService.getCachedScriptPath(scriptName,
+            parentComponent.getComponentType(), parentComponent.getTheme().getUiFramework());
+      } catch (ModelAdaptionException e) {
+        LOG.warn("Unable to attempt component view script resolution via cache. {}.",
+            e.getMessage());
+      } catch (CacheRetrievalException e) {
+        LOG.debug("Failed to retrieve cached script resolution. {}.", e.getMessage());
+      }
+    } else {
+      LOG.warn(
+          "Unable to attempt component view script resolution via cache. No service registered.");
+    }
 
     Theme theme = null;
     String requestContext = request.getRequestURI().split(".html")[0];
@@ -113,11 +136,20 @@ public class BaseScriptProviderService extends BaseServiceResolverService
       if (theme == null) {
         theme = parentComponent.getTheme();
       }
-      return parentComponent.getComponentType().getScript(scriptName,
+      String resolvedScriptPath = parentComponent.getComponentType().getScript(scriptName,
           theme.getUiFramework()).getPath();
+      componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
+          parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath);
+      LOG.trace("Finished retrieving Script Path {}", scriptName);
+      return resolvedScriptPath;
     } catch (final Exception exception) {
       try {
-        return parentComponent.getComponentType().getScript(scriptName, null).getPath();
+        String resolvedScriptPath = parentComponent.getComponentType().getScript(scriptName,
+            null).getPath();
+        componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
+            parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath);
+        LOG.trace("Finished retrieving Script Path {}", scriptName);
+        return resolvedScriptPath;
       } catch (final ModelAdaptionException exception1) {
         throw new InvalidScriptException(scriptName, exception.getMessage());
       }
