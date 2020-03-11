@@ -78,7 +78,8 @@ import org.slf4j.LoggerFactory;
     "/content/guide-articles/kestros/site-management/editing-components",
     "/content/guide-articles/kestros/getting-started/understanding-validation"})
 @Model(adaptables = Resource.class,
-       resourceType = "sling/servlet/default")
+       resourceType = "sling/servlet/default",
+       cache = true)
 @Exporter(name = "jackson",
           selector = "base-component",
           extensions = "json")
@@ -94,6 +95,9 @@ public class BaseComponent extends BaseResource {
   @OSGiService
   @Optional
   private KestrosUserService userService;
+
+  private BaseContentPage containingPage = null;
+  private ComponentType componentType = null;
 
   /**
    * Initializes the ContentArea component.  Creates the resource if none exists, and assigns
@@ -119,23 +123,38 @@ public class BaseComponent extends BaseResource {
   @Nonnull
   @JsonIgnore
   public ComponentType getComponentType() throws InvalidComponentTypeException {
+    LOG.trace("Retrieving ComponentType for {}", getPath());
+
+    if (this.componentType != null) {
+      LOG.trace("Finished retrieving ComponentType for {}", getPath());
+      return this.componentType;
+    }
+
     final String resourceType = getResourceType();
     try {
-      return getResourceAsType(resourceType, getResourceResolver(), ComponentType.class);
+      this.componentType = getResourceAsType(resourceType, getResourceResolver(),
+          ComponentType.class);
+      LOG.trace("Finished retrieving ComponentType for {}", getPath());
+      return this.componentType;
     } catch (final ResourceNotFoundException | InvalidResourceTypeException e) {
       try {
-        return getResourceAsType("/apps/" + resourceType, getResourceResolver(),
+        LOG.trace("Finished retrieving ComponentType for {}", getPath());
+        this.componentType = getResourceAsType("/apps/" + resourceType, getResourceResolver(),
             ComponentType.class);
+        return this.componentType;
       } catch (final ModelAdaptionException exception1) {
         try {
-          return getResourceAsType("/libs/" + resourceType, getResourceResolver(),
+          LOG.trace("Finished retrieving ComponentType for {}", getPath());
+          this.componentType = getResourceAsType("/libs/" + resourceType, getResourceResolver(),
               ComponentType.class);
+          return this.componentType;
         } catch (final ModelAdaptionException exception2) {
           LOG.warn("Unable to retrieve ComponentType for {}: {}", getPath(),
               exception2.getMessage());
         }
       }
     }
+    LOG.trace("Finished ComponentType for {}, but threw InvalidComponentTypeException", getPath());
     throw new InvalidComponentTypeException(getResourceType());
   }
 
@@ -152,18 +171,24 @@ public class BaseComponent extends BaseResource {
                        + "page, will show its real parent.")
   @Nonnull
   public BaseContentPage getContainingPage() throws NoValidAncestorException {
+
     LOG.trace("Getting containing Page for {}", getPath());
+    if (containingPage != null) {
+      LOG.trace("Finished retrieving containing page for {}", getPath());
+      return this.containingPage;
+    }
     if (getPath().contains(JCR_CONTENT)) {
       LOG.trace("Doing fast page retrieval.");
       try {
-        final BaseContentPage containingPage = getResourceAsType(getPath().split(JCR_CONTENT)[0],
+        this.containingPage = getResourceAsType(getPath().split(JCR_CONTENT)[0],
             getResourceResolver(), BaseContentPage.class);
         LOG.trace("Finished fast page retrieval.");
-        return containingPage;
+        return this.containingPage;
       } catch (final InvalidResourceTypeException exception) {
         try {
-          return getResourceAsType(getPath().split(JCR_CONTENT)[0], getResourceResolver(),
-              BaseSite.class);
+          this.containingPage = getResourceAsType(getPath().split(JCR_CONTENT)[0],
+              getResourceResolver(), BaseSite.class);
+          return this.containingPage;
         } catch (final ModelAdaptionException exception1) {
           LOG.warn("jcr:content found for {}, but could not be adapted to a Page or Site.",
               getPath());
@@ -173,10 +198,13 @@ public class BaseComponent extends BaseResource {
       }
     }
     try {
-      return getFirstAncestorOfType(this, BaseContentPage.class);
+      LOG.trace("Finished retrieving containing page for {}", getPath());
+      this.containingPage = getFirstAncestorOfType(this, BaseContentPage.class);
+      return this.containingPage;
     } catch (final NoValidAncestorException exception) {
       try {
-        return getFirstAncestorOfType(this, BaseSite.class);
+        this.containingPage = getFirstAncestorOfType(this, BaseSite.class);
+        return this.containingPage;
       } catch (final NoValidAncestorException exception1) {
         throw new NoValidAncestorException(getPath(), BaseContentPage.class);
       }
@@ -264,7 +292,9 @@ public class BaseComponent extends BaseResource {
         }
       }
     }
-    variationsStringBuilder.setLength(variationsStringBuilder.length() - 1);
+    if (variationsStringBuilder.length() > 1) {
+      variationsStringBuilder.setLength(variationsStringBuilder.length() - 1);
+    }
     LOG.trace("Retrieved applied inline variations as string.");
     return variationsStringBuilder.toString();
   }
