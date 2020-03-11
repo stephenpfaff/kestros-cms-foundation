@@ -37,6 +37,7 @@ import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.design.vendorlibrary.VendorLibrary;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.cache.htltemplate.HtlTemplateCacheService;
+import io.kestros.cms.foundation.services.componenttypecache.ComponentTypeCache;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
@@ -45,6 +46,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
 import java.io.Serializable;
@@ -74,7 +76,8 @@ import org.slf4j.LoggerFactory;
                   "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
                   "/content/guide-articles/kestros/ui-frameworks/creating-themes"})
 @Model(adaptables = Resource.class,
-       resourceType = "kes:UiFramework")
+       resourceType = "kes:UiFramework",
+       cache = true)
 @Exporter(name = "jackson",
           selector = "ui-framework",
           extensions = "json")
@@ -86,6 +89,10 @@ public class UiFramework extends UiLibrary {
   @OSGiService
   @Optional
   HtlTemplateCacheService htlTemplateCacheService;
+
+  @OSGiService
+  @Optional
+  private ComponentTypeCache componentTypeCache;
 
   /**
    * Unique code associated with the current UiFramework. ComponentTypes use this to render the
@@ -179,8 +186,6 @@ public class UiFramework extends UiLibrary {
       throw new InvalidThemeException(getPath(), "default",
           "Could not adapt to Theme. Resource must have jcr:primaryType 'kes:Theme'.");
     }
-
-
   }
 
   /**
@@ -222,6 +227,7 @@ public class UiFramework extends UiLibrary {
     for (final ComponentUiFrameworkView componentUiFrameworkView : getComponentViews()) {
       output.append(componentUiFrameworkView.getOutput(scriptType, false));
     }
+
     return output.toString();
   }
 
@@ -274,19 +280,10 @@ public class UiFramework extends UiLibrary {
    */
   @Nonnull
   private List<ComponentUiFrameworkView> getComponentViews() {
-
     final List<ComponentUiFrameworkView> componentUiFrameworkViews = new ArrayList<>(
         getAllComponentUiFrameworkViewsInADirectory("/apps"));
-    List<ComponentUiFrameworkView> libsViews = getAllComponentUiFrameworkViewsInADirectory(
-        "/libs/kestros");
-
-    if (libsViews.isEmpty()) {
-      libsViews = getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/addons");
-      libsViews.addAll(getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/components"));
-    }
-
-    componentUiFrameworkViews.addAll(libsViews);
-
+    componentUiFrameworkViews.addAll(
+        getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/components"));
     return componentUiFrameworkViews;
   }
 
@@ -309,9 +306,23 @@ public class UiFramework extends UiLibrary {
 
   @Nonnull
   private List<ComponentType> getAllComponentTypesInDirectory(@Nonnull final String path) {
+    if (componentTypeCache != null
+        && !componentTypeCache.getAllCachedComponentTypePaths().isEmpty()) {
+      return SlingModelUtils.getResourcesAsType(componentTypeCache.getAllCachedComponentTypePaths(),
+          getResourceResolver(), ComponentType.class);
+    }
     try {
       final BaseResource root = getResourceAsType(path, getResourceResolver(), BaseResource.class);
-      return getAllDescendantsOfType(root, ComponentType.class);
+      final List<ComponentType> componentTypeList = getAllDescendantsOfType(root,
+          ComponentType.class);
+      final List<String> componentTypePathList = new ArrayList<>();
+
+      for (ComponentType componentType : componentTypeList) {
+        componentTypePathList.add(componentType.getPath());
+      }
+
+      componentTypeCache.cacheComponentTypePathList(componentTypePathList);
+      return componentTypeList;
     } catch (final ModelAdaptionException exception) {
       LOG.debug(
           "Unable to retrieve resource {} while getting all ComponentType for UiFramework {} due "
