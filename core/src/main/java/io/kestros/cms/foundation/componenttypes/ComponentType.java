@@ -33,6 +33,7 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.services.scriptprovider.CachedScriptProviderService;
+import io.kestros.cms.foundation.utils.ComponentTypeUtils;
 import io.kestros.cms.foundation.utils.DesignUtils;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
@@ -231,6 +232,11 @@ public class ComponentType extends BaseResource {
    */
   @Nonnull
   public List<ComponentTypeGroup> getAllowedComponentTypeGroups() {
+    if (!getAllowedComponentTypePaths().isEmpty()) {
+      return ComponentTypeUtils.getComponentTypeGroupsFromComponentTypeList(
+          SlingModelUtils.getResourcesAsType(getAllowedComponentTypePaths(), getResourceResolver(),
+              ComponentType.class));
+    }
     return getComponentTypeGroups(
         getAllComponentTypes(true, false, isAllowLibsCommonsComponents(), getResourceResolver()),
         getAllowedComponentTypePaths(), getExcludedComponentTypePaths(),
