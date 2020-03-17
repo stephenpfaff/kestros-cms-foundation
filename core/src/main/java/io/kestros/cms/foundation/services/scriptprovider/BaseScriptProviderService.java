@@ -146,8 +146,10 @@ public class BaseScriptProviderService extends BaseServiceResolverService
       try {
         String resolvedScriptPath = parentComponent.getComponentType().getScript(scriptName,
             null).getPath();
-        componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
-            parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath);
+        if (theme != null) {
+          componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
+              parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath);
+        }
         LOG.trace("Finished retrieving Script Path {}", scriptName);
         return resolvedScriptPath;
       } catch (final ModelAdaptionException exception1) {
