@@ -76,8 +76,7 @@ import org.slf4j.LoggerFactory;
                   "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
                   "/content/guide-articles/kestros/ui-frameworks/creating-themes"})
 @Model(adaptables = Resource.class,
-       resourceType = "kes:UiFramework",
-       cache = true)
+       resourceType = "kes:UiFramework")
 @Exporter(name = "jackson",
           selector = "ui-framework",
           extensions = "json")
