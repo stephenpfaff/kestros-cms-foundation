@@ -1,3 +1,21 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.services.scriptprovider;
 
 import io.kestros.cms.foundation.componenttypes.ComponentType;
@@ -8,6 +26,7 @@ import io.kestros.commons.osgiserviceutils.services.cache.ManagedCacheService;
 import io.kestros.commons.osgiserviceutils.services.cache.impl.BaseCacheService;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
@@ -33,8 +52,10 @@ public class CachedScriptProviderService extends BaseCacheService
   }
 
   public void cacheComponentViewScriptPath(String scriptName, ComponentType componentType,
-      UiFramework uiFramework, String resolvedScriptPath) {
-    String cacheKey = uiFramework.getPath() + "::" + componentType.getPath() + "::" + scriptName;
+      UiFramework uiFramework, String resolvedScriptPath, SlingHttpServletRequest request) {
+
+    String cacheKey = request.getRequestURI() + "::" + uiFramework.getPath() + "::"
+                      + componentType.getPath() + "::" + scriptName;
 
     if (componentViewCacheMap.containsKey(cacheKey)) {
       componentViewCacheMap.replace(cacheKey, resolvedScriptPath);
@@ -44,8 +65,9 @@ public class CachedScriptProviderService extends BaseCacheService
 
   @Override
   public String getCachedScriptPath(String scriptName, ComponentType componentType,
-      UiFramework uiFramework) throws CacheRetrievalException {
-    String cacheKey = uiFramework.getPath() + "::" + componentType.getPath() + "::" + scriptName;
+      UiFramework uiFramework, SlingHttpServletRequest request) throws CacheRetrievalException {
+    String cacheKey = request.getRequestURI() + "::" + uiFramework.getPath() + "::"
+                      + componentType.getPath() + "::" + scriptName;
 
     if (componentViewCacheMap.containsKey(cacheKey)) {
       Object cachedScriptValue = componentViewCacheMap.get(cacheKey);

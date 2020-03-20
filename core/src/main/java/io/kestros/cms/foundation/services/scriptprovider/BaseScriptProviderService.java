@@ -92,7 +92,8 @@ public class BaseScriptProviderService extends BaseServiceResolverService
       try {
         LOG.trace("Finished retrieving Script Path {}", scriptName);
         return componentViewScriptResolutionCacheService.getCachedScriptPath(scriptName,
-            parentComponent.getComponentType(), parentComponent.getTheme().getUiFramework());
+            parentComponent.getComponentType(), parentComponent.getTheme().getUiFramework(),
+            request);
       } catch (ModelAdaptionException e) {
         LOG.warn("Unable to attempt component view script resolution via cache. {}.",
             e.getMessage());
@@ -138,17 +139,23 @@ public class BaseScriptProviderService extends BaseServiceResolverService
       }
       String resolvedScriptPath = parentComponent.getComponentType().getScript(scriptName,
           theme.getUiFramework()).getPath();
-      componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
-          parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath);
+      if (componentViewScriptResolutionCacheService != null) {
+        componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
+            parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath,
+            request);
+      }
       LOG.trace("Finished retrieving Script Path {}", scriptName);
       return resolvedScriptPath;
-    } catch (final Exception exception) {
+    } catch (final ModelAdaptionException exception) {
       try {
         String resolvedScriptPath = parentComponent.getComponentType().getScript(scriptName,
             null).getPath();
         if (theme != null) {
-          componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
-              parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath);
+          if (componentViewScriptResolutionCacheService != null) {
+            componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
+                parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath,
+                request);
+          }
         }
         LOG.trace("Finished retrieving Script Path {}", scriptName);
         return resolvedScriptPath;
