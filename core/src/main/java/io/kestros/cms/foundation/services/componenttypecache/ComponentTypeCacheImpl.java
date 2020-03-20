@@ -1,10 +1,29 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.services.componenttypecache;
 
 import io.kestros.commons.osgiserviceutils.exceptions.CachePurgeException;
 import io.kestros.commons.osgiserviceutils.services.cache.ManagedCacheService;
 import io.kestros.commons.osgiserviceutils.services.cache.impl.BaseCacheService;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
@@ -14,21 +33,27 @@ import org.osgi.service.component.annotations.Component;
            property = "service.ranking:Integer=100")
 public class ComponentTypeCacheImpl extends BaseCacheService implements ComponentTypeCache {
 
-  private List<String> componentTypePathList = new ArrayList<>();
+  private static final long serialVersionUID = -7190437579645105257L;
+
+  private Map<String, List<String>> componentTypePathList = new HashMap<>();
 
   @Override
-  public List<String> getAllCachedComponentTypePaths() {
+  public Map<String, List<String>> getAllCachedComponentTypePaths() {
     return this.componentTypePathList;
   }
 
   @Override
-  public void cacheComponentTypePathList(List<String> componentTypePathList) {
-    this.componentTypePathList = componentTypePathList;
+  public void cacheComponentTypePathList(String rootPath, List<String> componentTypePathList) {
+    if (this.componentTypePathList.containsKey(rootPath)) {
+      this.componentTypePathList.replace(rootPath, componentTypePathList);
+    } else {
+      this.componentTypePathList.put(rootPath, componentTypePathList);
+    }
   }
 
   @Override
   protected void doPurge(ResourceResolver resourceResolver) throws CachePurgeException {
-    this.componentTypePathList = new ArrayList<>();
+    this.componentTypePathList = new HashMap<>();
   }
 
   @Override
