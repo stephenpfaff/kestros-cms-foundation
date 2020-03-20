@@ -306,10 +306,12 @@ public class UiFramework extends UiLibrary {
   @Nonnull
   private List<ComponentType> getAllComponentTypesInDirectory(@Nonnull final String path) {
     if (componentTypeCache != null
-        && !componentTypeCache.getAllCachedComponentTypePaths().isEmpty()) {
-      return SlingModelUtils.getResourcesAsType(componentTypeCache.getAllCachedComponentTypePaths(),
-          getResourceResolver(), ComponentType.class);
+        && componentTypeCache.getAllCachedComponentTypePaths().containsKey(path)) {
+      return SlingModelUtils.getResourcesAsType(
+          componentTypeCache.getAllCachedComponentTypePaths().get(path), getResourceResolver(),
+          ComponentType.class);
     }
+
     try {
       final BaseResource root = getResourceAsType(path, getResourceResolver(), BaseResource.class);
       final List<ComponentType> componentTypeList = getAllDescendantsOfType(root,
@@ -320,7 +322,9 @@ public class UiFramework extends UiLibrary {
         componentTypePathList.add(componentType.getPath());
       }
 
-      componentTypeCache.cacheComponentTypePathList(componentTypePathList);
+      if (componentTypeCache != null) {
+        componentTypeCache.cacheComponentTypePathList(path, componentTypePathList);
+      }
       return componentTypeList;
     } catch (final ModelAdaptionException exception) {
       LOG.debug(
