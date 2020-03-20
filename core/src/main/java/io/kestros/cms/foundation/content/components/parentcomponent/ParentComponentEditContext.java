@@ -90,7 +90,7 @@ public class ParentComponentEditContext extends BaseSlingRequest {
    */
   public boolean isEditMode() {
     if (editModeService != null && editModeService.isEditModeActive()) {
-      return parseBoolean(String.valueOf(getRequest().getAttribute("editMode")));
+      return parseBoolean(getRequest().getParameter("editMode"));
     }
     return false;
   }
