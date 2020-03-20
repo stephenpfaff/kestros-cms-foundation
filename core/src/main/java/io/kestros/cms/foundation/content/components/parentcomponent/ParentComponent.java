@@ -56,8 +56,7 @@ import org.slf4j.LoggerFactory;
     "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",
     "/content/guide-articles/kestros-cms/foundation/creating-component-variations"})
 @Model(adaptables = Resource.class,
-       resourceType = "kestros/commons/components/kestros-parent",
-       cache = true)
+       resourceType = "kestros/commons/components/kestros-parent")
 @Exporter(name = "jackson",
           selector = "parent-component",
           extensions = "json")

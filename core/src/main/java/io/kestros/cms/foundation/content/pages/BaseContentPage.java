@@ -82,8 +82,7 @@ import org.slf4j.LoggerFactory;
                   "/content/guide-articles/kestros/site-management/creating-components",
                   "/content/guide-articles/kestros/getting-started/understanding-validation"})
 @Model(adaptables = Resource.class,
-       resourceType = "kes:Page",
-       cache = true)
+       resourceType = "kes:Page")
 @Exporter(name = "jackson",
           selector = "base-content-page",
           extensions = "json")

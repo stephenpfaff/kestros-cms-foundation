@@ -78,8 +78,7 @@ import org.slf4j.LoggerFactory;
     "/content/guide-articles/kestros/site-management/editing-components",
     "/content/guide-articles/kestros/getting-started/understanding-validation"})
 @Model(adaptables = Resource.class,
-       resourceType = "sling/servlet/default",
-       cache = true)
+       resourceType = "sling/servlet/default")
 @Exporter(name = "jackson",
           selector = "base-component",
           extensions = "json")

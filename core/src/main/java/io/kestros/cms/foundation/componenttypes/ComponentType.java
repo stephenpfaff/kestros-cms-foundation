@@ -67,8 +67,7 @@ import org.slf4j.LoggerFactory;
                   "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
                   "/content/guide-articles/kestros-cms/foundation/grouping-components"})
 @Model(adaptables = Resource.class,
-       resourceType = "kes:ComponentType",
-       cache = true)
+       resourceType = "kes:ComponentType")
 @Exporter(name = "jackson",
           selector = "component-type",
           extensions = "json")
