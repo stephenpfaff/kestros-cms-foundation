@@ -120,17 +120,11 @@ public class ParentComponent extends BaseComponent {
       return this.componentUiFrameworkView;
     }
 
-    try {
-      final ComponentUiFrameworkView componentUiFrameworkView
-          = getComponentType().getComponentUiFrameworkView(getUiFramework());
-      this.componentUiFrameworkView = componentUiFrameworkView;
-      LOG.trace("Finished retrieving Component UI FrameworkView.");
-      return this.componentUiFrameworkView;
-    } catch (final Exception exception) {
-      LOG.debug("Unable to retrieve ComponentUiFrameworkView for {}. {}.", getPath(),
-          exception.getMessage());
-      throw exception;
-    }
+    final ComponentUiFrameworkView componentUiFrameworkView
+        = getComponentType().getComponentUiFrameworkView(getUiFramework());
+    this.componentUiFrameworkView = componentUiFrameworkView;
+    LOG.trace("Finished retrieving Component UI FrameworkView.");
+    return this.componentUiFrameworkView;
   }
 
   /**
