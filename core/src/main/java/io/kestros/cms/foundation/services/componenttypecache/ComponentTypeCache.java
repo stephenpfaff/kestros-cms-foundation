@@ -18,13 +18,41 @@
 
 package io.kestros.cms.foundation.services.componenttypecache;
 
+import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.osgiserviceutils.services.cache.CacheService;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Maintains cache for ComponentTypes within Kestros.
+ */
 public interface ComponentTypeCache extends CacheService {
 
-  Map<String, List<String>> getAllCachedComponentTypePaths();
+  /**
+   * Retrieves full ComponentType path cache.
+   *
+   * @return full ComponentType path cache.
+   * @throws CacheRetrievalException Failed to retrieve cached values.
+   */
+  Map<String, List<String>> getAllCachedComponentTypePaths() throws CacheRetrievalException;
 
-  void cacheComponentTypePathList(String rootPath, List<String> componentTypePathList);
+  /**
+   * Retrieves cached ComponentType paths under a specified root path.
+   *
+   * @param rootPath path to retrieve cached ComponentType paths for.
+   * @return Paths of ComponentTypes that live under the specified root path.
+   * @throws CacheRetrievalException Failed to retrieve cached values.
+   */
+  List<String> getAllCachedComponentTypes(String rootPath) throws CacheRetrievalException;
+
+  /**
+   * Caches componentTypes that live under a specified path.
+   *
+   * @param rootPath path to cache ComponentType path list for.
+   * @param componentTypePathList paths to ComponentTypes that live under the root path.
+   * @throws CacheBuilderException Failed cache values.
+   */
+  void cacheComponentTypePathList(String rootPath, List<String> componentTypePathList)
+      throws CacheBuilderException;
 }

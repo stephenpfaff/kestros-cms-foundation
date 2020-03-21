@@ -19,6 +19,7 @@
 package io.kestros.cms.foundation.services.componenttypecache;
 
 import io.kestros.commons.osgiserviceutils.exceptions.CachePurgeException;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.osgiserviceutils.services.cache.ManagedCacheService;
 import io.kestros.commons.osgiserviceutils.services.cache.impl.BaseCacheService;
 import java.util.HashMap;
@@ -28,6 +29,9 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
 
+/**
+ * Uses a simple HashMap to maintain cache for ComponentTypes within Kestros.
+ */
 @Component(immediate = true,
            service = {ManagedCacheService.class, ComponentTypeCache.class},
            property = "service.ranking:Integer=100")
@@ -40,6 +44,15 @@ public class ComponentTypeCacheImpl extends BaseCacheService implements Componen
   @Override
   public Map<String, List<String>> getAllCachedComponentTypePaths() {
     return this.componentTypePathList;
+  }
+
+  @Override
+  public List<String> getAllCachedComponentTypes(String rootPath) throws CacheRetrievalException {
+    if (componentTypePathList.containsKey(rootPath)) {
+      return componentTypePathList.get("key");
+    }
+    throw new CacheRetrievalException(
+        String.format("Failed to retrieve cached ComponentType list under %s.", rootPath));
   }
 
   @Override

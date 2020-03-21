@@ -39,6 +39,7 @@ import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.cache.htltemplate.HtlTemplateCacheService;
 import io.kestros.cms.foundation.services.componenttypecache.ComponentTypeCache;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
@@ -310,17 +311,19 @@ public class UiFramework extends UiLibrary {
 
   @Nonnull
   private List<ComponentType> getAllComponentTypesInDirectory(@Nonnull final String path) {
-    if (componentTypeCache != null
-        && componentTypeCache.getAllCachedComponentTypePaths().containsKey(path)) {
-      return SlingModelUtils.getResourcesAsType(
-          componentTypeCache.getAllCachedComponentTypePaths().get(path), getResourceResolver(),
-          ComponentType.class);
+    if (componentTypeCache != null) {
+      try {
+        return SlingModelUtils.getResourcesAsType(
+            componentTypeCache.getAllCachedComponentTypes(path), getResourceResolver(),
+            ComponentType.class);
+      } catch (CacheRetrievalException e) {
+        LOG.debug(e.getMessage());
+      }
     }
-
+    final List<ComponentType> componentTypeList = new ArrayList<>();
     try {
       final BaseResource root = getResourceAsType(path, getResourceResolver(), BaseResource.class);
-      final List<ComponentType> componentTypeList = getAllDescendantsOfType(root,
-          ComponentType.class);
+      componentTypeList.addAll(getAllDescendantsOfType(root, ComponentType.class));
       final List<String> componentTypePathList = new ArrayList<>();
 
       for (ComponentType componentType : componentTypeList) {
@@ -335,8 +338,10 @@ public class UiFramework extends UiLibrary {
       LOG.debug(
           "Unable to retrieve resource {} while getting all ComponentType for UiFramework {} due "
           + "to missing or invalid Resource.", path, getPath());
+    } catch (CacheBuilderException e) {
+      LOG.error(e.getMessage());
     }
-    return Collections.emptyList();
+    return componentTypeList;
   }
 
   /**
