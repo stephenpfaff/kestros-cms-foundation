@@ -24,11 +24,36 @@ import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.osgiserviceutils.services.cache.CacheService;
 import org.apache.sling.api.SlingHttpServletRequest;
 
+/**
+ * Manages cache for providing resolved paths for
+ * {@link io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView}
+ * resolution.
+ */
 public interface ComponentViewScriptResolutionCacheService extends CacheService {
 
+  /**
+   * Caches a resolved script path for a specified script, when accounting for ComponentType and the
+   * requesting page's UiFramework.
+   *
+   * @param scriptName Name of script to cache resolved path for.
+   * @param componentType ComponentType that the script belongs to.
+   * @param uiFramework UiFramework to cache resolved path for.
+   * @param resolvedScriptPath Resolved script path to cache.
+   * @param request SlingHttpServletRequest. Required for inheritance and references.
+   */
   void cacheComponentViewScriptPath(String scriptName, ComponentType componentType,
       UiFramework uiFramework, String resolvedScriptPath, SlingHttpServletRequest request);
 
+  /**
+   * Retrieves a cached resolved script path.
+   *
+   * @param scriptName Name of script.
+   * @param componentType ComponentType the script belongs to.
+   * @param uiFramework UiFramework to find view for.
+   * @param request SlingHttpServletRequest.
+   * @return Cached resolved script path.
+   * @throws CacheRetrievalException Failed to retrieve resolved script path.
+   */
   String getCachedScriptPath(String scriptName, ComponentType componentType,
       UiFramework uiFramework, SlingHttpServletRequest request) throws CacheRetrievalException;
 

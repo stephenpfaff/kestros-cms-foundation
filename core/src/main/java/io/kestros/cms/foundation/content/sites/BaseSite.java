@@ -125,6 +125,9 @@ public class BaseSite<T extends BaseContentPage> extends BaseContentPage {
     return "fa fa-sitemap";
   }
 
+  /**
+   * Sorts pages by kes:LastModified.
+   */
   private static class LastModifiedDateSorter implements Comparator<BaseContentPage>, Serializable {
 
     private static final long serialVersionUID = -8585373331311356206L;

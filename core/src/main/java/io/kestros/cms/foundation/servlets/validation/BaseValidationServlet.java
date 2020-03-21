@@ -49,6 +49,13 @@ public abstract class BaseValidationServlet extends SlingAllMethodsServlet {
   private static final long serialVersionUID = 8033781512563632444L;
 
   /**
+   * Whether the validation servlet retrieves detailed validation. (false = basic).
+   *
+   * @return Whether the validation servlet retrieves detailed validation.
+   */
+  public abstract Boolean isDetailed();
+
+  /**
    * Performs validation on the given model.
    *
    * @param model Model to validate.

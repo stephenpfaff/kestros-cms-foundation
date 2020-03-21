@@ -31,6 +31,11 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
 
+/**
+ * Uses a simple HashMap to provide resolved paths for
+ * {@link io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView}
+ * resolution.
+ */
 @Component(immediate = true,
            service = {ManagedCacheService.class, ComponentViewScriptResolutionCacheService.class},
            property = "service.ranking:Integer=100")
@@ -51,6 +56,7 @@ public class CachedScriptProviderService extends BaseCacheService
 
   }
 
+  @Override
   public void cacheComponentViewScriptPath(String scriptName, ComponentType componentType,
       UiFramework uiFramework, String resolvedScriptPath, SlingHttpServletRequest request) {
 

@@ -277,6 +277,12 @@ public class BaseComponent extends BaseResource {
     return descendantComponents;
   }
 
+  /**
+   * Applied inline variation CSS classes. Will need to be implemented with a component's
+   * content.html script.
+   *
+   * @return Applied inline variation CSS classes
+   */
   @KestrosProperty(description = "All applied inline variation CSS classes")
   @Nonnull
   public String getAppliedInlineVariationsAsString() {

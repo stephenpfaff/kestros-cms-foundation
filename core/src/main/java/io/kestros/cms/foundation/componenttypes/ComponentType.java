@@ -185,6 +185,11 @@ public class ComponentType extends BaseResource {
     throw new InvalidCommonUiFrameworkException(getPath());
   }
 
+  /**
+   * Whether the ComponentType is allowed to have missing ComponentUiFramework views.
+   *
+   * @return Whether the ComponentType is allowed to have missing ComponentUiFramework views.
+   */
   @KestrosProperty(description =
                        "Whether the ComponentType is allowed to bypass validators that check "
                        + "if the ComponentType has views for all UiFrameworks, or a view for "

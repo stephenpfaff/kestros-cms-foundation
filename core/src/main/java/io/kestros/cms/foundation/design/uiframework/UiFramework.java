@@ -257,6 +257,11 @@ public class UiFramework extends UiLibrary {
     return StringUtils.EMPTY;
   }
 
+  /**
+   * Vendor Libraries that are to be compiled.
+   *
+   * @return Vendor Libraries that are to be compiled.
+   */
   @Nonnull
   @KestrosProperty(description = "Vendor libraries to compile in the UiFramework.",
                    jcrPropertyName = PN_VENDOR_LIBRARIES,
