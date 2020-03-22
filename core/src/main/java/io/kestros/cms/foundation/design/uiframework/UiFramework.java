@@ -289,6 +289,8 @@ public class UiFramework extends UiLibrary {
         getAllComponentUiFrameworkViewsInADirectory("/apps"));
     componentUiFrameworkViews.addAll(
         getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/components"));
+    componentUiFrameworkViews.addAll(
+        getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/cms"));
     return componentUiFrameworkViews;
   }
 
