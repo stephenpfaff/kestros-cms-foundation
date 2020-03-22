@@ -25,6 +25,7 @@ import io.kestros.commons.osgiserviceutils.services.cache.impl.BaseCacheService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
@@ -41,15 +42,17 @@ public class ComponentTypeCacheImpl extends BaseCacheService implements Componen
 
   private Map<String, List<String>> componentTypePathList = new HashMap<>();
 
+  @Nonnull
   @Override
-  public Map<String, List<String>> getAllCachedComponentTypePaths() {
+  public Map<String, List<String>> getCachedComponentTypePaths() {
     return this.componentTypePathList;
   }
 
+  @Nonnull
   @Override
-  public List<String> getAllCachedComponentTypes(String rootPath) throws CacheRetrievalException {
+  public List<String> getCachedComponentTypes(String rootPath) throws CacheRetrievalException {
     if (componentTypePathList.containsKey(rootPath)) {
-      return componentTypePathList.get("key");
+      return componentTypePathList.get(rootPath);
     }
     throw new CacheRetrievalException(
         String.format("Failed to retrieve cached ComponentType list under %s.", rootPath));

@@ -96,7 +96,7 @@ public abstract class BaseValidationServlet extends SlingAllMethodsServlet {
                   isDetailed()));
 
           validationMap.put("warningMessages",
-              getValidationCacheService().getCachedErrorMessages(resource, model.getClass(),
+              getValidationCacheService().getCachedWarningMessages(resource, model.getClass(),
                   isDetailed()));
         } catch (CacheRetrievalException e) {
           LOG.debug(e.getMessage());

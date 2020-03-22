@@ -314,7 +314,7 @@ public class UiFramework extends UiLibrary {
     if (componentTypeCache != null) {
       try {
         return SlingModelUtils.getResourcesAsType(
-            componentTypeCache.getAllCachedComponentTypes(path), getResourceResolver(),
+            componentTypeCache.getCachedComponentTypes(path), getResourceResolver(),
             ComponentType.class);
       } catch (CacheRetrievalException e) {
         LOG.debug(e.getMessage());

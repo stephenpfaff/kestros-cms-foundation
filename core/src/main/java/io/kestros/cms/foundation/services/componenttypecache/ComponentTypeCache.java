@@ -35,7 +35,7 @@ public interface ComponentTypeCache extends CacheService {
    * @return full ComponentType path cache.
    * @throws CacheRetrievalException Failed to retrieve cached values.
    */
-  Map<String, List<String>> getAllCachedComponentTypePaths() throws CacheRetrievalException;
+  Map<String, List<String>> getCachedComponentTypePaths() throws CacheRetrievalException;
 
   /**
    * Retrieves cached ComponentType paths under a specified root path.
@@ -44,7 +44,7 @@ public interface ComponentTypeCache extends CacheService {
    * @return Paths of ComponentTypes that live under the specified root path.
    * @throws CacheRetrievalException Failed to retrieve cached values.
    */
-  List<String> getAllCachedComponentTypes(String rootPath) throws CacheRetrievalException;
+  List<String> getCachedComponentTypes(String rootPath) throws CacheRetrievalException;
 
   /**
    * Caches componentTypes that live under a specified path.

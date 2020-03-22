@@ -21,7 +21,6 @@ package io.kestros.cms.foundation.services.cache.validation;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.osgiserviceutils.services.cache.ManagedCacheService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
 import java.util.List;
 import org.apache.sling.api.resource.Resource;
 
@@ -29,20 +28,6 @@ import org.apache.sling.api.resource.Resource;
  * Manages Resource Model validation caches.
  */
 public interface ValidationCacheService extends ManagedCacheService {
-
-  /**
-   * Retrieves cached validators for a specified resource.
-   *
-   * @param resource Resource to retrieve validation cache for.
-   * @param clazz Model class that the resource was validated against.
-   * @param isDetailed Whether to retrieve detailed validation results.
-   * @param <T> extends BaseResource.
-   * @return Cached validators for a specified resource.
-   * @throws CacheRetrievalException Failed to retrieve a cached ModelValidation list for the
-   *     specified Class and detail level.
-   */
-  <T extends BaseResource> List<ModelValidator> getCachedValidators(Resource resource,
-      Class<T> clazz, boolean isDetailed) throws CacheRetrievalException;
 
   /**
    * Retrieves cached error messages for a specified resource, when adapted to the specified Class.
