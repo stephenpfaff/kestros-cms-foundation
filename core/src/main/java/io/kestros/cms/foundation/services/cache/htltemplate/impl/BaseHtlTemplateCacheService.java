@@ -19,6 +19,7 @@
 package io.kestros.cms.foundation.services.cache.htltemplate.impl;
 
 import static io.kestros.cms.foundation.utils.DesignUtils.getAllUiFrameworks;
+import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getOpenServiceResourceResolverOrNullAndLogExceptions;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.componenttypes.HtmlFileType;
@@ -93,6 +94,11 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
    * Caches Compiled HTL Template files for all UiFrameworks.
    */
   public void cacheAllUiFrameworkCompiledHtlTemplates() {
+    if (getServiceResourceResolver() == null) {
+      this.serviceResourceResolver = getOpenServiceResourceResolverOrNullAndLogExceptions(
+          getServiceUserName(), getServiceResourceResolver(), getResourceResolverFactory(), this);
+    }
+    
     int attempts = 0;
     LOG.info("Attempting to cache compiled HTL Template files for all UiFrameworks.");
     while (attempts < 10) {
