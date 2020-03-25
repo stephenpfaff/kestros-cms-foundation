@@ -71,6 +71,10 @@ public class ParentComponent extends BaseComponent {
 
   private UiFramework uiFramework;
 
+  private List<ComponentVariation> appliedComponentVariations;
+
+  private ComponentUiFrameworkView componentUiFrameworkView;
+
   /**
    * HTML element ID to give to the component.
    *
@@ -108,17 +112,19 @@ public class ParentComponent extends BaseComponent {
   public ComponentUiFrameworkView getComponentUiFrameworkView()
       throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException,
              InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
-    LOG.trace("Getting Component UiFrameworkView.");
-    try {
-      final ComponentUiFrameworkView componentUiFrameworkView
-          = getComponentType().getComponentUiFrameworkView(getUiFramework());
-      LOG.trace("Retrieved Component UI FrameworkView.");
-      return componentUiFrameworkView;
-    } catch (final Exception exception) {
-      LOG.debug("Unable to retrieve ComponentUiFrameworkView for {}. {}.", getPath(),
-          exception.getMessage());
-      throw exception;
+
+    LOG.trace("Retrieving Component UiFrameworkView.");
+
+    if (componentUiFrameworkView != null) {
+      LOG.trace("Finished retrieving Component UI FrameworkView.");
+      return this.componentUiFrameworkView;
     }
+
+    final ComponentUiFrameworkView componentUiFrameworkView
+        = getComponentType().getComponentUiFrameworkView(getUiFramework());
+    this.componentUiFrameworkView = componentUiFrameworkView;
+    LOG.trace("Finished retrieving Component UI FrameworkView.");
+    return this.componentUiFrameworkView;
   }
 
   /**
@@ -152,6 +158,13 @@ public class ParentComponent extends BaseComponent {
    */
   @Nonnull
   public List<ComponentVariation> getAppliedVariations() {
+    LOG.trace("Retrieving applied variations for {}", getPath());
+
+    if (appliedComponentVariations != null) {
+      LOG.trace("Finished retrieving applied variations for {}", getPath());
+      return appliedComponentVariations;
+    }
+
     final List<ComponentVariation> appliedVariations = new ArrayList<>();
     final List<String> appliedVariationNames = Arrays.asList(
         getProperties().get(NN_VARIATIONS, new String[]{}));
@@ -172,7 +185,9 @@ public class ParentComponent extends BaseComponent {
       }
     }
 
-    return appliedVariations;
+    LOG.trace("Finished retrieving applied variations for {}", getPath());
+    appliedComponentVariations = appliedVariations;
+    return appliedComponentVariations;
   }
 
 
@@ -185,9 +200,11 @@ public class ParentComponent extends BaseComponent {
    */
   @Nullable
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
+    LOG.trace("Retrieving theme for {}.");
     if (theme == null) {
       theme = themeProviderService.getThemeForComponent(this);
     }
+    LOG.trace("Finished retrieving theme for {}.");
     return theme;
   }
 
@@ -198,9 +215,11 @@ public class ParentComponent extends BaseComponent {
 
   private UiFramework getUiFramework()
       throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
+    LOG.trace("Retrieving UiFramework for {}", getPath());
     if (uiFramework == null) {
       uiFramework = getTheme().getUiFramework();
     }
+    LOG.trace("Finished retrieving UiFramework for {}", getPath());
     return uiFramework;
   }
 

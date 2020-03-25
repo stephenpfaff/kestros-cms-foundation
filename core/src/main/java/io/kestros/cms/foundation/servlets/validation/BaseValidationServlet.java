@@ -21,6 +21,8 @@ package io.kestros.cms.foundation.servlets.validation;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsClosestType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.kestros.cms.foundation.services.cache.validation.ValidationCacheService;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
@@ -49,6 +51,13 @@ public abstract class BaseValidationServlet extends SlingAllMethodsServlet {
   private static final long serialVersionUID = 8033781512563632444L;
 
   /**
+   * Whether the validation servlet retrieves detailed validation. (false = basic).
+   *
+   * @return Whether the validation servlet retrieves detailed validation.
+   */
+  public abstract Boolean isDetailed();
+
+  /**
    * Performs validation on the given model.
    *
    * @param model Model to validate.
@@ -64,19 +73,45 @@ public abstract class BaseValidationServlet extends SlingAllMethodsServlet {
    */
   public abstract ModelFactory getModelFactory();
 
+  /**
+   * Validation Cache Service.
+   *
+   * @return Validation Cache Service.
+   */
+  public abstract ValidationCacheService getValidationCacheService();
+
+
   @Override
   protected void doGet(@Nonnull final SlingHttpServletRequest request,
       @Nonnull final SlingHttpServletResponse response) throws IOException {
     final Resource resource = request.getResource();
     try {
-
       final BaseResource model = getResourceAsClosestType(resource, getModelFactory());
-
-      doValidation(model);
-
       final Map<String, Object> validationMap = new HashMap<>();
-      validationMap.put("errorMessages", model.getErrorMessages());
-      validationMap.put("warningMessages", model.getWarningMessages());
+
+      if (getValidationCacheService() != null) {
+        try {
+          validationMap.put("errorMessages",
+              getValidationCacheService().getCachedErrorMessages(resource, model.getClass(),
+                  isDetailed()));
+
+          validationMap.put("warningMessages",
+              getValidationCacheService().getCachedWarningMessages(resource, model.getClass(),
+                  isDetailed()));
+        } catch (CacheRetrievalException e) {
+          LOG.debug(e.getMessage());
+        }
+      }
+
+      if (validationMap.isEmpty()) {
+        doValidation(model);
+        validationMap.put("errorMessages", model.getErrorMessages());
+        validationMap.put("warningMessages", model.getWarningMessages());
+
+        if (getValidationCacheService() != null) {
+          getValidationCacheService().cacheValidationResults(model, isDetailed());
+        }
+      }
 
       final ObjectMapper mapper = new ObjectMapper();
       final String json = mapper.writeValueAsString(validationMap);

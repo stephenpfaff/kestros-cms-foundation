@@ -21,8 +21,13 @@ package io.kestros.cms.foundation.eventlisteners.pagecachepurge;
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.kestros.cms.foundation.services.cache.validation.ValidationCacheService;
+import io.kestros.cms.foundation.services.componenttypecache.ComponentTypeCache;
 import io.kestros.cms.foundation.services.pagecacheservice.PageCacheService;
+import io.kestros.cms.foundation.services.scriptprovider.ComponentViewScriptResolutionCacheService;
+import io.kestros.commons.osgiserviceutils.services.cache.CacheService;
 import io.kestros.commons.osgiserviceutils.services.eventlisteners.impl.BaseCachePurgeOnResourceChangeEventListener;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
@@ -55,8 +60,15 @@ public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeE
   }
 
   @Override
-  public List<PageCacheService> getCacheServices() {
-    return getAllOsgiServicesOfType(getComponentContext(), PageCacheService.class);
+  public List<CacheService> getCacheServices() {
+    List<CacheService> cacheServices = new ArrayList<>();
+    cacheServices.addAll(getAllOsgiServicesOfType(getComponentContext(), PageCacheService.class));
+    cacheServices.addAll(getAllOsgiServicesOfType(getComponentContext(), ComponentTypeCache.class));
+    cacheServices.addAll(getAllOsgiServicesOfType(getComponentContext(),
+        ComponentViewScriptResolutionCacheService.class));
+    cacheServices.addAll(
+        getAllOsgiServicesOfType(getComponentContext(), ValidationCacheService.class));
+    return cacheServices;
   }
 
   @Override
