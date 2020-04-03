@@ -155,6 +155,7 @@ public class BaseContentPage extends BasePage {
    * @throws NoParentResourceException No parent page was found, or parent page could not be
    *     adapted to BaseContentPage.
    */
+  @JsonIgnore
   @Override
   public BaseContentPage getParent() throws NoParentResourceException {
     try {
