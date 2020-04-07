@@ -30,7 +30,7 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewExcep
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * Provides logic for dynamic script resolution, component variations and HTML attributes to the
  * kestros-parent wrapper component.
  */
-@StructuredModel(docPaths = {
+@KestrosModel(docPaths = {
     "/content/guide-articles/kestros-cms/foundation/extending-the-parent-component",
     "/content/guide-articles/kestros-cms/foundation/creating-new-component-types",
     "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",
@@ -70,6 +70,10 @@ public class ParentComponent extends BaseComponent {
   private Theme theme;
 
   private UiFramework uiFramework;
+
+  private List<ComponentVariation> appliedComponentVariations;
+
+  private ComponentUiFrameworkView componentUiFrameworkView;
 
   /**
    * HTML element ID to give to the component.
@@ -108,34 +112,43 @@ public class ParentComponent extends BaseComponent {
   public ComponentUiFrameworkView getComponentUiFrameworkView()
       throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException,
              InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
-    LOG.trace("Getting Component UiFrameworkView.");
-    try {
-      final ComponentUiFrameworkView componentUiFrameworkView
-          = getComponentType().getComponentUiFrameworkView(getUiFramework());
-      LOG.trace("Retrieved Component UI FrameworkView.");
-      return componentUiFrameworkView;
-    } catch (final Exception exception) {
-      LOG.debug("Unable to retrieve ComponentUiFrameworkView for {}. {}.", getPath(),
-          exception.getMessage());
-      throw exception;
+
+    LOG.trace("Retrieving Component UiFrameworkView.");
+
+    if (componentUiFrameworkView != null) {
+      LOG.trace("Finished retrieving Component UI FrameworkView.");
+      return this.componentUiFrameworkView;
     }
+
+    final ComponentUiFrameworkView componentUiFrameworkView
+        = getComponentType().getComponentUiFrameworkView(getUiFramework());
+    this.componentUiFrameworkView = componentUiFrameworkView;
+    LOG.trace("Finished retrieving Component UI FrameworkView.");
+    return this.componentUiFrameworkView;
   }
 
   /**
-   * Applied ComponentVariation names, to be read by the HTML class attribute.
+   * Applied ComponentVariation names, to be read by the HTML class attribute. Only variations to be
+   * applied on the component's wrapper div are included.
    *
-   * @return Applied ComponentVariation names.
+   * @return Applied ComponentVariation names.  Only variations to be applied on the component's
+   *     wrapper div are included.
    */
   @Nonnull
-  public String getAppliedVariationsAsString() {
-    LOG.trace("Getting Applied Variations as String.");
-    final StringBuilder variationsStringBuffer = new StringBuilder();
+  public String getAppliedWrapperVariationsAsString() {
+    LOG.trace("Getting applied wrapper variations as String.");
+    final StringBuilder variationsStringBuilder = new StringBuilder();
     for (final ComponentVariation variation : getAppliedVariations()) {
-      variationsStringBuffer.append(variation.getName());
-      variationsStringBuffer.append(" ");
+      if (!variation.isInlineVariation()) {
+        variationsStringBuilder.append(variation.getName());
+        variationsStringBuilder.append(" ");
+      }
     }
-    LOG.trace("Retrieved AppliedVariations as string.");
-    return variationsStringBuffer.toString();
+    if (variationsStringBuilder.length() > 1) {
+      variationsStringBuilder.setLength(variationsStringBuilder.length() - 1);
+    }
+    LOG.trace("Retrieved applied wrapper variations as string.");
+    return variationsStringBuilder.toString();
   }
 
   /**
@@ -145,6 +158,13 @@ public class ParentComponent extends BaseComponent {
    */
   @Nonnull
   public List<ComponentVariation> getAppliedVariations() {
+    LOG.trace("Retrieving applied variations for {}", getPath());
+
+    if (appliedComponentVariations != null) {
+      LOG.trace("Finished retrieving applied variations for {}", getPath());
+      return appliedComponentVariations;
+    }
+
     final List<ComponentVariation> appliedVariations = new ArrayList<>();
     final List<String> appliedVariationNames = Arrays.asList(
         getProperties().get(NN_VARIATIONS, new String[]{}));
@@ -165,8 +185,11 @@ public class ParentComponent extends BaseComponent {
       }
     }
 
-    return appliedVariations;
+    LOG.trace("Finished retrieving applied variations for {}", getPath());
+    appliedComponentVariations = appliedVariations;
+    return appliedComponentVariations;
   }
+
 
   /**
    * The current {@link Theme} for the current Page/Component.
@@ -177,9 +200,11 @@ public class ParentComponent extends BaseComponent {
    */
   @Nullable
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
+    LOG.trace("Retrieving theme for {}.");
     if (theme == null) {
       theme = themeProviderService.getThemeForComponent(this);
     }
+    LOG.trace("Finished retrieving theme for {}.");
     return theme;
   }
 
@@ -190,9 +215,11 @@ public class ParentComponent extends BaseComponent {
 
   private UiFramework getUiFramework()
       throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
+    LOG.trace("Retrieving UiFramework for {}", getPath());
     if (uiFramework == null) {
       uiFramework = getTheme().getUiFramework();
     }
+    LOG.trace("Finished retrieving UiFramework for {}", getPath());
     return uiFramework;
   }
 

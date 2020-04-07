@@ -24,7 +24,8 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> Extends {@link BaseContentPage}
  */
-@StructuredModel(validationService = BaseSiteValidationService.class)
+@KestrosModel(validationService = BaseSiteValidationService.class)
 @Model(adaptables = Resource.class,
        resourceType = "kes:Site")
 @Exporter(name = "jackson",
@@ -106,6 +107,11 @@ public class BaseSite<T extends BaseContentPage> extends BaseContentPage {
    */
   @Override
   @JsonIgnore
+  @KestrosProperty(description = "Font awesome icon class, used in the Kestros Site Admin UI",
+                   jcrPropertyName = "fontAwesomeIcon",
+                   defaultValue = "fa fa-sitemap",
+                   configurable = true,
+                   sampleValue = "fa fa-sitemap")
   public String getFontAwesomeIcon() {
     try {
       final String componentTypeFontAwesomeIcon = getComponentType().getFontAwesomeIcon();
@@ -119,6 +125,9 @@ public class BaseSite<T extends BaseContentPage> extends BaseContentPage {
     return "fa fa-sitemap";
   }
 
+  /**
+   * Sorts pages by kes:LastModified.
+   */
   private static class LastModifiedDateSorter implements Comparator<BaseContentPage>, Serializable {
 
     private static final long serialVersionUID = -8585373331311356206L;

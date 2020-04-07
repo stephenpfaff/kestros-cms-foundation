@@ -29,9 +29,9 @@
   </parent>
 
   <groupId>io.kestros.cms</groupId>
-  <artifactId>kestros-cms-foundation-frontend</artifactId>
+  <artifactId>kestros-cms-foundation-users</artifactId>
 
-  <name>Kestros Content Management System Foundation - Frontend Package</name>
+  <name>Kestros Content Management System Foundation - Users Package</name>
 
   <build>
     <resources>

@@ -22,10 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
-import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.services.scriptprovider.BaseScriptProviderService;
-import io.kestros.cms.foundation.services.scriptprovider.ScriptProviderService;
 import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
@@ -155,7 +152,7 @@ public class ParentComponentTest {
     assertEquals("variation-1", parentComponent.getAppliedVariations().get(0).getName());
     assertEquals("variation-2", parentComponent.getAppliedVariations().get(1).getName());
 
-    assertEquals("variation-1 variation-2 ", parentComponent.getAppliedVariationsAsString());
+    assertEquals("variation-1 variation-2", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -176,7 +173,7 @@ public class ParentComponentTest {
     parentComponent = resource.adaptTo(ParentComponent.class);
 
     assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
+    assertEquals("", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -197,7 +194,7 @@ public class ParentComponentTest {
     parentComponent = resource.adaptTo(ParentComponent.class);
 
     assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
+    assertEquals("", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -214,7 +211,7 @@ public class ParentComponentTest {
     parentComponent = resource.adaptTo(ParentComponent.class);
 
     assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
+    assertEquals("", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -232,7 +229,7 @@ public class ParentComponentTest {
     parentComponent = resource.adaptTo(ParentComponent.class);
 
     assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
+    assertEquals("", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -256,7 +253,7 @@ public class ParentComponentTest {
 
     assertEquals(1, parentComponent.getAppliedVariations().size());
     assertEquals("variation-1", parentComponent.getAppliedVariations().get(0).getName());
-    assertEquals("variation-1 ", parentComponent.getAppliedVariationsAsString());
+    assertEquals("variation-1", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test

@@ -26,27 +26,12 @@
     <exclude pattern="/libs/.*"/>
   </filter>
 
-  <filter root="/home">
-    <exclude pattern="/home/.*"/>
-  </filter>
-
-  <filter root="/home/users">
-    <exclude pattern="/home/users/.*"/>
-  </filter>
-
-  <filter root="/home/users/system/kestros-cms">
-    <exclude pattern="/home/users/system/kestros-cms/.*"/>
-  </filter>
-
-  <filter root="/home/users/system/kestros-cms/kestros-resource-manager"/>
-
   <filter root="/apps">
     <exclude pattern="/apps/.*"/>
   </filter>
 
   <filter root="/content/sites">
     <exclude pattern="/content/sites/.*"/>
-
   </filter>
 
   <filter root="/libs/kestros" mode="update">
@@ -57,9 +42,9 @@
     <exclude pattern="/libs/kestros/commons/.*"/>
   </filter>
 
-  <filter root="/libs/kestros/commons/config" mode="update">
-    <exclude pattern="/libs/kestros/commons/config.*"/>
-  </filter>
+  <filter
+    root="/libs/kestros/commons/config/org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-kestros-resource-manager"
+    mode="update"/>
 
   <filter root="/libs/kestros/commons/content-area"/>
   <filter root="/libs/kestros/commons/inherited-content-area"/>
