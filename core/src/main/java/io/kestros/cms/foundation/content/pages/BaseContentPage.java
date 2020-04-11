@@ -110,7 +110,11 @@ public class BaseContentPage extends BasePage {
    * @return Display title of the current site.
    */
   public String getDisplayTitle() {
-    return getProperties().get("displayTitle", getTitle());
+    String displayTitle = getProperties().get("displayTitle", StringUtils.EMPTY);
+    if (StringUtils.isNotEmpty(displayTitle)) {
+      return displayTitle;
+    }
+    return getTitle();
   }
 
   /**
@@ -119,7 +123,11 @@ public class BaseContentPage extends BasePage {
    * @return Description to be displayed in administration UI.
    */
   public String getDisplayDescription() {
-    return getProperties().get("displayDescription", getDescription());
+    String displayDescription = getProperties().get("displayDescription", StringUtils.EMPTY);
+    if (StringUtils.isNotEmpty(displayDescription)) {
+      return displayDescription;
+    }
+    return getDescription();
   }
 
   /**
@@ -132,7 +140,11 @@ public class BaseContentPage extends BasePage {
                    defaultValue = "",
                    configurable = true)
   public String getMetaTitle() {
-    return getProperties().get("metaTitle", getDisplayTitle());
+    String metaTitle = getProperties().get("metaTitle", StringUtils.EMPTY);
+    if (StringUtils.isNotEmpty(metaTitle)) {
+      return metaTitle;
+    }
+    return getDisplayTitle();
   }
 
   /**
@@ -145,7 +157,11 @@ public class BaseContentPage extends BasePage {
                    defaultValue = "",
                    configurable = true)
   public String getMetaDescription() {
-    return getProperties().get("metaDescription", getDescription());
+    String metaDescription = getProperties().get("metaDescription", StringUtils.EMPTY);
+    if (StringUtils.isNotEmpty(metaDescription)) {
+      return metaDescription;
+    }
+    return getDisplayDescription();
   }
 
   /**
