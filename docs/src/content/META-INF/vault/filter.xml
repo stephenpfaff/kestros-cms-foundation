@@ -24,6 +24,7 @@
   </filter>
 
   <filter root="/content/guide-articles/kestros/getting-started"/>
+  <filter root="/content/guide-articles/kestros/installation"/>
 
   <filter root="/content/guide-articles/kestros/sling/structured-models"/>
 
