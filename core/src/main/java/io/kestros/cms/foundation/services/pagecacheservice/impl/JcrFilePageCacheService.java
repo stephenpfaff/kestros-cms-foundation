@@ -103,7 +103,7 @@ public class JcrFilePageCacheService extends JcrFileCacheService
       throws CacheRetrievalException {
     try {
       return getCachedFile(page.getPath() + ".html",
-          new HtmlFileType().getFileModelClass()).getOutput();
+          new HtmlFileType().getFileModelClass()).getFileContent();
     } catch (final IOException | ResourceNotFoundException
                                | InvalidResourceTypeException exception) {
       throw new CacheRetrievalException(exception.getMessage());
