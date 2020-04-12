@@ -69,7 +69,7 @@ public class HtlTemplateFile extends HtmlFile {
   public List<HtlTemplate> getTemplates() {
     final List<HtlTemplate> templates = new ArrayList<>();
     try {
-      final Document templateFile = Jsoup.parse(getOutput());
+      final Document templateFile = Jsoup.parse(getFileContent());
       templateFile.outputSettings().outline(true);
       templateFile.outputSettings().prettyPrint(false);
       for (final Node node : templateFile.child(0).childNodes().get(1).childNodes()) {

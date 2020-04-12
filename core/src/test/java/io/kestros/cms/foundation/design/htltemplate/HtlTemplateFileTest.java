@@ -85,7 +85,7 @@ public class HtlTemplateFileTest {
     htlTemplateFile = resource.adaptTo(HtlTemplateFile.class);
     htlTemplateFile = spy(htlTemplateFile);
 
-    doThrow(IOException.class).when(htlTemplateFile).getOutput();
+    doThrow(IOException.class).when(htlTemplateFile).getFileContent();
 
     assertEquals(0, htlTemplateFile.getTemplates().size());
   }
