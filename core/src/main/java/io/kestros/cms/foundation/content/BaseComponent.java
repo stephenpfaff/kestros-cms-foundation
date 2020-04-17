@@ -1,3 +1,21 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.content;
 
 import static io.kestros.cms.foundation.utils.JcrPropertyUtils.getRelativeDate;
@@ -15,6 +33,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
+import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
+import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
@@ -23,8 +43,8 @@ import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.Property;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.MatchingResourceTypeNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -54,7 +74,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Baseline Component implementation, meant to be extended by other Components.
  */
-@StructuredModel(docPaths = {"/content/guide-articles/kestros/site-management/creating-components",
+@KestrosModel(docPaths = {"/content/guide-articles/kestros/site-management/creating-components",
     "/content/guide-articles/kestros/site-management/editing-components",
     "/content/guide-articles/kestros/getting-started/understanding-validation"})
 @Model(adaptables = Resource.class,
@@ -74,6 +94,9 @@ public class BaseComponent extends BaseResource {
   @OSGiService
   @Optional
   private KestrosUserService userService;
+
+  private BaseContentPage containingPage = null;
+  private ComponentType componentType = null;
 
   /**
    * Initializes the ContentArea component.  Creates the resource if none exists, and assigns
@@ -99,23 +122,38 @@ public class BaseComponent extends BaseResource {
   @Nonnull
   @JsonIgnore
   public ComponentType getComponentType() throws InvalidComponentTypeException {
+    LOG.trace("Retrieving ComponentType for {}", getPath());
+
+    if (this.componentType != null) {
+      LOG.trace("Finished retrieving ComponentType for {}", getPath());
+      return this.componentType;
+    }
+
     final String resourceType = getResourceType();
     try {
-      return getResourceAsType(resourceType, getResourceResolver(), ComponentType.class);
+      this.componentType = getResourceAsType(resourceType, getResourceResolver(),
+          ComponentType.class);
+      LOG.trace("Finished retrieving ComponentType for {}", getPath());
+      return this.componentType;
     } catch (final ResourceNotFoundException | InvalidResourceTypeException e) {
       try {
-        return getResourceAsType("/apps/" + resourceType, getResourceResolver(),
+        LOG.trace("Finished retrieving ComponentType for {}", getPath());
+        this.componentType = getResourceAsType("/apps/" + resourceType, getResourceResolver(),
             ComponentType.class);
+        return this.componentType;
       } catch (final ModelAdaptionException exception1) {
         try {
-          return getResourceAsType("/libs/" + resourceType, getResourceResolver(),
+          LOG.trace("Finished retrieving ComponentType for {}", getPath());
+          this.componentType = getResourceAsType("/libs/" + resourceType, getResourceResolver(),
               ComponentType.class);
+          return this.componentType;
         } catch (final ModelAdaptionException exception2) {
           LOG.warn("Unable to retrieve ComponentType for {}: {}", getPath(),
               exception2.getMessage());
         }
       }
     }
+    LOG.trace("Finished ComponentType for {}, but threw InvalidComponentTypeException", getPath());
     throw new InvalidComponentTypeException(getResourceType());
   }
 
@@ -127,22 +165,29 @@ public class BaseComponent extends BaseResource {
    *     Component.
    */
   @JsonIgnore
-  @Property(description = "Page that the current Component lives on.  If referenced from another "
-                          + "page, will show its real parent.")
+  @KestrosProperty(description =
+                       "Page that the current Component lives on.  If referenced from another "
+                       + "page, will show its real parent.")
   @Nonnull
   public BaseContentPage getContainingPage() throws NoValidAncestorException {
+
     LOG.trace("Getting containing Page for {}", getPath());
+    if (containingPage != null) {
+      LOG.trace("Finished retrieving containing page for {}", getPath());
+      return this.containingPage;
+    }
     if (getPath().contains(JCR_CONTENT)) {
       LOG.trace("Doing fast page retrieval.");
       try {
-        final BaseContentPage containingPage = getResourceAsType(getPath().split(JCR_CONTENT)[0],
+        this.containingPage = getResourceAsType(getPath().split(JCR_CONTENT)[0],
             getResourceResolver(), BaseContentPage.class);
         LOG.trace("Finished fast page retrieval.");
-        return containingPage;
+        return this.containingPage;
       } catch (final InvalidResourceTypeException exception) {
         try {
-          return getResourceAsType(getPath().split(JCR_CONTENT)[0], getResourceResolver(),
-              BaseSite.class);
+          this.containingPage = getResourceAsType(getPath().split(JCR_CONTENT)[0],
+              getResourceResolver(), BaseSite.class);
+          return this.containingPage;
         } catch (final ModelAdaptionException exception1) {
           LOG.warn("jcr:content found for {}, but could not be adapted to a Page or Site.",
               getPath());
@@ -152,10 +197,13 @@ public class BaseComponent extends BaseResource {
       }
     }
     try {
-      return getFirstAncestorOfType(this, BaseContentPage.class);
+      LOG.trace("Finished retrieving containing page for {}", getPath());
+      this.containingPage = getFirstAncestorOfType(this, BaseContentPage.class);
+      return this.containingPage;
     } catch (final NoValidAncestorException exception) {
       try {
-        return getFirstAncestorOfType(this, BaseSite.class);
+        this.containingPage = getFirstAncestorOfType(this, BaseSite.class);
+        return this.containingPage;
       } catch (final NoValidAncestorException exception1) {
         throw new NoValidAncestorException(getPath(), BaseContentPage.class);
       }
@@ -169,7 +217,7 @@ public class BaseComponent extends BaseResource {
    * @param <T> extends BaseComponent.
    * @return All child Components.
    */
-  @Property(description = "Direct child Components.")
+  @KestrosProperty(description = "Direct child Components.")
   @JsonInclude(Include.NON_EMPTY)
   public <T extends BaseComponent> List<T> getChildren() {
     final List<T> children = new ArrayList<>();
@@ -214,7 +262,7 @@ public class BaseComponent extends BaseResource {
    * @param <T> Extends BaseComponent.
    * @return All descendent components, as their closest matching SlingModel.
    */
-  @Property(description = "All descendant Components.")
+  @KestrosProperty(description = "All descendant Components.")
   @JsonIgnore
   public <T extends BaseComponent> List<T> getAllDescendantComponents() {
     final List<T> descendantComponents = new ArrayList<>();
@@ -227,6 +275,33 @@ public class BaseComponent extends BaseResource {
     }
 
     return descendantComponents;
+  }
+
+  /**
+   * Applied inline variation CSS classes. Will need to be implemented with a component's
+   * content.html script.
+   *
+   * @return Applied inline variation CSS classes
+   */
+  @KestrosProperty(description = "All applied inline variation CSS classes")
+  @Nonnull
+  public String getAppliedInlineVariationsAsString() {
+    LOG.trace("Getting applied inline variations as String.");
+    final StringBuilder variationsStringBuilder = new StringBuilder();
+    ParentComponent parentComponent = getResource().adaptTo(ParentComponent.class);
+    if (parentComponent != null) {
+      for (final ComponentVariation variation : parentComponent.getAppliedVariations()) {
+        if (variation.isInlineVariation()) {
+          variationsStringBuilder.append(variation.getName());
+          variationsStringBuilder.append(" ");
+        }
+      }
+    }
+    if (variationsStringBuilder.length() > 1) {
+      variationsStringBuilder.setLength(variationsStringBuilder.length() - 1);
+    }
+    LOG.trace("Retrieved applied inline variations as string.");
+    return variationsStringBuilder.toString();
   }
 
   /**
@@ -307,7 +382,7 @@ public class BaseComponent extends BaseResource {
             getPath());
       }
     } catch (final PersistenceException exception) {
-      LOG.error("Unable to create ContentArea resource {} due to persistence exception.",
+      LOG.error("Unable to create ContentArea resource {} due to persistence" + " exception.",
           getPath());
     }
   }

@@ -1,28 +1,33 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *      Copyright (C) 2020  Kestros, Inc.
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package io.kestros.cms.foundation.eventlisteners.pagecachepurge;
 
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.kestros.cms.foundation.services.cache.validation.ValidationCacheService;
+import io.kestros.cms.foundation.services.componenttypecache.ComponentTypeCache;
 import io.kestros.cms.foundation.services.pagecacheservice.PageCacheService;
+import io.kestros.cms.foundation.services.scriptprovider.ComponentViewScriptResolutionCacheService;
+import io.kestros.commons.osgiserviceutils.services.cache.CacheService;
 import io.kestros.commons.osgiserviceutils.services.eventlisteners.impl.BaseCachePurgeOnResourceChangeEventListener;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
@@ -41,13 +46,13 @@ import org.osgi.service.component.annotations.Reference;
                ResourceChangeListener.CHANGES + "=PROVIDER_REMOVED",
                ResourceChangeListener.PATHS + "=/etc", ResourceChangeListener.PATHS + "=/libs",
                ResourceChangeListener.PATHS + "=/apps", ResourceChangeListener.PATHS + "=/content"})
-public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeEventListener
-    implements ResourceChangeListener {
+public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeEventListener {
 
   public static final String KESTROS_PAGE_CACHE_PURGE_SERVICE_USER = "kestros-page-cache-purge";
 
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
-  private ResourceResolverFactory resourceResolverFactory;
+  private transient ResourceResolverFactory resourceResolverFactory;
 
   @Override
   protected String getServiceUserName() {
@@ -55,8 +60,15 @@ public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeE
   }
 
   @Override
-  public List<PageCacheService> getCacheServices() {
-    return getAllOsgiServicesOfType(getComponentContext(), PageCacheService.class);
+  public List<CacheService> getCacheServices() {
+    List<CacheService> cacheServices = new ArrayList<>();
+    cacheServices.addAll(getAllOsgiServicesOfType(getComponentContext(), PageCacheService.class));
+    cacheServices.addAll(getAllOsgiServicesOfType(getComponentContext(), ComponentTypeCache.class));
+    cacheServices.addAll(getAllOsgiServicesOfType(getComponentContext(),
+        ComponentViewScriptResolutionCacheService.class));
+    cacheServices.addAll(
+        getAllOsgiServicesOfType(getComponentContext(), ValidationCacheService.class));
+    return cacheServices;
   }
 
   @Override

@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~      Copyright (C) 2020  Kestros, Inc.
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <workspaceFilter version="1.0">
 
   <filter root="/" mode="update">
@@ -8,27 +26,12 @@
     <exclude pattern="/libs/.*"/>
   </filter>
 
-  <filter root="/home">
-    <exclude pattern="/home/.*"/>
-  </filter>
-
-  <filter root="/home/users">
-    <exclude pattern="/home/users/.*"/>
-  </filter>
-
-  <filter root="/home/users/system/kestros-cms">
-    <exclude pattern="/home/users/system/kestros-cms/.*"/>
-  </filter>
-
-  <filter root="/home/users/system/kestros-cms/kestros-resource-manager"/>
-
   <filter root="/apps">
     <exclude pattern="/apps/.*"/>
   </filter>
 
   <filter root="/content/sites">
     <exclude pattern="/content/sites/.*"/>
-
   </filter>
 
   <filter root="/libs/kestros" mode="update">
@@ -38,6 +41,10 @@
   <filter root="/libs/kestros/commons" mode="update">
     <exclude pattern="/libs/kestros/commons/.*"/>
   </filter>
+
+  <filter
+    root="/libs/kestros/commons/config/org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-kestros-resource-manager"
+    mode="update"/>
 
   <filter root="/libs/kestros/commons/content-area"/>
   <filter root="/libs/kestros/commons/inherited-content-area"/>

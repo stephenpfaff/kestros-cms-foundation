@@ -1,7 +1,26 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.services.pagerenderservice.impl;
 
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.services.pagerendermethod.PageRenderMethod;
 import io.kestros.cms.foundation.services.pagerenderservice.PageRenderService;
 import java.io.IOException;
@@ -28,7 +47,8 @@ public class BasePageRenderService implements PageRenderService {
 
   private static final long serialVersionUID = 7897119235609576690L;
 
-  private ComponentContext componentContext;
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
+  private transient ComponentContext componentContext;
 
   /**
    * Activates the service.

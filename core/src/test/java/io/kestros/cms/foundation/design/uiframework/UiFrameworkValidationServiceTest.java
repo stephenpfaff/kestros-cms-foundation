@@ -1,6 +1,25 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.design.uiframework;
 
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
+import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -59,9 +78,9 @@ public class UiFrameworkValidationServiceTest {
     when(validationService.getGenericModel()).thenReturn(uiFramework);
 
     assertTrue(validationService.hasFrameworkCode().isValid());
-    assertEquals("UiFramework code must be configured.",
+    assertEquals("UiFramework code is configured.",
         validationService.hasFrameworkCode().getMessage());
-    assertEquals(ERROR, validationService.hasFrameworkCode().getType());
+    assertEquals(WARNING, validationService.hasFrameworkCode().getType());
   }
 
   @Test

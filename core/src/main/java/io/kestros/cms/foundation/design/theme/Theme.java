@@ -1,3 +1,21 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.design.theme;
 
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getParentResourceAsType;
@@ -8,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.inet.lib.less.Less;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.uilibraries.UiLibrary;
@@ -25,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * Structured UiLibrary which is built off of a specific UiFramework and can have any number of
  * defined variations.
  */
-@StructuredModel(validationService = ThemeValidationService.class)
+@KestrosModel(validationService = ThemeValidationService.class)
 @Model(adaptables = Resource.class,
        resourceType = "kes:Theme")
 @Exporter(name = "jackson",

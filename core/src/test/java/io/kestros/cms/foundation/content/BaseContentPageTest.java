@@ -1,3 +1,21 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.content;
 
 import static org.junit.Assert.assertEquals;
@@ -12,10 +30,10 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
-import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.services.KestrosUserService;
+import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
+import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -99,6 +117,19 @@ public class BaseContentPageTest {
     assertEquals("Title", baseContentPage.getDisplayTitle());
   }
 
+
+  @Test
+  public void testGetDisplayTitleWhenEmptyString() {
+    jcrContentProperties.put("jcr:title", "Title");
+    jcrContentProperties.put("displayTitle", "");
+
+    resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
+
+    baseContentPage = resource.adaptTo(BaseContentPage.class);
+
+    assertEquals("Title", baseContentPage.getDisplayTitle());
+  }
+
   @Test
   public void testGetDisplayDescription() {
     jcrContentProperties.put("displayDescription", "Display Description");
@@ -113,6 +144,18 @@ public class BaseContentPageTest {
   @Test
   public void testGetDisplayDescriptionWhenEmpty() {
     jcrContentProperties.put("jcr:description", "Description");
+
+    resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
+
+    baseContentPage = resource.adaptTo(BaseContentPage.class);
+
+    assertEquals("Description", baseContentPage.getDisplayDescription());
+  }
+
+  @Test
+  public void testGetDisplayDescriptionWhenEmptyString() {
+    jcrContentProperties.put("jcr:description", "Description");
+    jcrContentProperties.put("metaDescription", "");
 
     resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
 
@@ -144,6 +187,18 @@ public class BaseContentPageTest {
   }
 
   @Test
+  public void testGetMetaTitleWhenEmptyString() {
+    jcrContentProperties.put("jcr:title", "Title");
+    jcrContentProperties.put("metaTitle", "");
+
+    resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
+
+    baseContentPage = resource.adaptTo(BaseContentPage.class);
+
+    assertEquals("Title", baseContentPage.getMetaTitle());
+  }
+
+  @Test
   public void testGetMetaDescription() {
     jcrContentProperties.put("metaDescription", "Meta Description");
 
@@ -154,9 +209,22 @@ public class BaseContentPageTest {
     assertEquals("Meta Description", baseContentPage.getMetaDescription());
   }
 
+
   @Test
   public void testGetMetaDescriptionWhenEmpty() {
     jcrContentProperties.put("jcr:description", "Description");
+
+    resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
+
+    baseContentPage = resource.adaptTo(BaseContentPage.class);
+
+    assertEquals("Description", baseContentPage.getMetaDescription());
+  }
+
+  @Test
+  public void testGetMetaDescriptionWhenEmptyString() {
+    jcrContentProperties.put("jcr:description", "Description");
+    jcrContentProperties.put("metaDescription", "");
 
     resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
 

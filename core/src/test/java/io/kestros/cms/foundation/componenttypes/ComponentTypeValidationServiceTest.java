@@ -1,3 +1,21 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.componenttypes;
 
 import static org.junit.Assert.assertEquals;
@@ -351,93 +369,4 @@ public class ComponentTypeValidationServiceTest {
     assertEquals(ModelValidationMessageType.WARNING,
         validationService.hasFontAwesomeIcon().getType());
   }
-
-  //
-  //  @Test
-  //  @Ignore
-  //  public void testValidateWhenNotConfigured() throws Exception {
-  //    // TODO test in validation class.
-  //    resource = context.create().resource("/apps/component", componentProperties);
-  //
-  //    componentType = resource.adaptTo(ComponentType.class);
-  //
-  //    componentType.doDetailedValidation();
-  //
-  //    assertEquals(2, componentType.getErrorMessages().size());
-  //    assertEquals(2, componentType.getWarningMessages().size());
-  //  }
-  //
-  //
-  //  @Test
-  //  @Ignore
-  //  public void testValidateWhenHasTitle() throws Exception {
-  //    componentProperties.put("jcr:title", "Component Type");
-  //
-  //    resource = context.create().resource("/apps/component", componentProperties);
-  //
-  //    componentType = resource.adaptTo(ComponentType.class);
-  //
-  //    componentType.doDetailedValidation();
-  //
-  //    assertEquals("Component Type", componentType.getTitle());
-  //
-  //    assertEquals(1, componentType.getErrorMessages().size());
-  //    assertEquals(2, componentType.getWarningMessages().size());
-  //  }
-  //
-  //  @Test
-  //  @Ignore
-  //  public void testValidateWhenHasGroup() throws Exception {
-  //    // TODO test in validation class.
-  //    componentProperties.put("componentGroup", "Component Group");
-  //
-  //    resource = context.create().resource("/apps/component", componentProperties);
-  //
-  //    componentType = resource.adaptTo(ComponentType.class);
-  //
-  //    componentType.doDetailedValidation();
-  //
-  //    assertEquals("Component Group", componentType.getComponentGroup());
-  //
-  //    assertEquals(1, componentType.getErrorMessages().size());
-  //    assertEquals(2, componentType.getWarningMessages().size());
-  //  }
-  //
-  //  @Test
-  //  @Ignore
-  //  public void testValidateWhenSuperTypesParentComponent() throws Exception {
-  //    // TODO test in validation class.
-  //    componentProperties.put("sling:resourceSuperType",
-  //    "kestros/commons/components/kestros-parent");
-  //
-  //    resource = context.create().resource("/apps/component", componentProperties);
-  //
-  //    componentType = resource.adaptTo(ComponentType.class);
-  //
-  //    componentType.doDetailedValidation();
-  //
-  //    assertEquals(2, componentType.getErrorMessages().size());
-  //    assertEquals(1, componentType.getWarningMessages().size());
-  //  }
-  //
-  //  @Test
-  //  @Ignore
-  //  public void testValidateWhenBypassingUiFrameworks() throws Exception {
-  //    // TODO test in validation class.
-  //    componentProperties.put("bypassUiFrameworks", Boolean.TRUE);
-  //
-  //    resource = context.create().resource("/apps/component", componentProperties);
-  //
-  //    componentType = resource.adaptTo(ComponentType.class);
-  //
-  //    componentType.doDetailedValidation();
-  //
-  //    assertEquals(2, componentType.getErrorMessages().size());
-  //    assertEquals("Title is configured.", componentType.getErrorMessages().get(0));
-  //    assertEquals("Component Group must be configured.", componentType.getErrorMessages().get
-  //    (1));
-  //
-  //    assertEquals(2, componentType.getWarningMessages().size());
-  //  }
-
 }

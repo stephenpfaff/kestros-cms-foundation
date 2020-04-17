@@ -1,5 +1,24 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.services.pagecacheservice.impl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.componenttypes.HtmlFileType;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.services.pagecacheservice.GeneralPageCacheService;
@@ -27,14 +46,16 @@ import org.osgi.service.component.annotations.Reference;
 public class JcrFilePageCacheService extends JcrFileCacheService
     implements GeneralPageCacheService {
 
-  // todo clean up user name
-  public static final String KESTROS_PAGE_CACHE_PURGE_SERVICE_USER = "kestros-page-cache-purge";
+  public static final String KESTROS_PAGE_CACHE_PURGE_SERVICE_USER = "kestros-page-cache";
+  private static final long serialVersionUID = 7298277513481005750L;
 
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
-  private ResourceResolverFactory resourceResolverFactory;
+  private transient ResourceResolverFactory resourceResolverFactory;
 
+  @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
-  private JobManager jobManager;
+  private transient JobManager jobManager;
 
   @Override
   public String getServiceCacheRootPath() {
@@ -63,7 +84,7 @@ public class JcrFilePageCacheService extends JcrFileCacheService
 
   @Override
   protected String getCacheCreationJobName() {
-    return "jcr-file-page-cache-creation";
+    return null;
   }
 
   @Override
@@ -82,8 +103,9 @@ public class JcrFilePageCacheService extends JcrFileCacheService
       throws CacheRetrievalException {
     try {
       return getCachedFile(page.getPath() + ".html",
-          new HtmlFileType().getFileModelClass()).getOutput();
-    } catch (final IOException | ResourceNotFoundException | InvalidResourceTypeException exception) {
+          new HtmlFileType().getFileModelClass()).getFileContent();
+    } catch (final IOException | ResourceNotFoundException
+                               | InvalidResourceTypeException exception) {
       throw new CacheRetrievalException(exception.getMessage());
     }
   }

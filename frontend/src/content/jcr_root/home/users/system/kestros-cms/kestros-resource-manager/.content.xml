@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
-  jcr:primaryType="rep:SystemUser"
-  jcr:uuid="dd2edbcd-8a38-3095-92a4-7ad2a43bc7c1"
-  rep:authorizableId="kestros-resource-manager"
-  rep:principalName="kestros-resource-manager"/>

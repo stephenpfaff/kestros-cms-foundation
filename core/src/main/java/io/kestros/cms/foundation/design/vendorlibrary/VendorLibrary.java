@@ -1,3 +1,21 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.design.vendorlibrary;
 
 import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.adaptToFileType;
@@ -7,7 +25,7 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import io.kestros.cms.foundation.design.htltemplate.HtlTemplate;
 import io.kestros.cms.foundation.design.htltemplate.HtlTemplateFile;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.uilibraries.UiLibrary;
@@ -23,8 +41,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Standalone UiLibraries, which can be compiled inside of a UiFramework.
  */
-@StructuredModel(validationService = VendorLibraryValidationService.class,
-                 docPaths = {
+@KestrosModel(validationService = VendorLibraryValidationService.class,
+              docPaths = {
                      "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
                      "/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework"})
 @Model(adaptables = Resource.class,

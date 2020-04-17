@@ -1,3 +1,21 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.content.components.parentcomponent;
 
 import static io.kestros.cms.foundation.design.DesignConstants.NN_VARIATIONS;
@@ -9,12 +27,10 @@ import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
-import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
-import io.kestros.cms.foundation.services.scriptprovider.ScriptProviderService;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
@@ -34,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * Provides logic for dynamic script resolution, component variations and HTML attributes to the
  * kestros-parent wrapper component.
  */
-@StructuredModel(docPaths = {
+@KestrosModel(docPaths = {
     "/content/guide-articles/kestros-cms/foundation/extending-the-parent-component",
     "/content/guide-articles/kestros-cms/foundation/creating-new-component-types",
     "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",
@@ -51,12 +67,13 @@ public class ParentComponent extends BaseComponent {
   @OSGiService
   private ThemeProviderService themeProviderService;
 
-  @OSGiService
-  private ScriptProviderService scriptProviderService;
-
   private Theme theme;
 
   private UiFramework uiFramework;
+
+  private List<ComponentVariation> appliedComponentVariations;
+
+  private ComponentUiFrameworkView componentUiFrameworkView;
 
   /**
    * HTML element ID to give to the component.
@@ -95,34 +112,43 @@ public class ParentComponent extends BaseComponent {
   public ComponentUiFrameworkView getComponentUiFrameworkView()
       throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException,
              InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
-    LOG.trace("Getting Component UiFrameworkView.");
-    try {
-      final ComponentUiFrameworkView componentUiFrameworkView
-          = getComponentType().getComponentUiFrameworkView(getUiFramework());
-      LOG.trace("Retrieved Component UI FrameworkView.");
-      return componentUiFrameworkView;
-    } catch (final Exception exception) {
-      LOG.debug("Unable to retrieve ComponentUiFrameworkView for {}. {}.", getPath(),
-          exception.getMessage());
-      throw exception;
+
+    LOG.trace("Retrieving Component UiFrameworkView.");
+
+    if (componentUiFrameworkView != null) {
+      LOG.trace("Finished retrieving Component UI FrameworkView.");
+      return this.componentUiFrameworkView;
     }
+
+    final ComponentUiFrameworkView componentUiFrameworkView
+        = getComponentType().getComponentUiFrameworkView(getUiFramework());
+    this.componentUiFrameworkView = componentUiFrameworkView;
+    LOG.trace("Finished retrieving Component UI FrameworkView.");
+    return this.componentUiFrameworkView;
   }
 
   /**
-   * Applied ComponentVariation names, to be read by the HTML class attribute.
+   * Applied ComponentVariation names, to be read by the HTML class attribute. Only variations to be
+   * applied on the component's wrapper div are included.
    *
-   * @return Applied ComponentVariation names.
+   * @return Applied ComponentVariation names.  Only variations to be applied on the component's
+   *     wrapper div are included.
    */
   @Nonnull
-  public String getAppliedVariationsAsString() {
-    LOG.trace("Getting Applied Variations as String.");
-    final StringBuilder variationsStringBuffer = new StringBuilder();
+  public String getAppliedWrapperVariationsAsString() {
+    LOG.trace("Getting applied wrapper variations as String.");
+    final StringBuilder variationsStringBuilder = new StringBuilder();
     for (final ComponentVariation variation : getAppliedVariations()) {
-      variationsStringBuffer.append(variation.getName());
-      variationsStringBuffer.append(" ");
+      if (!variation.isInlineVariation()) {
+        variationsStringBuilder.append(variation.getName());
+        variationsStringBuilder.append(" ");
+      }
     }
-    LOG.trace("Retrieved AppliedVariations as string.");
-    return variationsStringBuffer.toString();
+    if (variationsStringBuilder.length() > 1) {
+      variationsStringBuilder.setLength(variationsStringBuilder.length() - 1);
+    }
+    LOG.trace("Retrieved applied wrapper variations as string.");
+    return variationsStringBuilder.toString();
   }
 
   /**
@@ -132,6 +158,13 @@ public class ParentComponent extends BaseComponent {
    */
   @Nonnull
   public List<ComponentVariation> getAppliedVariations() {
+    LOG.trace("Retrieving applied variations for {}", getPath());
+
+    if (appliedComponentVariations != null) {
+      LOG.trace("Finished retrieving applied variations for {}", getPath());
+      return appliedComponentVariations;
+    }
+
     final List<ComponentVariation> appliedVariations = new ArrayList<>();
     final List<String> appliedVariationNames = Arrays.asList(
         getProperties().get(NN_VARIATIONS, new String[]{}));
@@ -152,8 +185,11 @@ public class ParentComponent extends BaseComponent {
       }
     }
 
-    return appliedVariations;
+    LOG.trace("Finished retrieving applied variations for {}", getPath());
+    appliedComponentVariations = appliedVariations;
+    return appliedComponentVariations;
   }
+
 
   /**
    * The current {@link Theme} for the current Page/Component.
@@ -164,9 +200,11 @@ public class ParentComponent extends BaseComponent {
    */
   @Nullable
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
+    LOG.trace("Retrieving theme for {}.");
     if (theme == null) {
       theme = themeProviderService.getThemeForComponent(this);
     }
+    LOG.trace("Finished retrieving theme for {}.");
     return theme;
   }
 
@@ -174,40 +212,14 @@ public class ParentComponent extends BaseComponent {
     this.theme = theme;
   }
 
-  /**
-   * The path to the content.html script.
-   *
-   * @return The path to the content.html script.
-   * @throws InvalidScriptException The script was not found, or could not be adapt to
-   *     HtmlFile.
-   */
-  @Nonnull
-  public String getContentScriptPath() throws InvalidScriptException {
-    LOG.trace("Getting Content Script Path for {}", getPath());
-    final String contentScriptPath = getScriptPath("content.html");
-    LOG.trace("Retrieved Content Script Path for {}", getPath());
-    return contentScriptPath;
-  }
-
-  /**
-   * Retrieves the path to a specified script name, resolved proper to the ComponentUiFramework
-   * view.
-   *
-   * @param scriptName Script to retrieve.
-   * @return The path to a specified script.
-   * @throws InvalidScriptException The script was not found, or could not be adapt to *
-   *     HtmlFile.
-   */
-  @Nonnull
-  public String getScriptPath(final String scriptName) throws InvalidScriptException {
-    return scriptProviderService.getScriptPath(this, scriptName);
-  }
 
   private UiFramework getUiFramework()
       throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
+    LOG.trace("Retrieving UiFramework for {}", getPath());
     if (uiFramework == null) {
       uiFramework = getTheme().getUiFramework();
     }
+    LOG.trace("Finished retrieving UiFramework for {}", getPath());
     return uiFramework;
   }
 

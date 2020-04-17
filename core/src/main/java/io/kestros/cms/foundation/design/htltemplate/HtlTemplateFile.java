@@ -1,3 +1,21 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.design.htltemplate;
 
 import io.kestros.cms.foundation.componenttypes.HtmlFile;
@@ -51,7 +69,7 @@ public class HtlTemplateFile extends HtmlFile {
   public List<HtlTemplate> getTemplates() {
     final List<HtlTemplate> templates = new ArrayList<>();
     try {
-      final Document templateFile = Jsoup.parse(getOutput());
+      final Document templateFile = Jsoup.parse(getFileContent());
       templateFile.outputSettings().outline(true);
       templateFile.outputSettings().prettyPrint(false);
       for (final Node node : templateFile.child(0).childNodes().get(1).childNodes()) {

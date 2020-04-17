@@ -1,3 +1,20 @@
+<!--/*
+  ~      Copyright (C) 2020  Kestros, Inc.
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  */-->
 <sly
     data-sly-use.inheritedContentArea="${'io.kestros.cms.foundation.content.components.inheritedcontentarea.InheritedContentArea'}"
     data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
@@ -8,7 +25,7 @@
   </sly>
   <sly data-sly-test="${inheritedContentArea.rootLevelContentArea}">
     <div class="kestros-content-area">
-      <div class="component-wrapper" data-path="${contentArea.getPath}"
+      <div class="component-wrapper" data-path="${inheritedContentArea.getPath}"
            data-method="destination"></div>
 
       <div class="kestros-components" data-path="${inheritedContentArea.path}"
@@ -18,8 +35,8 @@
         </sly>
       </div>
       <div class="content-area-new-component"
-           data-create-dialog-path="${contentArea.componentType.path}/create"
-           data-resource-path="${contentArea.path}">
+           data-create-dialog-path="${inheritedContentArea.componentType.path}/create"
+           data-resource-path="${inheritedContentArea.path}">
         <p>Add Content</p>
       </div>
     </div>

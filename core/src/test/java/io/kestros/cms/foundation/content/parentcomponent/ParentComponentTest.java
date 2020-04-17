@@ -1,13 +1,28 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.content.parentcomponent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
-import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.services.scriptprovider.BaseScriptProviderService;
-import io.kestros.cms.foundation.services.scriptprovider.ScriptProviderService;
 import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
@@ -25,7 +40,7 @@ public class ParentComponentTest {
   public final SlingContext context = new SlingContext();
 
   private ThemeProviderService themeProviderService = new BaseThemeProviderService();
-  private BaseScriptProviderService baseScriptProviderService = new BaseScriptProviderService();
+
 
   private Resource resource;
 
@@ -51,7 +66,6 @@ public class ParentComponentTest {
   public void setUp() throws Exception {
     context.addModelsForPackage("io.kestros");
     context.registerService(ThemeProviderService.class, themeProviderService);
-    context.registerService(ScriptProviderService.class, baseScriptProviderService);
 
     properties.put("sling:resourceType", "my-app");
 
@@ -138,7 +152,7 @@ public class ParentComponentTest {
     assertEquals("variation-1", parentComponent.getAppliedVariations().get(0).getName());
     assertEquals("variation-2", parentComponent.getAppliedVariations().get(1).getName());
 
-    assertEquals("variation-1 variation-2 ", parentComponent.getAppliedVariationsAsString());
+    assertEquals("variation-1 variation-2", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -159,7 +173,7 @@ public class ParentComponentTest {
     parentComponent = resource.adaptTo(ParentComponent.class);
 
     assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
+    assertEquals("", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -180,7 +194,7 @@ public class ParentComponentTest {
     parentComponent = resource.adaptTo(ParentComponent.class);
 
     assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
+    assertEquals("", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -197,7 +211,7 @@ public class ParentComponentTest {
     parentComponent = resource.adaptTo(ParentComponent.class);
 
     assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
+    assertEquals("", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -215,7 +229,7 @@ public class ParentComponentTest {
     parentComponent = resource.adaptTo(ParentComponent.class);
 
     assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
+    assertEquals("", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test
@@ -239,81 +253,7 @@ public class ParentComponentTest {
 
     assertEquals(1, parentComponent.getAppliedVariations().size());
     assertEquals("variation-1", parentComponent.getAppliedVariations().get(0).getName());
-    assertEquals("variation-1 ", parentComponent.getAppliedVariationsAsString());
-  }
-
-  @Test
-  public void testGetScriptPathWhenUsingFramework() throws Exception {
-
-    pageContentProperties.put("kes:theme", "/etc/ui-frameworks/my-framework/themes/my-theme");
-
-    context.create().resource("/content/page-with-framework", pageProperties);
-    context.create().resource("/content/page-with-framework/jcr:content", pageContentProperties);
-    resource = context.create().resource("/content/page-with-framework/jcr:content/component",
-        properties);
-
-    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
-    context.create().resource("/apps/my-app/my-framework/content.html", fileProperties);
-    context.create().resource("/apps/my-app/my-framework/content.html/jcr:content",
-        fileJcrContentProperties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    assertEquals("/apps/my-app/my-framework/content.html", parentComponent.getContentScriptPath());
-  }
-
-  @Test
-  public void testGetScriptPathWhenComponentTypeMissing() {
-
-    pageContentProperties.put("kes:theme", "/etc/ui-frameworks/my-framework/themes/my-theme");
-
-    context.create().resource("/content/page-with-framework", pageProperties);
-    context.create().resource("/content/page-with-framework/jcr:content", pageContentProperties);
-
-    properties.put("sling:resourceType", "invalid-resource-type");
-    resource = context.create().resource("/content/page-with-framework/jcr:content/component",
-        properties);
-
-    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
-    context.create().resource("/apps/my-app/my-framework/content.html", fileProperties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    try {
-      parentComponent.getContentScriptPath();
-    } catch (InvalidScriptException e) {
-      exception = e;
-    }
-    assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
-                 + "'invalid-resource-type': Invalid or missing ComponentType resource.': Script "
-                 + "not found.", exception.getMessage());
-  }
-
-  @Test
-  public void testGetScriptPathWhenComponentTypeIsInvalid() {
-
-    pageContentProperties.put("kes:theme", "/etc/ui-frameworks/my-framework/themes/my-theme");
-
-    context.create().resource("/content/page-with-framework", pageProperties);
-    context.create().resource("/content/page-with-framework/jcr:content", pageContentProperties);
-
-    properties.put("sling:resourceType", "/etc/ui-frameworks/my-framework/themes/my-theme");
-    resource = context.create().resource("/content/page-with-framework/jcr:content/component",
-        properties);
-
-    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
-    context.create().resource("/apps/my-app/my-framework/content.html", fileProperties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    try {
-      assertNull(parentComponent.getContentScriptPath());
-    } catch (InvalidScriptException e) {
-      exception = e;
-    }
-    assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
-                 + "'/etc/ui-frameworks/my-framework/themes/my-theme': Invalid or missing "
-                 + "ComponentType " + "resource.': Script not found.", exception.getMessage());
+    assertEquals("variation-1", parentComponent.getAppliedWrapperVariationsAsString());
   }
 
   @Test

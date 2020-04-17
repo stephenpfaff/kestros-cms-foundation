@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~      Copyright (C) 2020  Kestros, Inc.
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -27,24 +45,6 @@
       <plugin>
         <groupId>org.apache.jackrabbit</groupId>
         <artifactId>filevault-package-maven-plugin</artifactId>
-        <version>1.0.3</version>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate-metadata</goal>
-              <goal>package</goal>
-              <goal>analyze-classes</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <packageType>mixed</packageType>
-          <failOnMissingEmbed>true</failOnMissingEmbed>
-          <accessControlHandling>merge</accessControlHandling>
-          <allowIndexDefinitions>true</allowIndexDefinitions>
-          <filterSource>${basedir}/src/content/META-INF/vault/filter.xml</filterSource>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.sling</groupId>

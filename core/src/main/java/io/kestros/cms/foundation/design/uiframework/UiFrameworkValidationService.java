@@ -1,8 +1,27 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.foundation.design.uiframework;
 
 import static io.kestros.cms.foundation.design.DesignConstants.THEME_PRIMARY_TYPE;
 import static io.kestros.cms.foundation.utils.DesignUtils.getAllUiFrameworks;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
+import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
@@ -11,7 +30,6 @@ import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessag
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidatorBundle;
 import io.kestros.commons.uilibraries.UiLibraryValidationService;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Model Validation service for UiFrameworks.
@@ -36,17 +54,17 @@ public class UiFrameworkValidationService extends UiLibraryValidationService {
     return new ModelValidator() {
       @Override
       public boolean isValid() {
-        return StringUtils.isNotEmpty(getModel().getFrameworkCode());
+        return !"common".equals(getModel().getFrameworkCode());
       }
 
       @Override
       public String getMessage() {
-        return "UiFramework code must be configured.";
+        return "UiFramework code is configured.";
       }
 
       @Override
       public ModelValidationMessageType getType() {
-        return ERROR;
+        return WARNING;
       }
     };
   }
@@ -151,12 +169,13 @@ public class UiFrameworkValidationService extends UiLibraryValidationService {
     return new ModelValidator() {
       @Override
       public boolean isValid() {
-        for (final UiFramework framework : getAllUiFrameworks(getModel().getResourceResolver(), true,
-            false)) {
+        for (final UiFramework framework : getAllUiFrameworks(getModel().getResourceResolver(),
+            true, false)) {
           if (!framework.getPath().equals(getModel().getPath()) && (framework.getName().equals(
               getModel().getName()) || framework.getFrameworkCode().equals(getModel().getName())
-              || framework.getName().equals(getModel().getFrameworkCode())
-              || framework.getFrameworkCode().equals(getModel().getFrameworkCode()))) {
+                                                                    || framework.getName().equals(
+              getModel().getFrameworkCode()) || framework.getFrameworkCode().equals(
+              getModel().getFrameworkCode()))) {
             return false;
           }
         }
