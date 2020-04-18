@@ -277,32 +277,6 @@ public class BaseComponent extends BaseResource {
     return descendantComponents;
   }
 
-  /**
-   * Applied inline variation CSS classes. Will need to be implemented with a component's
-   * content.html script.
-   *
-   * @return Applied inline variation CSS classes
-   */
-  @KestrosProperty(description = "All applied inline variation CSS classes")
-  @Nonnull
-  public String getAppliedInlineVariationsAsString() {
-    LOG.trace("Getting applied inline variations as String.");
-    final StringBuilder variationsStringBuilder = new StringBuilder();
-    ParentComponent parentComponent = getResource().adaptTo(ParentComponent.class);
-    if (parentComponent != null) {
-      for (final ComponentVariation variation : parentComponent.getAppliedVariations()) {
-        if (variation.isInlineVariation()) {
-          variationsStringBuilder.append(variation.getName());
-          variationsStringBuilder.append(" ");
-        }
-      }
-    }
-    if (variationsStringBuilder.length() > 1) {
-      variationsStringBuilder.setLength(variationsStringBuilder.length() - 1);
-    }
-    LOG.trace("Retrieved applied inline variations as string.");
-    return variationsStringBuilder.toString();
-  }
 
   /**
    * The current component's path, with characters escaped.

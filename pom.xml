@@ -67,12 +67,12 @@
       <dependency>
         <groupId>io.kestros.commons</groupId>
         <artifactId>kestros-sling-ui-libraries-core</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
       </dependency>
       <dependency>
         <groupId>io.kestros.cms</groupId>
         <artifactId>kestros-user-foundation-core</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2</version>
       </dependency>
       <dependency>
         <groupId>de.inetsoftware</groupId>
