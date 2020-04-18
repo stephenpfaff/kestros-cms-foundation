@@ -1,0 +1,8 @@
+{
+  "sling:resourceType": "sling:redirect",
+  "sling:target": "/kestros/beta.html",
+  "content": {
+    "sling:resourceType": "sling:redirect",
+    "sling:target": "/kestros/beta.html"
+  }
+}
