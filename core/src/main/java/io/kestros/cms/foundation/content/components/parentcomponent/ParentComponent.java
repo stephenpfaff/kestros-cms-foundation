@@ -18,24 +18,13 @@
 
 package io.kestros.cms.foundation.content.components.parentcomponent;
 
-import static io.kestros.cms.foundation.design.DesignConstants.NN_VARIATIONS;
-
-import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
-import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
 import io.kestros.cms.foundation.content.BaseComponent;
 import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
-import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
-import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
-import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -71,10 +60,6 @@ public class ParentComponent extends BaseComponent {
 
   private UiFramework uiFramework;
 
-  private List<ComponentVariation> appliedComponentVariations;
-
-  private ComponentUiFrameworkView componentUiFrameworkView;
-
   /**
    * HTML element ID to give to the component.
    *
@@ -96,102 +81,6 @@ public class ParentComponent extends BaseComponent {
   }
 
   /**
-   * Retrieves the ComponentUiFramework the current Component will use to render.
-   *
-   * @return The ComponentUiFramework the current Component will use to render
-   * @throws InvalidComponentUiFrameworkViewException ComponentUiFramework could not be found,
-   *     or failed adaption.
-   * @throws InvalidComponentTypeException ComponentType could not be found, or failed
-   *     adaption.
-   * @throws InvalidThemeException Theme could not be found, or failed adaption.
-   * @throws InvalidUiFrameworkException UiFramework for the current component failed
-   *     adaptation.
-   * @throws ResourceNotFoundException UiFramework for the current component could not be
-   *     found.
-   */
-  public ComponentUiFrameworkView getComponentUiFrameworkView()
-      throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException,
-             InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
-
-    LOG.trace("Retrieving Component UiFrameworkView.");
-
-    if (componentUiFrameworkView != null) {
-      LOG.trace("Finished retrieving Component UI FrameworkView.");
-      return this.componentUiFrameworkView;
-    }
-
-    final ComponentUiFrameworkView componentUiFrameworkView
-        = getComponentType().getComponentUiFrameworkView(getUiFramework());
-    this.componentUiFrameworkView = componentUiFrameworkView;
-    LOG.trace("Finished retrieving Component UI FrameworkView.");
-    return this.componentUiFrameworkView;
-  }
-
-  /**
-   * Applied ComponentVariation names, to be read by the HTML class attribute. Only variations to be
-   * applied on the component's wrapper div are included.
-   *
-   * @return Applied ComponentVariation names.  Only variations to be applied on the component's
-   *     wrapper div are included.
-   */
-  @Nonnull
-  public String getAppliedWrapperVariationsAsString() {
-    LOG.trace("Getting applied wrapper variations as String.");
-    final StringBuilder variationsStringBuilder = new StringBuilder();
-    for (final ComponentVariation variation : getAppliedVariations()) {
-      if (!variation.isInlineVariation()) {
-        variationsStringBuilder.append(variation.getName());
-        variationsStringBuilder.append(" ");
-      }
-    }
-    if (variationsStringBuilder.length() > 1) {
-      variationsStringBuilder.setLength(variationsStringBuilder.length() - 1);
-    }
-    LOG.trace("Retrieved applied wrapper variations as string.");
-    return variationsStringBuilder.toString();
-  }
-
-  /**
-   * List of ComponentVariations applied to the current Component.
-   *
-   * @return List of ComponentVariations applied to the current Component.
-   */
-  @Nonnull
-  public List<ComponentVariation> getAppliedVariations() {
-    LOG.trace("Retrieving applied variations for {}", getPath());
-
-    if (appliedComponentVariations != null) {
-      LOG.trace("Finished retrieving applied variations for {}", getPath());
-      return appliedComponentVariations;
-    }
-
-    final List<ComponentVariation> appliedVariations = new ArrayList<>();
-    final List<String> appliedVariationNames = Arrays.asList(
-        getProperties().get(NN_VARIATIONS, new String[]{}));
-
-    if (!appliedVariationNames.isEmpty()) {
-      try {
-        final ComponentUiFrameworkView uiFrameworkView = getComponentUiFrameworkView();
-        for (final String appliedVariation : appliedVariationNames) {
-          for (final ComponentVariation variation : uiFrameworkView.getVariations()) {
-            if (variation.getPath().equals(appliedVariation) || variation.getName().equals(
-                appliedVariation)) {
-              appliedVariations.add(variation);
-            }
-          }
-        }
-      } catch (final ModelAdaptionException exception) {
-        LOG.warn("Unable to variations list for {}. {}", getPath(), exception.getMessage());
-      }
-    }
-
-    LOG.trace("Finished retrieving applied variations for {}", getPath());
-    appliedComponentVariations = appliedVariations;
-    return appliedComponentVariations;
-  }
-
-
-  /**
    * The current {@link Theme} for the current Page/Component.
    *
    * @return The current Theme.
@@ -211,17 +100,5 @@ public class ParentComponent extends BaseComponent {
   protected void setTheme(final Theme theme) {
     this.theme = theme;
   }
-
-
-  private UiFramework getUiFramework()
-      throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
-    LOG.trace("Retrieving UiFramework for {}", getPath());
-    if (uiFramework == null) {
-      uiFramework = getTheme().getUiFramework();
-    }
-    LOG.trace("Finished retrieving UiFramework for {}", getPath());
-    return uiFramework;
-  }
-
 
 }
