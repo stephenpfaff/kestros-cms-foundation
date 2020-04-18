@@ -299,51 +299,24 @@
       text-align: center;
     }
 
-    /*.loader-bar {*/
-    /*  width: 50%;*/
-    /*  height: 4px;*/
-    /*  background: #0065ff;*/
-    /*  margin: 2em auto;*/
-    /*  position: relative;*/
-    /*  overflow: hidden;*/
-    /*}*/
-
-    /*.loader-bar::after {*/
-    /*  content: '';*/
-    /*  position: absolute;*/
-    /*  height: 100%;*/
-    /*  width: 50%;*/
-    /*  background: #00bfff;*/
-    /*  animation: progress 3s infinite linear;*/
-    /*}*/
-
-    /*@-webkit-keyframes progress {*/
-    /*  0% {*/
-    /*    left: 0;*/
-    /*    transform: translateX(-100%);*/
-    /*  }*/
-    /*  100% {*/
-    /*    left: 100%;*/
-    /*    transform: translateX(0%);*/
-    /*  }*/
-    /*}*/
-
     .loader-bar {
       width: 50%;
-      height: 6px;
-      background: #0087ff;
+      height: 4px;
+      background: #2a4bff;
       margin: 2em auto;
       position: relative;
       overflow: hidden;
     }
+
     .loader-bar::after {
       content: '';
       position: absolute;
       height: 100%;
-      width: 50%;
-      background: linear-gradient(90deg, rgba(0,135,255,1) 0%, rgba(0,191,255,1) 50%, rgba(0,135,255,1) 100%);
+      width: 75%;
+      background: linear-gradient(90deg, rgba(42, 75, 255, 1) 0%, rgba(126, 223, 255, 1) 33%, rgba(126, 223, 255, 1) 66%, rgba(42, 75, 255, 1) 100%);
       animation: progress 3s infinite linear;
     }
+
     @-webkit-keyframes progress {
       0% {
         left: 0;
@@ -381,9 +354,9 @@
 <div class='col col-align-middle'></div>
 <pre></pre>
 <script>
-  // window.setTimeout(() => {
-  //   window.location.reload();
-  // }, 5000)
+  window.setTimeout(() => {
+    window.location.reload();
+  }, 5000)
 </script>
 </body>
 </body>
