@@ -48,10 +48,12 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>startup</module>
     <module>users</module>
     <module>core</module>
     <module>frontend</module>
     <module>docs</module>
+    <module>beta-start-page</module>
   </modules>
 
   <dependencyManagement>
