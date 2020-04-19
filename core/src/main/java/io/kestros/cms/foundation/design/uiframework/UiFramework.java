@@ -69,8 +69,13 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Structured UiLibrary, which compiles CSS and JS script from VendorLibraries, script that belong
- * to it, and ComponentUiFrameworkViews that match its framework code.
+ * <p>
+ * Structured UiLibrary, which determines the HTML a requested Component will render.
+ * </p>
+ * <p>
+ * Compiles CSS, JS and HTL templates from: Vendor Libraries, ComponentUiFrameworkViews, and
+ * itself.
+ * </p>
  */
 @KestrosModel(validationService = UiFrameworkValidationService.class,
               docPaths = {"/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework",
@@ -315,9 +320,8 @@ public class UiFramework extends UiLibrary {
   private List<ComponentType> getAllComponentTypesInDirectory(@Nonnull final String path) {
     if (componentTypeCache != null) {
       try {
-        return SlingModelUtils.getResourcesAsType(
-            componentTypeCache.getCachedComponentTypes(path), getResourceResolver(),
-            ComponentType.class);
+        return SlingModelUtils.getResourcesAsType(componentTypeCache.getCachedComponentTypes(path),
+            getResourceResolver(), ComponentType.class);
       } catch (CacheRetrievalException e) {
         LOG.debug(e.getMessage());
       }

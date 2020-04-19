@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~      Copyright (C) 2020  Kestros, Inc.
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  jcr:primaryType="kes:GuideArticle">
+  <jcr:content jcr:primaryType="nt:unstructured"
+    jcr:title="Creating a New Project"
+    group="Getting Started"
+    sling:resourceType="kestros/components/guides/pages/guide-article">
+    <content jcr:primaryType="nt:unstructured"
+      sling:resourceType="kestros/commons/components/content-area">
+      <generate-project jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/structure/container">
+        <content-area jcr:primaryType="nt:unstructured"
+          sling:resourceType="kestros/commons/components/content-area">
+          <heading jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/heading"
+            text="Generate a New Project from the Kestros Archetype"
+            level="h2"/>
+          <intro-text jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/text"
+            text="Use the Kestros Project Archetype to generate a new project:"/>
+
+          <generate-code jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/code"
+            text="mvn archetype:generate \\ \\n-DarchetypeGroupId=io.kestros.cms.archetypes \\ \\n-DarchetypeArtifactId=kestros-project-archetype \\ \\n-DarchetypeVersion=0.0.1-SNAPSHOT"/>
+          <included-heading jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/heading"
+            text="What's Included"
+            level="h2"/>
+          <included-list jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;Your project is generated with the following sample content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;#vendor-library&quot;&gt;Vendor Library&lt;/a&gt;&lt;li&gt;&lt;a href=&quot;#ui-framework&quot;&gt;UI Framework&lt;/a&gt;&lt;li&gt;&lt;a href=&quot;#component-type&quot;&gt;Component Type&lt;/a&gt;&lt;/ul&gt;"/>
+          <vendor-library-heading jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/heading"
+            text="Vendor Library"
+            level="h3"
+            id="vendor-library"/>
+          <vendor-library-description jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/text"
+            text="Modular UI Libraries containing CSS, JS, assets and HTL templates, which can be compiled into any number of UI Frameworks."/>
+          <vendor-library-location jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;Vendor Libraries must live under the &lt;code&gt;/etc/vendor-libraries&lt;/code&gt; resource. Your sample Vendor Library is generated at &lt;code&gt;/etc/vendor-libraries/{artifact-id}&lt;/code&gt;.&lt;/p&gt;"/>
+          <vendor-library-learn-more jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;&lt;a href=&quot;#&quot;&gt;Learn More&lt;/a&gt;&lt;/p&gt;"/>
+          <ui-framework-heading jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/heading"
+            text="UI Framework"
+            level="h3"
+            id="ui-framework"/>
+          <ui-framework-description jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/text"
+            text="Structured UiLibrary, which determines the HTML a requested Component will render. Compiles CSS, JS and HTL templates from: Vendor Libraries, Component UI Framework Views, and itself."/>
+          <ui-framework-location jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;UI Frameworks must live under the &lt;code&gt;/etc/ui-frameworks&lt;/code&gt; resource. Your sample UI Framework is generated at &lt;code&gt;/etc/ui-frameworks/{artifact-id}&lt;/code&gt;, and has been configured with, but is not limited to, your sample Vendor Library.&lt;/p&gt;"/>
+          <ui-framework-learn-more jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;&lt;a href=&quot;#&quot;&gt;Learn More&lt;/a&gt;&lt;/p&gt;"/>
+          <component-type-heading jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/heading"
+            text="Component Type"
+            level="h3"
+            id="component-type"/>
+          <component-type-description jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/text"
+            text="Determines the HTML that content resources will render. Can be configured with a unique view per UI Framework."/>
+          <component-type-location jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;ComponentTypes generally live under a project's &lt;code&gt;/apps&lt;/code&gt; folder. Your sample ComponentType is generated at &lt;code&gt;/apps/{artifact-id}/components/content/sample-component&lt;/code&gt;, and has been configured with a view for your sample UI Framework.&lt;/p&gt;"/>
+          <component-type-learn-more jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;&lt;a href=&quot;#&quot;&gt;Learn More&lt;/a&gt;&lt;/p&gt;"/>
+
+          <install-heading jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/heading"
+            text="Installing Your Project"
+            level="h2"/>
+          <install-text jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/text"
+            text="To install your generated site, run the following from your generated project:"/>
+          <install-code jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/code"
+            text="mvn clean install -P,installPackage,installBundle,installContent"/>
+          <install-content-warning jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/alert"
+            text="* installContent will overwrite all of your site's content"
+            variations="[alert-warning]"/>
+          <go-to-new-site jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;Your new site is now available at &lt;code&gt;localhost:8080/content/sites/{artifact-id}.html&lt;/code&gt;&lt;/p&gt;"/>
+        </content-area>
+      </generate-project>
+    </content>
+  </jcr:content>
+</jcr:root>

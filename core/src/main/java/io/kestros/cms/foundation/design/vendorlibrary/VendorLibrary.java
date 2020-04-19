@@ -39,12 +39,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Standalone UiLibraries, which can be compiled inside of a UiFramework.
+ * Modular UI Libraries containing CSS, JS, assets and HTL templates, which can be compiled into any
+ * number of UiFrameworks.
  */
 @KestrosModel(validationService = VendorLibraryValidationService.class,
               docPaths = {
-                     "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
-                     "/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework"})
+                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
+                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework"})
 @Model(adaptables = Resource.class,
        resourceType = {"kes:VendorLibrary"})
 @Exporter(name = "jackson",
