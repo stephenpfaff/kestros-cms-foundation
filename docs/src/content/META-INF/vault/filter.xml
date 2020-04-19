@@ -27,20 +27,21 @@
     <exclude pattern="/content/guide-articles/kestros/getting-started/.*"/>
   </filter>
 
+  <filter root="/content/guide-articles/kestros/getting-started/component-variations"/>
   <filter root="/content/guide-articles/kestros/getting-started/creating-a-new-project"/>
   <filter root="/content/guide-articles/kestros/getting-started/development-environment"/>
-  <filter root="/content/guide-articles/kestros/getting-started/extending-basic-components"/>
+  <filter root="/content/guide-articles/kestros/getting-started/extend-basic-components"/>
   <filter root="/content/guide-articles/kestros/getting-started/installation"/>
   <filter root="/content/guide-articles/kestros/getting-started/new-component-types"/>
   <filter root="/content/guide-articles/kestros/getting-started/updating-designs"/>
-  <filter root="/content/guide-articles/kestros/getting-started/validating-components"/>
+  <!--  <filter root="/content/guide-articles/kestros/getting-started/validating-components"/>-->
 
-  <filter root="/content/guide-articles/kestros/sling/structured-models"/>
+  <!--  <filter root="/content/guide-articles/kestros/sling/structured-models"/>-->
 
-  <filter root="/content/guide-articles/kestros/ui-frameworks"/>
+  <!--  <filter root="/content/guide-articles/kestros/ui-frameworks"/>-->
 
-  <filter root="/content/guide-articles/kestros/components"/>
+  <!--  <filter root="/content/guide-articles/kestros/components"/>-->
 
-  <filter root="/content/guide-articles/kestros/contributing-to-kestros"/>
+  <!--  <filter root="/content/guide-articles/kestros/contributing-to-kestros"/>-->
 
 </workspaceFilter>

@@ -26,6 +26,90 @@
     <content jcr:primaryType="nt:unstructured"
       sling:resourceType="kestros/commons/components/content-area">
 
+      <component-type-resource-heading jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="Creating the Component Type Resource"
+        level="h2"/>
+      <component-type-resource-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="&lt;p&gt;To create a new Component Type, first create a folder with the desired resource name under your project's &lt;code&gt;components&lt;/code&gt; directory. For this example, lets create &lt;code&gt;my-first-component&lt;/code&gt; under &lt;code&gt;frontend/src/content/jcr_root/apps/${artifactId}/components&lt;/code&gt; and create a &lt;code&gt;.content.xml&lt;/code&gt; file with the following configuration:&lt;/p&gt;"/>
+      <component-type-resource-code jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/code"
+        text="&lt;jcr:root\\n    xmlns:sling=&quot;http://sling.apache.org/jcr/sling/1.0&quot;\\n    xmlns:jcr=&quot;http://www.jcp.org/jcr/1.0&quot;\\n    jcr:primaryType=&quot;kes:ComponentType&quot;\\n    jcr:title=&quot;My First Component&quot;\\n    jcr:description=&quot;My first component!&quot;\\n    componentGroup=&quot;Content Components&quot;\\n    sling:resourceSuperType=&quot;kestros/commons/components/kestros-parent&quot;/&gt;"/>
+
+      <new-component-type-final-screenshot-grid
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/structure/grid"
+        columns="2">
+        <column-1
+          jcr:primaryType="nt:unstructured"
+          sling:resourceType="kestros/commons/components/content-area">
+          <component-views-heading jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/heading"
+            text="Component Views"
+            level="h3"/>
+          <component-views-text jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;Once your new component has been added, you will need to either provide a &lt;code&gt;common&lt;/code&gt; view, or a view for your UI Framework.  The &lt;code&gt;common&lt;/code&gt; view will be used whenever a request is made for a UI Framework view that doesn't exist. For example, most sites will not need to provide a custom view for the Text component, so falling back to &lt;code&gt;common&lt;/code&gt; is desirable. Let's set up a common view and a view for your new UI Framework&lt;/p&gt;"/>
+          <component-views-common-text jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;Let's give the &lt;code&gt;common&lt;/code&gt; view the following HTML in its &lt;code&gt;content.html&lt;/code&gt;:&lt;/p&gt;"/>
+          <component-views-common-framework jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/code"
+            text="&lt;p&gt;This is the common view!&lt;/p&gt;"/>
+          <component-views-framework-text jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/richtext"
+            text="&lt;p&gt;Let's give the &lt;code&gt;my-view&lt;/code&gt; view the following HTML in its &lt;code&gt;content.html&lt;/code&gt;:&lt;/p&gt;"/>
+          <component-views-framework-framework
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/code"
+            text="&lt;p&gt;This is the my-first-ui-framework view!&lt;/p&gt;"/>
+        </column-1>
+        <column-2
+          jcr:primaryType="nt:unstructured"
+          sling:resourceType="kestros/commons/components/content-area">
+          <new-component-type-final-screenshot
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="kestros/commons/components/content/image"
+            imagePath="/content/guide-articles/kestros/getting-started/new-component-types/_jcr_content/content/new-component-type-final-screenshot-grid/column-2/new-component-type-final-screenshot/image"/>
+        </column-2>
+
+      </new-component-type-final-screenshot-grid>
+
+      <adding-sling-model-heading jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="Adding a Sling Model"
+        level="h2"/>
+      <adding-sling-model-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="&lt;p&gt;In order to build logic into your Component Type, you will need to create a new &lt;a href=&quot;https://sling.apache.org/documentation/bundles/models.html&quot;&gt;Sling Model&lt;/a&gt;. Create one for your new Component Type at &lt;code&gt;core/src/main/java/${package}/${artifact}/components/myfirstcomponent/MyFirstComponent.java&lt;/code&gt;.&lt;/p&gt;"/>
+      <adding-sling-model-code jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/code"
+        text="import io.kestros.cms.foundation.content.BaseComponent;\\nimport org.apache.commons.lang3.StringUtils;  \\nimport org.apache.sling.api.resource.Resource;\\nimport org.apache.sling.models.annotations.Model;\\n\\n@Model(adaptables = Resource.class,\\n       resourceType = &quot;${artifactId}/components/content/my-first-component&quot;)\\npublic class MyFirstComponent extends BaseComponent {\\n\\n    public String getText() {\\n        return getProperty(&quot;text&quot;, StringUtils.EMPTY);\\n    }\\n}"
+        language="java"/>
+      <calling-sling-model-heading jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="Using the Sling Model"
+        level="h3"/>
+      <calling-sling-model-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/text"
+        text="Now that the new Sling Model has been created, we can update the Component Type views to use it:"/>
+      <calling-sling-model-code jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/code"
+        text="&lt;sly data-sly-use.myFirstComponent=&quot;${'${groupId}.{artifactId}.components.myfirstcomponent.MyFirstComponent'}&quot;/&gt;\\n\\n&lt;p&gt;${myFirstComponent.text}&lt;/p&gt;"/>
+
+      <creating-components-heading jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="Creating Components"
+        level="h2"/>
+      <creating-components-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="&lt;p&gt;Now we can create a Component using our new Component Type.  Within &lt;code&gt;content/src/content/jcr_root/content/sites/${artifactId}/sites/.content.xml&lt;/code&gt; add the following to the &lt;code&gt;main&lt;/code&gt; content-area resource:&lt;/p&gt;"/>
+      <creating-components-code jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/code"
+        text="&lt;my-first-component\\n    jcr:primaryType=&quot;nt:unstructured&quot;\\n    sling:resourceType=&quot;${artifactId}/components/content/my-first-component&quot;\\n    text=&quot;Hello World!&quot;/&gt;"/>
+
+
     </content>
   </jcr:content>
 </jcr:root>

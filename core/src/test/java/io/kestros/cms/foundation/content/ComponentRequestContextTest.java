@@ -111,7 +111,7 @@ public class ComponentRequestContextTest {
     assertEquals("variation-2", componentRequestContext.getAppliedVariations().get(1).getName());
 
     assertEquals("variation-1 variation-2",
-        componentRequestContext.getAppliedWrapperVariationsAsString());
+        componentRequestContext.getWrapperVariations());
   }
 
   @Test
@@ -133,7 +133,7 @@ public class ComponentRequestContextTest {
     componentRequestContext = context.request().adaptTo(ComponentRequestContext.class);
 
     assertEquals(0, componentRequestContext.getAppliedVariations().size());
-    assertEquals("", componentRequestContext.getAppliedWrapperVariationsAsString());
+    assertEquals("", componentRequestContext.getWrapperVariations());
   }
 
   @Test
@@ -155,7 +155,7 @@ public class ComponentRequestContextTest {
     componentRequestContext = context.request().adaptTo(ComponentRequestContext.class);
 
     assertEquals(0, componentRequestContext.getAppliedVariations().size());
-    assertEquals("", componentRequestContext.getAppliedWrapperVariationsAsString());
+    assertEquals("", componentRequestContext.getWrapperVariations());
   }
 
   @Test
@@ -173,7 +173,7 @@ public class ComponentRequestContextTest {
     componentRequestContext = context.request().adaptTo(ComponentRequestContext.class);
 
     assertEquals(0, componentRequestContext.getAppliedVariations().size());
-    assertEquals("", componentRequestContext.getAppliedWrapperVariationsAsString());
+    assertEquals("", componentRequestContext.getWrapperVariations());
   }
 
   @Test
@@ -192,7 +192,7 @@ public class ComponentRequestContextTest {
     componentRequestContext = context.request().adaptTo(ComponentRequestContext.class);
 
     assertEquals(0, componentRequestContext.getAppliedVariations().size());
-    assertEquals("", componentRequestContext.getAppliedWrapperVariationsAsString());
+    assertEquals("", componentRequestContext.getWrapperVariations());
   }
 
   @Test
@@ -217,7 +217,7 @@ public class ComponentRequestContextTest {
 
     assertEquals(1, componentRequestContext.getAppliedVariations().size());
     assertEquals("variation-1", componentRequestContext.getAppliedVariations().get(0).getName());
-    assertEquals("variation-1", componentRequestContext.getAppliedWrapperVariationsAsString());
+    assertEquals("variation-1", componentRequestContext.getWrapperVariations());
   }
 
   @Test

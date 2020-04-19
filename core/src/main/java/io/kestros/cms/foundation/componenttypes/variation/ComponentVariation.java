@@ -47,7 +47,7 @@ public class ComponentVariation extends UiLibrary {
   @KestrosProperty(description =
                        "When set to true, the variation will not be added to a component's "
                        + "wrapper div when applied, and must be included in the component's "
-                       + "content script using appliedInlineVariationsAsString.",
+                       + "content script using inlineVariations.",
                    jcrPropertyName = "inline",
                    configurable = true,
                    defaultValue = "false",
