@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~      Copyright (C) 2020  Kestros, Inc.
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  jcr:primaryType="kes:GuideArticle">
+  <jcr:content jcr:primaryType="nt:unstructured"
+    jcr:title="Creating a New Project"
+    group="Getting Started"
+    sling:resourceType="kestros/components/guides/pages/guide-article">
+    <content jcr:primaryType="nt:unstructured"
+      sling:resourceType="kestros/commons/components/content-area">
+      <component-variations-heading jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="Component Variations"
+        level="h2"/>
+      <component-variations-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="&lt;p&gt;Variations provide optional styles or scripts to a baseline Component View. Any number or combination of Variations can be applied to a Component.  Variations can be configured in one of two ways: &lt;/p&gt;&lt;ul&gt;&lt;li&gt;Wrapper Variations&lt;/li&gt;&lt;li&gt;Inline Variations&lt;/li&gt;&lt;/ul&gt;"/>
+      <component-variations-folder jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="&lt;p&gt;Before creating any variations, you will need to add a &lt;code&gt;variations&lt;/code&gt; folder under your Component View.&lt;/p&gt;"/>
+
+      <wrapping-variations-heading jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="Wrapping Variations"
+        level="h3"/>
+      <wrapping-variations-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="&lt;p&gt;Wrapper Variations automatically apply the variation's class to a Component's wrapping DOM element when applied. These variations generally need their own CSS and/or JS to be added, which works the same as &lt;a href=&quot;/docs/getting-started/updating-your-designs.html#vendor-library-css-js&quot;&gt;Vendor Libraries&lt;/a&gt;.&lt;/p&gt;"/>
+      <wrapping-variations-code jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/code"
+        text="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;\\n&lt;jcr:root\\n    xmlns:jcr=&quot;http://www.jcp.org/jcr/1.0&quot;\\n    jcr:primaryType=&quot;kes:ComponentVariation&quot;\\n    jcr:title=&quot;Center&quot;\\n    inline=&quot;false&quot;/&gt;"/>
+      <inline-variations-heading jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="Inline Variations"
+        level="h3"/>
+      <inline-variations-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="&lt;p&gt;Inline Variations can be used when the variation classes are already provided by the UI Framework's CSS/JS. When creating you Variation folder, make sure that the folder name matches the desired class.&lt;/p&gt;"/>
+      <inline-variations-code jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/code"
+        text="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;\\n&lt;jcr:root\\n    xmlns:jcr=&quot;http://www.jcp.org/jcr/1.0&quot;\\n    jcr:primaryType=&quot;kes:ComponentVariation&quot;\\n    jcr:title=&quot;Center&quot;\\n    inline=&quot;false&quot;/&gt;"/>
+      <inline-variations-component-heading jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="Configuring Components to Use Inline Variations"
+        level="h3"/>
+      <inline-variations-component-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="&lt;p&gt;Since Inline Variations are not automatically applied to a Component's wrapping HTML, Component Views should be manually call the &lt;code&gt;inlineVariations&lt;/code&gt; property of &lt;code&gt;ComponentRequestContext&lt;/code&gt;, like the following:&lt;/p&gt;"/>
+      <inline-variations-component-code jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/code"
+        text="&lt;sly\\n    data-sly-use.link=&quot;${'io.kestros.cms.components.basic.content.button.Button'}&quot;\\n    data-sly-use.context=&quot;${'io.kestros.cms.foundation.content.ComponentRequestContext'}&quot;/&gt;\\n\\n&lt;button href=&quot;${button.link}&quot; class=&quot;my-button-class ${context.inlineVariations}&quot;&gt;${button.text}&lt;/button&gt;"
+        language="html"/>
+    </content>
+  </jcr:content>
+</jcr:root>
