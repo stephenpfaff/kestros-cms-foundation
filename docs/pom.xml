@@ -33,6 +33,8 @@
 
   <name>Kestros Content Management System Foundation - Docs Package</name>
 
+  <packaging>content-package</packaging>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.sling</groupId>

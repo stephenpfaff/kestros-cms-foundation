@@ -28,10 +28,11 @@
     <version>0.0.1</version>
   </parent>
 
-  <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-cms-foundation-users</artifactId>
 
   <name>Kestros Content Management System Foundation - Users Package</name>
+
+  <packaging>content-package</packaging>
 
   <build>
     <resources>
