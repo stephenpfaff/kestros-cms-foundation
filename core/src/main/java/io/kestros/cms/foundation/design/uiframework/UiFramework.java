@@ -37,14 +37,17 @@ import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.design.vendorlibrary.VendorLibrary;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.cache.htltemplate.HtlTemplateCacheService;
+import io.kestros.cms.foundation.services.componenttypecache.ComponentTypeCache;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.Property;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
 import java.io.Serializable;
@@ -66,14 +69,18 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Structured UiLibrary, which compiles CSS and JS script from VendorLibraries, script that belong
- * to it, and ComponentUiFrameworkViews that match its framework code.
+ * <p>
+ * Structured UiLibrary, which determines the HTML a requested Component will render.
+ * </p>
+ * <p>
+ * Compiles CSS, JS and HTL templates from: Vendor Libraries, ComponentUiFrameworkViews, and
+ * itself.
+ * </p>
  */
-@StructuredModel(validationService = UiFrameworkValidationService.class,
-                 docPaths = {
-                     "/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework",
-                     "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
-                     "/content/guide-articles/kestros/ui-frameworks/creating-themes"})
+@KestrosModel(validationService = UiFrameworkValidationService.class,
+              docPaths = {"/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework",
+                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
+                  "/content/guide-articles/kestros/ui-frameworks/creating-themes"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:UiFramework")
 @Exporter(name = "jackson",
@@ -88,6 +95,10 @@ public class UiFramework extends UiLibrary {
   @Optional
   HtlTemplateCacheService htlTemplateCacheService;
 
+  @OSGiService
+  @Optional
+  private ComponentTypeCache componentTypeCache;
+
   /**
    * Unique code associated with the current UiFramework. ComponentTypes use this to render the
    * proper content script.
@@ -95,11 +106,12 @@ public class UiFramework extends UiLibrary {
    * @return Unique code associated with the current UiFramework.
    */
   @Nonnull
-  @Property(description = "Unique code associated with the current UiFramework. ComponentTypes "
-                          + "use this to render the proper content script.",
-            jcrPropertyName = PN_UI_FRAMEWORK_CODE,
-            defaultValue = "common",
-            configurable = true)
+  @KestrosProperty(description =
+                       "Unique code associated with the current UiFramework. ComponentTypes "
+                       + "use this to render the proper content script.",
+                   jcrPropertyName = PN_UI_FRAMEWORK_CODE,
+                   defaultValue = "common",
+                   configurable = true)
   public String getFrameworkCode() {
     return getProperties().get(PN_UI_FRAMEWORK_CODE, "common");
   }
@@ -110,8 +122,9 @@ public class UiFramework extends UiLibrary {
    * @return All Vendor Libraries compiled into the current UiFramework.
    */
   @Nonnull
-  @Property(description = "All Vendor Libraries that are to be compiled into the UiFramework",
-            defaultValue = "[]")
+  @KestrosProperty(description = "All Vendor Libraries that are to be compiled into the "
+                                 + "UiFramework",
+                   defaultValue = "[]")
   public List<VendorLibrary> getVendorLibraries() {
     final List<VendorLibrary> vendorLibraries = new ArrayList<>();
     for (final String vendorLibraryName : getIncludedVendorLibraryNames()) {
@@ -178,8 +191,6 @@ public class UiFramework extends UiLibrary {
       throw new InvalidThemeException(getPath(), "default",
           "Could not adapt to Theme. Resource must have jcr:primaryType 'kes:Theme'.");
     }
-
-
   }
 
   /**
@@ -221,6 +232,7 @@ public class UiFramework extends UiLibrary {
     for (final ComponentUiFrameworkView componentUiFrameworkView : getComponentViews()) {
       output.append(componentUiFrameworkView.getOutput(scriptType, false));
     }
+
     return output.toString();
   }
 
@@ -251,11 +263,16 @@ public class UiFramework extends UiLibrary {
     return StringUtils.EMPTY;
   }
 
+  /**
+   * Vendor Libraries that are to be compiled.
+   *
+   * @return Vendor Libraries that are to be compiled.
+   */
   @Nonnull
-  @Property(description = "Vendor libraries to compile in the UiFramework.",
-            jcrPropertyName = PN_VENDOR_LIBRARIES,
-            defaultValue = "[]",
-            configurable = true)
+  @KestrosProperty(description = "Vendor libraries to compile in the UiFramework.",
+                   jcrPropertyName = PN_VENDOR_LIBRARIES,
+                   defaultValue = "[]",
+                   configurable = true)
   public List<String> getIncludedVendorLibraryNames() {
     return Arrays.asList(getProperties().get(PN_VENDOR_LIBRARIES, new String[]{}));
   }
@@ -273,19 +290,12 @@ public class UiFramework extends UiLibrary {
    */
   @Nonnull
   private List<ComponentUiFrameworkView> getComponentViews() {
-
     final List<ComponentUiFrameworkView> componentUiFrameworkViews = new ArrayList<>(
         getAllComponentUiFrameworkViewsInADirectory("/apps"));
-    List<ComponentUiFrameworkView> libsViews = getAllComponentUiFrameworkViewsInADirectory(
-        "/libs/kestros");
-
-    if (libsViews.isEmpty()) {
-      libsViews = getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/addons");
-      libsViews.addAll(getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/components"));
-    }
-
-    componentUiFrameworkViews.addAll(libsViews);
-
+    componentUiFrameworkViews.addAll(
+        getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/components"));
+    componentUiFrameworkViews.addAll(
+        getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/cms"));
     return componentUiFrameworkViews;
   }
 
@@ -308,15 +318,36 @@ public class UiFramework extends UiLibrary {
 
   @Nonnull
   private List<ComponentType> getAllComponentTypesInDirectory(@Nonnull final String path) {
+    if (componentTypeCache != null) {
+      try {
+        return SlingModelUtils.getResourcesAsType(componentTypeCache.getCachedComponentTypes(path),
+            getResourceResolver(), ComponentType.class);
+      } catch (CacheRetrievalException e) {
+        LOG.debug(e.getMessage());
+      }
+    }
+    final List<ComponentType> componentTypeList = new ArrayList<>();
     try {
       final BaseResource root = getResourceAsType(path, getResourceResolver(), BaseResource.class);
-      return getAllDescendantsOfType(root, ComponentType.class);
+      componentTypeList.addAll(getAllDescendantsOfType(root, ComponentType.class));
+      final List<String> componentTypePathList = new ArrayList<>();
+
+      for (ComponentType componentType : componentTypeList) {
+        componentTypePathList.add(componentType.getPath());
+      }
+
+      if (componentTypeCache != null) {
+        componentTypeCache.cacheComponentTypePathList(path, componentTypePathList);
+      }
+      return componentTypeList;
     } catch (final ModelAdaptionException exception) {
       LOG.debug(
           "Unable to retrieve resource {} while getting all ComponentType for UiFramework {} due "
           + "to missing or invalid Resource.", path, getPath());
+    } catch (CacheBuilderException e) {
+      LOG.error(e.getMessage());
     }
-    return Collections.emptyList();
+    return componentTypeList;
   }
 
   /**

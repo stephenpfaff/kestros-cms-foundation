@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~      Copyright (C) 2020  Kestros, Inc.
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  jcr:primaryType="kes:GuideArticle">
+  <jcr:content jcr:primaryType="nt:unstructured"
+    jcr:title="Contributing to Kestros"
+    group="Getting Started"
+    sling:resourceType="kestros/components/guides/pages/guide-article">
+    <content jcr:primaryType="nt:unstructured">
+      <github-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="All open Kestros Repositories can be found on the Kestros GitHub page &lt;a href=&quot;https://github.com/kestros&quot;&gt;https://github.com/kestros&lt;/a&gt;."/>
+<!--      <code-of-conduct-header jcr:primaryType="nt:unstructured"-->
+      <!--        sling:resourceType="kestros/commons/components/content/heading"-->
+      <!--        text="Code of Conduct"-->
+      <!--        level="h2"/>-->
+      <!--      <code-of-conduct-text jcr:primaryType="nt:unstructured"-->
+      <!--        sling:resourceType="kestros/commons/components/content/richtext"-->
+      <!--        text="process"/>-->
+      <contribute-header jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="How to Contribute"
+        level="h2"/>
+      <contribute-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="how to contribute."/>
+      <plugins-header jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/heading"
+        text="Creating Community Plugins"
+        level="h2"/>
+      <contribute-text jcr:primaryType="nt:unstructured"
+        sling:resourceType="kestros/commons/components/content/richtext"
+        text="Community plugins"/>
+    </content>
+
+  </jcr:content>
+</jcr:root>

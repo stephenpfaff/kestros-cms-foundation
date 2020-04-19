@@ -49,8 +49,8 @@ import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;
 import io.kestros.commons.structuredslingmodels.BasePage;
-import io.kestros.commons.structuredslingmodels.annotation.Property;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -76,11 +76,11 @@ import org.slf4j.LoggerFactory;
  * Base content page to extend Page Types from.  Contains logic for themes, site relationships, and
  * retrieving child pages.
  */
-@StructuredModel(validationService = BaseContentPageValidationService.class,
-                 docPaths = {"/content/guide-articles/kestros/site-management/creating-pages",
-                     "/content/guide-articles/kestros/site-management/editing-page-properties",
-                     "/content/guide-articles/kestros/site-management/creating-components",
-                     "/content/guide-articles/kestros/getting-started/understanding-validation"})
+@KestrosModel(validationService = BaseContentPageValidationService.class,
+              docPaths = {"/content/guide-articles/kestros/site-management/creating-pages",
+                  "/content/guide-articles/kestros/site-management/editing-page-properties",
+                  "/content/guide-articles/kestros/site-management/creating-components",
+                  "/content/guide-articles/kestros/getting-started/understanding-validation"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:Page")
 @Exporter(name = "jackson",
@@ -110,7 +110,11 @@ public class BaseContentPage extends BasePage {
    * @return Display title of the current site.
    */
   public String getDisplayTitle() {
-    return getProperties().get("displayTitle", getTitle());
+    String displayTitle = getProperties().get("displayTitle", StringUtils.EMPTY);
+    if (StringUtils.isNotEmpty(displayTitle)) {
+      return displayTitle;
+    }
+    return getTitle();
   }
 
   /**
@@ -119,7 +123,11 @@ public class BaseContentPage extends BasePage {
    * @return Description to be displayed in administration UI.
    */
   public String getDisplayDescription() {
-    return getProperties().get("displayDescription", getDescription());
+    String displayDescription = getProperties().get("displayDescription", StringUtils.EMPTY);
+    if (StringUtils.isNotEmpty(displayDescription)) {
+      return displayDescription;
+    }
+    return getDescription();
   }
 
   /**
@@ -127,12 +135,16 @@ public class BaseContentPage extends BasePage {
    *
    * @return Metadata title. Defaults to display title.
    */
-  @Property(description = "Metadata title. Defaults to display title.",
-            jcrPropertyName = "metaTitle",
-            defaultValue = "",
-            configurable = true)
+  @KestrosProperty(description = "Metadata title. Defaults to display title.",
+                   jcrPropertyName = "metaTitle",
+                   defaultValue = "",
+                   configurable = true)
   public String getMetaTitle() {
-    return getProperties().get("metaTitle", getDisplayTitle());
+    String metaTitle = getProperties().get("metaTitle", StringUtils.EMPTY);
+    if (StringUtils.isNotEmpty(metaTitle)) {
+      return metaTitle;
+    }
+    return getDisplayTitle();
   }
 
   /**
@@ -140,12 +152,16 @@ public class BaseContentPage extends BasePage {
    *
    * @return Description to be used in a page's meta description tag.
    */
-  @Property(description = "Description to be used in a page's meta description tag",
-            jcrPropertyName = "metaDescription",
-            defaultValue = "",
-            configurable = true)
+  @KestrosProperty(description = "Description to be used in a page's meta description tag",
+                   jcrPropertyName = "metaDescription",
+                   defaultValue = "",
+                   configurable = true)
   public String getMetaDescription() {
-    return getProperties().get("metaDescription", getDescription());
+    String metaDescription = getProperties().get("metaDescription", StringUtils.EMPTY);
+    if (StringUtils.isNotEmpty(metaDescription)) {
+      return metaDescription;
+    }
+    return getDisplayDescription();
   }
 
   /**
@@ -155,6 +171,7 @@ public class BaseContentPage extends BasePage {
    * @throws NoParentResourceException No parent page was found, or parent page could not be
    *     adapted to BaseContentPage.
    */
+  @JsonIgnore
   @Override
   public BaseContentPage getParent() throws NoParentResourceException {
     try {
@@ -179,10 +196,10 @@ public class BaseContentPage extends BasePage {
    */
   @Nullable
   @JsonIgnore
-  @Property(description = "Theme currently applied to the page.",
-            jcrPropertyName = "kes:theme",
-            defaultValue = "",
-            configurable = true)
+  @KestrosProperty(description = "Theme currently applied to the page.",
+                   jcrPropertyName = "kes:theme",
+                   defaultValue = "",
+                   configurable = true)
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
     return themeProviderService.getThemeForPage(this);
   }
@@ -322,14 +339,14 @@ public class BaseContentPage extends BasePage {
    * @param <T> Type, extends BaseComponent
    * @return All components as the respective types.
    */
-  @Property(description = "Direct child Components.")
+  @KestrosProperty(description = "Direct child Components.")
   @JsonInclude(Include.NON_EMPTY)
   @JsonProperty("components")
   public <T extends BaseComponent> List<T> getTopLevelComponents() {
     return getContentComponent().getChildren();
   }
 
-  @Property(description = "All descendant Components.")
+  @KestrosProperty(description = "All descendant Components.")
   @JsonIgnore
   protected <T extends BaseComponent> List<T> getAllDescendantComponents() {
     return getContentComponent().getAllDescendantComponents();
@@ -412,11 +429,11 @@ public class BaseContentPage extends BasePage {
    * @return Font Awesome Icon class.
    */
   @JsonIgnore
-  @Property(description = "Font awesome icon class, used in the Kestros Site Admin UI",
-            jcrPropertyName = "fontAwesomeIcon",
-            defaultValue = "fa fa-file",
-            configurable = true,
-            sampleValue = "fa fa-file")
+  @KestrosProperty(description = "Font awesome icon class, used in the Kestros Site Admin UI",
+                   jcrPropertyName = "fontAwesomeIcon",
+                   defaultValue = "fa fa-file",
+                   configurable = true,
+                   sampleValue = "fa fa-file")
   public String getFontAwesomeIcon() {
     try {
       final String fontAwesomeIcon = getComponentType().getFontAwesomeIcon();

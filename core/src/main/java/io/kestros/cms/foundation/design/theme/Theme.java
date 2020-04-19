@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.inet.lib.less.Less;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.uilibraries.UiLibrary;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * Structured UiLibrary which is built off of a specific UiFramework and can have any number of
  * defined variations.
  */
-@StructuredModel(validationService = ThemeValidationService.class)
+@KestrosModel(validationService = ThemeValidationService.class)
 @Model(adaptables = Resource.class,
        resourceType = "kes:Theme")
 @Exporter(name = "jackson",

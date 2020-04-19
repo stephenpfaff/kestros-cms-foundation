@@ -73,6 +73,7 @@ public class ParentComponentEditContextTest {
   private Map<String, Object> fileProperties = new HashMap<>();
   private Map<String, Object> fileJcrContentProperties = new HashMap<>();
 
+  private Map<String, Object> requestParameters = new HashMap();
 
   private Exception exception = null;
 
@@ -113,7 +114,9 @@ public class ParentComponentEditContextTest {
   @Test
   public void testIsEditMode() {
     when(editModeService.isEditModeActive()).thenReturn(true);
-    context.request().setAttribute("editMode", true);
+    requestParameters.put("editMode", true);
+    context.request().setParameterMap(requestParameters);
+
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertTrue(parentComponentEditContext.isEditMode());
   }
@@ -121,7 +124,8 @@ public class ParentComponentEditContextTest {
   @Test
   public void testIsEditModeWhenFalse() {
     when(editModeService.isEditModeActive()).thenReturn(true);
-    context.request().setAttribute("editMode", false);
+    requestParameters.put("editMode", false);
+    context.request().setParameterMap(requestParameters);
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertFalse(parentComponentEditContext.isEditMode());
   }
@@ -129,7 +133,8 @@ public class ParentComponentEditContextTest {
   @Test
   public void testIsEditModeWhenStringTrue() {
     when(editModeService.isEditModeActive()).thenReturn(true);
-    context.request().setAttribute("editMode", "true");
+    requestParameters.put("editMode", "true");
+    context.request().setParameterMap(requestParameters);
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertTrue(parentComponentEditContext.isEditMode());
   }
@@ -137,7 +142,8 @@ public class ParentComponentEditContextTest {
   @Test
   public void testIsEditModeWhenStringFalse() {
     when(editModeService.isEditModeActive()).thenReturn(true);
-    context.request().setAttribute("editMode", "false");
+    requestParameters.put("editMode", "false");
+    context.request().setParameterMap(requestParameters);
     parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
     assertFalse(parentComponentEditContext.isEditMode());
   }

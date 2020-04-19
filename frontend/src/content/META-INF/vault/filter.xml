@@ -26,20 +26,6 @@
     <exclude pattern="/libs/.*"/>
   </filter>
 
-  <filter root="/home">
-    <exclude pattern="/home/.*"/>
-  </filter>
-
-  <filter root="/home/users">
-    <exclude pattern="/home/users/.*"/>
-  </filter>
-
-  <filter root="/home/users/system/kestros-cms">
-    <exclude pattern="/home/users/system/kestros-cms/.*"/>
-  </filter>
-
-  <filter root="/home/users/system/kestros-cms/kestros-resource-manager"/>
-
   <filter root="/apps">
     <exclude pattern="/apps/.*"/>
   </filter>

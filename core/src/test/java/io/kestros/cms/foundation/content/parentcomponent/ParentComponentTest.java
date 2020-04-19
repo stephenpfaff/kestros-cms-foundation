@@ -19,13 +19,9 @@
 package io.kestros.cms.foundation.content.parentcomponent;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
-import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.services.scriptprovider.BaseScriptProviderService;
-import io.kestros.cms.foundation.services.scriptprovider.ScriptProviderService;
 import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
@@ -128,136 +124,6 @@ public class ParentComponentTest {
     assertEquals("", parentComponent.getCssClass());
   }
 
-
-  @Test
-  public void testGetAppliedVariations() {
-    context.create().resource("/etc/ui-libraries/my-ui", uiFrameworkProperties);
-    context.create().resource("/etc/ui-libraries/my-ui/themes/theme", themeProperties);
-
-    properties.put("variations", new String[]{"variation-1", "variation-2"});
-    pageContentProperties.put("kes:theme", "/etc/ui-libraries/my-ui/themes/theme");
-
-    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
-
-    context.create().resource("/apps/my-app/my-framework/variations/variation-1",
-        variationProperties);
-    context.create().resource("/apps/my-app/my-framework/variations/variation-2",
-        variationProperties);
-
-    context.create().resource("/content/page", pageProperties);
-    context.create().resource("/content/page/jcr:content", pageContentProperties);
-
-    resource = context.create().resource("/content/page/jcr:content/component", properties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    assertEquals(2, parentComponent.getAppliedVariations().size());
-    assertEquals("variation-1", parentComponent.getAppliedVariations().get(0).getName());
-    assertEquals("variation-2", parentComponent.getAppliedVariations().get(1).getName());
-
-    assertEquals("variation-1 variation-2 ", parentComponent.getAppliedVariationsAsString());
-  }
-
-  @Test
-  public void testGetAppliedVariationsWhenInvalidResourceType() {
-    context.create().resource("/etc/ui-libraries/my-ui", uiFrameworkProperties);
-    context.create().resource("/etc/ui-libraries/my-ui/themes/theme", themeProperties);
-
-    properties.put("variations", new String[]{"variation-1", "variation-2"});
-    pageContentProperties.put("kes:theme", "/etc/ui-libraries/my-ui/themes/theme");
-
-    context.create().resource("/apps/my-app/my-framework/variations/variation-1");
-
-    context.create().resource("/content/page", pageProperties);
-    context.create().resource("/content/page/jcr:content", pageContentProperties);
-
-    resource = context.create().resource("/content/page/jcr:content/component", properties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
-  }
-
-  @Test
-  public void testGetAppliedVariationsWhenVariationsFolderDoesNotExist() {
-    context.create().resource("/etc/ui-libraries/my-ui", uiFrameworkProperties);
-    context.create().resource("/etc/ui-libraries/my-ui/themes/theme", themeProperties);
-
-    properties.put("variations", new String[]{"variation-1", "variation-2"});
-    pageContentProperties.put("kes:theme", "/etc/ui-libraries/my-ui/themes/theme");
-
-    context.create().resource("/apps/my-app/my-framework", variationProperties);
-
-    context.create().resource("/content/page", pageProperties);
-    context.create().resource("/content/page/jcr:content", pageContentProperties);
-
-    resource = context.create().resource("/content/page/jcr:content/component", properties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
-  }
-
-  @Test
-  public void testGetAppliedVariationsWhenComponentTypeNotFound() {
-    context.create().resource("/etc/ui-libraries/my-ui", uiFrameworkProperties);
-    context.create().resource("/etc/ui-libraries/my-ui/themes/theme", themeProperties);
-
-    properties.put("variations", new String[]{"variation-1", "variation-2"});
-    properties.put("kes:theme", "/etc/ui-libraries/my-ui/themes/theme");
-
-    properties.put("sling:resourceType", "invalid-resource-type");
-    resource = context.create().resource("/content", properties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
-  }
-
-  @Test
-  public void testGetAppliedVariationsWhenFrameworkScriptRootDoesNotExist() {
-    context.create().resource("/etc/ui-libraries/my-ui", uiFrameworkProperties);
-    context.create().resource("/etc/ui-libraries/my-ui/themes/theme", themeProperties);
-
-    properties.put("variations", new String[]{"variation-1", "variation-2"});
-    pageContentProperties.put("kes:theme", "/etc/ui-libraries/my-ui/themes/theme");
-
-    context.create().resource("/content/page", pageProperties);
-    context.create().resource("/content/page/jcr:content", pageContentProperties);
-    resource = context.create().resource("/content/page/jcr:content/component", properties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    assertEquals(0, parentComponent.getAppliedVariations().size());
-    assertEquals("", parentComponent.getAppliedVariationsAsString());
-  }
-
-  @Test
-  public void testGetAppliedVariationsWhenVariationDoesNotExist() {
-    context.create().resource("/etc/ui-libraries/my-ui", uiFrameworkProperties);
-    context.create().resource("/etc/ui-libraries/my-ui/themes/theme", themeProperties);
-
-    properties.put("variations", new String[]{"variation-1", "variation-2"});
-    pageContentProperties.put("kes:theme", "/etc/ui-libraries/my-ui/themes/theme");
-
-    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
-
-    context.create().resource("/apps/my-app/my-framework/variations/variation-1",
-        variationProperties);
-
-    context.create().resource("/content/page", pageProperties);
-    context.create().resource("/content/page/jcr:content", pageContentProperties);
-    resource = context.create().resource("/content/page/jcr:content/component", properties);
-
-    parentComponent = resource.adaptTo(ParentComponent.class);
-
-    assertEquals(1, parentComponent.getAppliedVariations().size());
-    assertEquals("variation-1", parentComponent.getAppliedVariations().get(0).getName());
-    assertEquals("variation-1 ", parentComponent.getAppliedVariationsAsString());
-  }
 
   @Test
   public void testGetTheme() throws Exception {

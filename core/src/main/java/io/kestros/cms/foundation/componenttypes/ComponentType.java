@@ -32,10 +32,12 @@ import io.kestros.cms.foundation.exceptions.InvalidCommonUiFrameworkException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
+import io.kestros.cms.foundation.services.scriptprovider.CachedScriptProviderService;
+import io.kestros.cms.foundation.utils.ComponentTypeUtils;
 import io.kestros.cms.foundation.utils.DesignUtils;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.Property;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -50,19 +52,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Exporter;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.Optional;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Model for resource that will be implemented by Components via sling:resourceType property.
  */
-@StructuredModel(validationService = ComponentTypeValidationService.class,
-                 docPaths = {
-                     "/content/guide-articles/kestros/components/creating-new-component-types",
-                     "/content/guide-articles/kestros/components/implementing-ui-framework-views",
-                     "/content/guide-articles/kestros/components/defining-content-areas",
-                     "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
-                     "/content/guide-articles/kestros-cms/foundation/grouping-components"})
+@KestrosModel(validationService = ComponentTypeValidationService.class,
+              docPaths = {"/content/guide-articles/kestros/components/creating-new-component-types",
+                  "/content/guide-articles/kestros/components/implementing-ui-framework-views",
+                  "/content/guide-articles/kestros/components/defining-content-areas",
+                  "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
+                  "/content/guide-articles/kestros-cms/foundation/grouping-components"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:ComponentType")
 @Exporter(name = "jackson",
@@ -80,13 +83,22 @@ public class ComponentType extends BaseResource {
   public static final String PN_ALLOWED_COMPONENT_TYPES = "allowedComponentTypes";
   public static final String PN_ALLOW_LIBS_KESTROS_COMMONS = "allowLibsCommons";
 
+  @OSGiService
+  @Optional
+  private CachedScriptProviderService cachedScriptProviderService;
+
+  private List<ComponentUiFrameworkView> componentUiFrameworkViews;
+
+  private ComponentUiFrameworkView commonUiFrameworkView;
+
   @Override
-  @Property(description = "Path to the extended ComponentType. Baseline components should extend "
-                          + "the Kestros Parent ComponentType",
-            jcrPropertyName = "sling:resourceSuperType",
-            defaultValue = "",
-            sampleValue = "kestros/commons/components/kestros-parent",
-            configurable = true)
+  @KestrosProperty(description =
+                       "Path to the extended ComponentType. Baseline components should extend "
+                       + "the Kestros Parent ComponentType",
+                   jcrPropertyName = "sling:resourceSuperType",
+                   defaultValue = "",
+                   sampleValue = "kestros/commons/components/kestros-parent",
+                   configurable = true)
   public String getResourceSuperType() {
     return super.getResourceSuperType();
   }
@@ -96,10 +108,10 @@ public class ComponentType extends BaseResource {
    *
    * @return Group the current ComponentType belongs to.
    */
-  @Property(description = "Group the component belongs to.",
-            jcrPropertyName = PN_COMPONENT_GROUP,
-            defaultValue = "",
-            configurable = true)
+  @KestrosProperty(description = "Group the component belongs to.",
+                   jcrPropertyName = PN_COMPONENT_GROUP,
+                   defaultValue = "",
+                   configurable = true)
   public String getComponentGroup() {
     return getProperties().get(PN_COMPONENT_GROUP, StringUtils.EMPTY);
   }
@@ -137,11 +149,16 @@ public class ComponentType extends BaseResource {
   public ComponentUiFrameworkView getCommonUiFrameworkView()
       throws InvalidCommonUiFrameworkException {
 
+    if (this.commonUiFrameworkView != null) {
+      return this.commonUiFrameworkView;
+    }
+
     try {
       final ComponentUiFrameworkView commonUiFrameworkView = getChildAsBaseResource(
           COMMON_UI_FRAMEWORK_VIEW_NAME, this).getResource().adaptTo(
           ComponentUiFrameworkView.class);
       if (commonUiFrameworkView != null) {
+        this.commonUiFrameworkView = commonUiFrameworkView;
         return commonUiFrameworkView;
       }
     } catch (final Exception exception) {
@@ -157,6 +174,7 @@ public class ComponentType extends BaseResource {
       ComponentUiFrameworkView commonView = getChildAsBaseResource(COMMON_UI_FRAMEWORK_VIEW_NAME,
           libsComponentType).getResource().adaptTo(ComponentUiFrameworkView.class);
       if (commonView != null) {
+        this.commonUiFrameworkView = commonView;
         return commonView;
       }
     } catch (InvalidResourceTypeException | ResourceNotFoundException
@@ -167,13 +185,19 @@ public class ComponentType extends BaseResource {
     throw new InvalidCommonUiFrameworkException(getPath());
   }
 
-  @Property(description = "Whether the ComponentType is allowed to bypass validators that check "
-                          + "if the ComponentType has views for all UiFrameworks, or a view for "
-                          + "common.",
-            jcrPropertyName = "bypassUiFrameworks",
-            defaultValue = "false",
-            configurable = true,
-            sampleValue = "false")
+  /**
+   * Whether the ComponentType is allowed to have missing ComponentUiFramework views.
+   *
+   * @return Whether the ComponentType is allowed to have missing ComponentUiFramework views.
+   */
+  @KestrosProperty(description =
+                       "Whether the ComponentType is allowed to bypass validators that check "
+                       + "if the ComponentType has views for all UiFrameworks, or a view for "
+                       + "common.",
+                   jcrPropertyName = "bypassUiFrameworks",
+                   defaultValue = "false",
+                   configurable = true,
+                   sampleValue = "false")
   public boolean isBypassUiFrameworks() {
     return getProperties().get("bypassUiFrameworks", Boolean.FALSE);
   }
@@ -186,6 +210,9 @@ public class ComponentType extends BaseResource {
   @JsonIgnore
   @Nonnull
   public List<ComponentUiFrameworkView> getUiFrameworkViews() {
+    if (this.componentUiFrameworkViews != null) {
+      return this.componentUiFrameworkViews;
+    }
     final List<ComponentUiFrameworkView> uiFrameworkViews = new ArrayList<>();
 
     for (final BaseResource uiFrameworkViewResource : getChildrenAsBaseResource(this)) {
@@ -196,7 +223,8 @@ public class ComponentType extends BaseResource {
       }
     }
 
-    return uiFrameworkViews;
+    this.componentUiFrameworkViews = uiFrameworkViews;
+    return this.componentUiFrameworkViews;
   }
 
   /**
@@ -208,6 +236,11 @@ public class ComponentType extends BaseResource {
    */
   @Nonnull
   public List<ComponentTypeGroup> getAllowedComponentTypeGroups() {
+    if (!getAllowedComponentTypePaths().isEmpty()) {
+      return ComponentTypeUtils.getComponentTypeGroupsFromComponentTypeList(
+          SlingModelUtils.getResourcesAsType(getAllowedComponentTypePaths(), getResourceResolver(),
+              ComponentType.class));
+    }
     return getComponentTypeGroups(
         getAllComponentTypes(true, false, isAllowLibsCommonsComponents(), getResourceResolver()),
         getAllowedComponentTypePaths(), getExcludedComponentTypePaths(),
@@ -238,6 +271,7 @@ public class ComponentType extends BaseResource {
   @Nonnull
   public ComponentUiFrameworkView getComponentUiFrameworkView(
       @Nonnull final UiFramework uiFramework) throws InvalidComponentUiFrameworkViewException {
+
     try {
       return DesignUtils.getComponentUiFrameworkView(uiFramework.getFrameworkCode(), this);
 
@@ -295,11 +329,11 @@ public class ComponentType extends BaseResource {
    *
    * @return Font Awesome Icon class.
    */
-  @Property(description = "Font awesome icon class, used in the Kestros Site Admin UI",
-            jcrPropertyName = "fontAwesomeIcon",
-            defaultValue = "fa fa-cube",
-            configurable = true,
-            sampleValue = "fa fa-cube")
+  @KestrosProperty(description = "Font awesome icon class, used in the Kestros Site Admin UI",
+                   jcrPropertyName = "fontAwesomeIcon",
+                   defaultValue = "fa fa-cube",
+                   configurable = true,
+                   sampleValue = "fa fa-cube")
   public String getFontAwesomeIcon() {
     String fontAwesomeIcon = getProperty("fontAwesomeIcon", StringUtils.EMPTY);
     if (StringUtils.isBlank(fontAwesomeIcon)) {

@@ -19,12 +19,16 @@
 package io.kestros.cms.foundation.servlets.validation;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.kestros.cms.foundation.services.cache.validation.ValidationCacheService;
 import io.kestros.commons.structuredslingmodels.BaseSlingModel;
+import javax.annotation.Nullable;
 import javax.servlet.Servlet;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.models.factory.ModelFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * Servlet that provides basic validation messages for a given resource. Attempts to match the
@@ -44,6 +48,10 @@ public class BasicValidationServlet extends BaseValidationServlet {
   @Reference
   private transient ModelFactory modelFactory;
 
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private ValidationCacheService validationCacheService;
+
   @Override
   public void doValidation(final BaseSlingModel model) {
     model.validate();
@@ -52,5 +60,16 @@ public class BasicValidationServlet extends BaseValidationServlet {
   @Override
   public ModelFactory getModelFactory() {
     return modelFactory;
+  }
+
+  @Override
+  public Boolean isDetailed() {
+    return false;
+  }
+
+  @Override
+  @Nullable
+  public ValidationCacheService getValidationCacheService() {
+    return validationCacheService;
   }
 }

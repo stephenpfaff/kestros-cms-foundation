@@ -30,10 +30,10 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
-import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.services.KestrosUserService;
+import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
+import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -117,6 +117,19 @@ public class BaseContentPageTest {
     assertEquals("Title", baseContentPage.getDisplayTitle());
   }
 
+
+  @Test
+  public void testGetDisplayTitleWhenEmptyString() {
+    jcrContentProperties.put("jcr:title", "Title");
+    jcrContentProperties.put("displayTitle", "");
+
+    resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
+
+    baseContentPage = resource.adaptTo(BaseContentPage.class);
+
+    assertEquals("Title", baseContentPage.getDisplayTitle());
+  }
+
   @Test
   public void testGetDisplayDescription() {
     jcrContentProperties.put("displayDescription", "Display Description");
@@ -131,6 +144,18 @@ public class BaseContentPageTest {
   @Test
   public void testGetDisplayDescriptionWhenEmpty() {
     jcrContentProperties.put("jcr:description", "Description");
+
+    resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
+
+    baseContentPage = resource.adaptTo(BaseContentPage.class);
+
+    assertEquals("Description", baseContentPage.getDisplayDescription());
+  }
+
+  @Test
+  public void testGetDisplayDescriptionWhenEmptyString() {
+    jcrContentProperties.put("jcr:description", "Description");
+    jcrContentProperties.put("metaDescription", "");
 
     resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
 
@@ -162,6 +187,18 @@ public class BaseContentPageTest {
   }
 
   @Test
+  public void testGetMetaTitleWhenEmptyString() {
+    jcrContentProperties.put("jcr:title", "Title");
+    jcrContentProperties.put("metaTitle", "");
+
+    resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
+
+    baseContentPage = resource.adaptTo(BaseContentPage.class);
+
+    assertEquals("Title", baseContentPage.getMetaTitle());
+  }
+
+  @Test
   public void testGetMetaDescription() {
     jcrContentProperties.put("metaDescription", "Meta Description");
 
@@ -172,9 +209,22 @@ public class BaseContentPageTest {
     assertEquals("Meta Description", baseContentPage.getMetaDescription());
   }
 
+
   @Test
   public void testGetMetaDescriptionWhenEmpty() {
     jcrContentProperties.put("jcr:description", "Description");
+
+    resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
+
+    baseContentPage = resource.adaptTo(BaseContentPage.class);
+
+    assertEquals("Description", baseContentPage.getMetaDescription());
+  }
+
+  @Test
+  public void testGetMetaDescriptionWhenEmptyString() {
+    jcrContentProperties.put("jcr:description", "Description");
+    jcrContentProperties.put("metaDescription", "");
 
     resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
 

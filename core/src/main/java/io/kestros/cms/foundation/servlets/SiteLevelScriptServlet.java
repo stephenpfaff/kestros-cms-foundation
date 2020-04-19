@@ -54,6 +54,11 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
   private static final Logger LOG = LoggerFactory.getLogger(SiteLevelScriptServlet.class);
   private static final long serialVersionUID = -5328841199087488311L;
 
+  /**
+   * UiLibrary Cache Service.
+   *
+   * @return UiLibrary Cache Service.
+   */
   public abstract UiLibraryCacheService getUiLibraryCacheService();
 
   /**

@@ -25,7 +25,7 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import io.kestros.cms.foundation.design.htltemplate.HtlTemplate;
 import io.kestros.cms.foundation.design.htltemplate.HtlTemplateFile;
 import io.kestros.commons.structuredslingmodels.BaseResource;
-import io.kestros.commons.structuredslingmodels.annotation.StructuredModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.uilibraries.UiLibrary;
@@ -39,12 +39,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Standalone UiLibraries, which can be compiled inside of a UiFramework.
+ * Modular UI Libraries containing CSS, JS, assets and HTL templates, which can be compiled into any
+ * number of UiFrameworks.
  */
-@StructuredModel(validationService = VendorLibraryValidationService.class,
-                 docPaths = {
-                     "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
-                     "/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework"})
+@KestrosModel(validationService = VendorLibraryValidationService.class,
+              docPaths = {
+                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
+                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework"})
 @Model(adaptables = Resource.class,
        resourceType = {"kes:VendorLibrary"})
 @Exporter(name = "jackson",
