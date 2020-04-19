@@ -18,42 +18,13 @@
   -->
 
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
-  jcr:primaryType="kes:GuideArticle">
-  <jcr:content jcr:primaryType="nt:unstructured"
-    jcr:title="Getting Started"
-    group="Getting Started"
-    sling:resourceType="kestros/components/guides/pages/guide-article">
-    <content jcr:primaryType="nt:unstructured"
-      sling:resourceType="kestros/commons/components/content-area">
-      <generate-project jcr:primaryType="nt:unstructured"
-        sling:resourceType="kestros/commons/components/content-area">
-        <heading jcr:primaryType="nt:unstructured"
-          sling:resourceType="kestros/commons/components/content/heading"
-          text="Generate a New Project from the Kestros Archetype"
-          level="h2"/>
-        <intro-text jcr:primaryType="nt:unstructured"
-          sling:resourceType="kestros/commons/components/content/text"
-          text="Use the Kestros Project Archetype to generate a new project:"/>
-        <generate-code jcr:primaryType="nt:unstructured"
-          sling:resourceType="kestros/commons/components/content/code"
-          text="mvn archetype:generate \\ \\n-DarchetypeGroupId=io.kestros.cms.archetypes \\ \\n-DarchetypeArtifactId=kestros-project-archetype \\ \\n-DarchetypeVersion=0.0.1-SNAPSHOT"/>
-        <included-list jcr:primaryType="nt:unstructured"
-          sling:resourceType="kestros/commons/components/content/richtext"
-          text="&lt;p&gt;This will create a project with the following sample content:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Vendor Library&lt;/li&gt;&lt;li&gt;UI Framework&lt;/li&gt;&lt;li&gt;Component Type&lt;/li&gt;&lt;/ul&gt;"/>
-        <install-text jcr:primaryType="nt:unstructured"
-          sling:resourceType="kestros/commons/components/content/text"
-          text="To install your generated site, run the following from your generated project:"/>
-        <install-code jcr:primaryType="nt:unstructured"
-          sling:resourceType="kestros/commons/components/content/code"
-          text="mvn clean install -P,installPackage,installBundle,installContent"/>
-        <install-content-warning jcr:primaryType="nt:unstructured"
-          sling:resourceType="kestros/commons/components/content/alert"
-          text="* installContent will overwrite all of your site's content"
-          variations="[alert-warning]"/>
-        <go-to-new-site jcr:primaryType="nt:unstructured"
-          sling:resourceType="kestros/commons/components/content/richtext"
-          text="&lt;p&gt;Your new site is now available at &lt;a href=&quot;http://localhost:8080/content/sites/my-site.html&quot;&gt;localhost:8080/content/sites/my-site.html&lt;/&gt;"/>
-      </generate-project>
-    </content>
-  </jcr:content>
+  jcr:primaryType="sling:OrderedFolder">
+
+  <installation/>
+  <creating-a-new-project/>
+  <development-environment/>
+  <updating-designs/>
+  <new-component-types/>
+  <extend-basic-components/>
+  <validating-components/>
 </jcr:root>
