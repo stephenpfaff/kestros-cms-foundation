@@ -113,7 +113,7 @@ public class ComponentRequestContext extends BaseSlingRequest {
    */
   @KestrosProperty(description = "All applied inline variation CSS classes")
   @Nonnull
-  public String getAppliedInlineVariationsAsString() {
+  public String getInlineVariations() {
     LOG.trace("Getting applied inline variations as String.");
     final StringBuilder variationsStringBuilder = new StringBuilder();
     ParentComponent parentComponent = getRequest().getResource().adaptTo(ParentComponent.class);
@@ -141,7 +141,7 @@ public class ComponentRequestContext extends BaseSlingRequest {
    *     wrapper div are included.
    */
   @Nonnull
-  public String getAppliedWrapperVariationsAsString() {
+  public String getWrapperVariations() {
     LOG.trace("Getting applied wrapper variations as String.");
     final StringBuilder variationsStringBuilder = new StringBuilder();
     for (final ComponentVariation variation : getAppliedVariations()) {
