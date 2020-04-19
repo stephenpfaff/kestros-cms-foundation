@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~      Copyright (C) 2020  Kestros, Inc.
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.kestros.commons</groupId>
+    <artifactId>kestros-parent-strict</artifactId>
+    <version>0.0.6</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>io.kestros.cms</groupId>
+  <artifactId>kestros-cms-foundation</artifactId>
+  <version>0.0.1</version>
+
+  <name>Kestros Content Management System Foundation</name>
+  <description>Foundational logic for the Kestros CMS. Contains all the models, scripts, and
+    baseline templates/components required for rendering a site.
+  </description>
+
+  <licenses>
+    <license>
+      <name>GPL-v3.0</name>
+      <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+    </license>
+  </licenses>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>startup</module>
+    <module>users</module>
+    <module>core</module>
+    <module>frontend</module>
+    <module>docs</module>
+    <module>beta-start-page</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Kestros Dependencies -->
+      <dependency>
+        <groupId>io.kestros.commons</groupId>
+        <artifactId>kestros-structured-sling-models</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>io.kestros.commons</groupId>
+        <artifactId>kestros-sling-ui-libraries-core</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.kestros.cms</groupId>
+        <artifactId>kestros-user-foundation-core</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>de.inetsoftware</groupId>
+        <artifactId>jlessc</artifactId>
+        <version>1.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.12.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

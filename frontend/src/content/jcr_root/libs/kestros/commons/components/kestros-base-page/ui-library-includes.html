@@ -1,0 +1,46 @@
+<!--/*
+  ~      Copyright (C) 2020  Kestros, Inc.
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  */-->
+<template data-sly-template.includeHeadLibs="${ @ page}">
+  <sly
+      data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
+
+
+  <sly data-sly-test="${parentComponentEditContext.editMode}">
+    <sly data-sly-use.lib="/libs/kestros/commons/ui-libraries.html">
+      <sly data-sly-call="${lib.includeCss @ uiLibrary=page.theme}"/>
+    </sly>
+  </sly>
+  <sly data-sly-test="${!parentComponentEditContext.editMode}">
+    <link rel="stylesheet" type="text/css"
+          href="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.css">
+  </sly>
+</template>
+
+<template data-sly-template.includeScripts="${ @ page}">
+  <sly
+      data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
+  <sly data-sly-test="${parentComponentEditContext.editMode}">
+    <sly data-sly-use.lib="/libs/kestros/commons/ui-libraries.html">
+      <sly data-sly-call="${lib.includeJs @ uiLibrary=page.theme}"/>
+    </sly>
+  </sly>
+  <sly data-sly-test="${!parentComponentEditContext.editMode}">
+    <script
+        src="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.js"></script>
+  </sly>
+</template>
