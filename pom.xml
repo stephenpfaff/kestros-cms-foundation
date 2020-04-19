@@ -31,7 +31,7 @@
 
   <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-cms-foundation</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 
   <name>Kestros Content Management System Foundation</name>
   <description>Foundational logic for the Kestros CMS. Contains all the models, scripts, and
