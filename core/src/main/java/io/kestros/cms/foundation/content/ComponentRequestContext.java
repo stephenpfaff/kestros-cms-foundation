@@ -32,7 +32,7 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewExcep
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
-import io.kestros.commons.structuredslingmodels.BaseSlingRequest;
+import io.kestros.commons.structuredslingmodels.BaseRequestContext;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -53,10 +53,9 @@ import org.slf4j.LoggerFactory;
  * Component request context.
  */
 @Model(adaptables = SlingHttpServletRequest.class)
-public class ComponentRequestContext extends BaseSlingRequest {
+public class ComponentRequestContext extends BaseRequestContext {
 
   private static final Logger LOG = LoggerFactory.getLogger(ComponentRequestContext.class);
-
 
   @OSGiService
   private ThemeProviderService themeProviderService;
@@ -75,6 +74,7 @@ public class ComponentRequestContext extends BaseSlingRequest {
    *
    * @return requested page.
    */
+  @KestrosProperty(description = "The requested page.")
   public BaseContentPage getCurrentPage() {
     try {
       return SlingModelUtils.getResourceAsType(getRequest().getRequestURI().split(".html")[0],
@@ -111,7 +111,7 @@ public class ComponentRequestContext extends BaseSlingRequest {
    *
    * @return Applied inline variation CSS classes
    */
-  @KestrosProperty(description = "All applied inline variation CSS classes")
+  @KestrosProperty(description = "All applied inline variation CSS classes.")
   @Nonnull
   public String getInlineVariations() {
     LOG.trace("Getting applied inline variations as String.");
@@ -206,9 +206,10 @@ public class ComponentRequestContext extends BaseSlingRequest {
    * @throws ResourceNotFoundException Component's expected Theme resource was missing.
    */
   @Nullable
+  @KestrosProperty(description = "The current page's theme.")
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
     LOG.trace("Retrieving theme for {}.");
-    if (theme == null) {
+    if (theme == null && getCurrentPage() != null) {
       theme = getCurrentPage().getTheme();
     }
     LOG.trace("Finished retrieving theme for {}.");
@@ -218,7 +219,6 @@ public class ComponentRequestContext extends BaseSlingRequest {
   protected void setTheme(final Theme theme) {
     this.theme = theme;
   }
-
 
   private UiFramework getUiFramework()
       throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {

@@ -80,7 +80,8 @@ import org.slf4j.LoggerFactory;
               docPaths = {"/content/guide-articles/kestros/site-management/creating-pages",
                   "/content/guide-articles/kestros/site-management/editing-page-properties",
                   "/content/guide-articles/kestros/site-management/creating-components",
-                  "/content/guide-articles/kestros/getting-started/understanding-validation"})
+                  "/content/guide-articles/kestros/getting-started/understanding-validation"},
+              usesJcrContent = true)
 @Model(adaptables = Resource.class,
        resourceType = "kes:Page")
 @Exporter(name = "jackson",

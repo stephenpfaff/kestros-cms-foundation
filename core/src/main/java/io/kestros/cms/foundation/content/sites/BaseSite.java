@@ -46,7 +46,8 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> Extends {@link BaseContentPage}
  */
-@KestrosModel(validationService = BaseSiteValidationService.class)
+@KestrosModel(validationService = BaseSiteValidationService.class,
+              usesJcrContent = true)
 @Model(adaptables = Resource.class,
        resourceType = "kes:Site")
 @Exporter(name = "jackson",
