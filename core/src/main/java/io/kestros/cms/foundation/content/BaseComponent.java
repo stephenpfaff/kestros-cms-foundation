@@ -33,8 +33,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
-import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
-import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
@@ -76,7 +74,8 @@ import org.slf4j.LoggerFactory;
  */
 @KestrosModel(docPaths = {"/content/guide-articles/kestros/site-management/creating-components",
     "/content/guide-articles/kestros/site-management/editing-components",
-    "/content/guide-articles/kestros/getting-started/understanding-validation"})
+    "/content/guide-articles/kestros/getting-started/understanding-validation"},
+              contextModel = ComponentRequestContext.class)
 @Model(adaptables = Resource.class,
        resourceType = "sling/servlet/default")
 @Exporter(name = "jackson",
@@ -359,6 +358,36 @@ public class BaseComponent extends BaseResource {
       LOG.error("Unable to create ContentArea resource {} due to persistence" + " exception.",
           getPath());
     }
+  }
+
+  @Override
+  @KestrosProperty(description = "")
+  public String getTitle() {
+    return super.getTitle();
+  }
+
+  @Override
+  @KestrosProperty(description = "")
+  public String getDescription() {
+    return super.getDescription();
+  }
+
+  /**
+   * Variations property value.
+   *
+   * @return Variations property value.
+   */
+  @SuppressWarnings("unused")
+  @KestrosProperty(description = "Variations applied to the component. Only valid variations are "
+                                 + "rendered.",
+                   jcrPropertyName = "variations",
+                   defaultValue = "[]",
+                   sampleValue = "[]",
+                   configurable = true)
+  @Nonnull
+  @JsonIgnore
+  private String[] getVariations() {
+    return getProperties().get("variations", new String[]{});
   }
 
   private void attemptSlingResourceTypeAssignment() {
