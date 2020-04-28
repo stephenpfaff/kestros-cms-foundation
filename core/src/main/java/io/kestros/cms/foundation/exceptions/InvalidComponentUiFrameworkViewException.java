@@ -38,7 +38,7 @@ public class InvalidComponentUiFrameworkViewException extends ModelAdaptionExcep
   public InvalidComponentUiFrameworkViewException(final String componentTypePath,
       final UiFramework uiFramework) {
     super(String.format(
-        "Unable to ComponentUiFrameworkView for ComponentType'%s' and UiFramework '%s'.",
+        "Unable to retrieve ComponentUiFrameworkView for ComponentType '%s' and UiFramework '%s'.",
         componentTypePath, uiFramework.getPath()));
   }
 }
