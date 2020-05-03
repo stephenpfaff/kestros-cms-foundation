@@ -29,21 +29,27 @@ public class InvalidComponentTypeException extends ModelAdaptionException {
   private static final long serialVersionUID = -4673833087114663599L;
 
   /**
-   *  Exception thrown when a ComponentType cannot not be retrieved because it is either invalid or
-   *   missing.
+   * Exception thrown when a ComponentType cannot not be retrieved because it is either invalid or
+   * missing.
+   *
+   * @param componentPath component that the ComponentType was requested from.
    * @param componentTypePath Expected path of ComponentType that could not be retrieved.
    */
-  public InvalidComponentTypeException(final String componentTypePath) {
-    super(componentTypePath, "Invalid or missing ComponentType resource.");
+  public InvalidComponentTypeException(final String componentPath, final String componentTypePath) {
+    this(componentPath, componentTypePath, "Invalid or missing ComponentType resource.");
   }
 
   /**
-   *  Exception thrown when a ComponentType cannot not be retrieved because it is either invalid or
-   *   missing.
+   * Exception thrown when a ComponentType cannot not be retrieved because it is either invalid or
+   * missing.
+   *
+   * @param componentPath component that the ComponentType was requested from.
    * @param componentTypePath Expected path of ComponentType that could not be retrieved.
    * @param message Cause message.
    */
-  public InvalidComponentTypeException(final String componentTypePath, final String message) {
-    super(String.format("Unable to adapt '%s' to ComponentType. %s", componentTypePath, message));
+  public InvalidComponentTypeException(final String componentPath, final String componentTypePath,
+      final String message) {
+    super(String.format("Unable to adapt '%s' to ComponentType for resource %s. %s",
+        componentTypePath, componentPath, message));
   }
 }

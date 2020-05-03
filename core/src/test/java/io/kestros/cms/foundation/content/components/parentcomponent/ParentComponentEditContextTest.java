@@ -253,10 +253,13 @@ public class ParentComponentEditContextTest {
       parentComponentEditContext.getContentScriptPath();
     } catch (InvalidScriptException e) {
       exception = e;
+    } catch (InvalidComponentTypeException e) {
+      exception = e;
     }
-    assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
-                 + "'invalid-resource-type': Invalid or missing ComponentType resource.': Script "
-                 + "not found.", exception.getMessage());
+    assertEquals(InvalidComponentTypeException.class, exception.getClass());
+    assertEquals("Unable to adapt 'invalid-resource-type' to ComponentType for resource "
+                 + "/content/page-with-framework/jcr:content/component. Invalid or missing "
+                 + "ComponentType " + "resource.", exception.getMessage());
   }
 
   @Test
@@ -281,10 +284,14 @@ public class ParentComponentEditContextTest {
       assertNull(parentComponentEditContext.getContentScriptPath());
     } catch (InvalidScriptException e) {
       exception = e;
+    } catch (InvalidComponentTypeException e) {
+      exception = e;
     }
-    assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
-                 + "'/etc/ui-frameworks/my-framework/themes/my-theme': Invalid or missing "
-                 + "ComponentType " + "resource.': Script not found.", exception.getMessage());
+    assertEquals(InvalidComponentTypeException.class, exception.getClass());
+    assertEquals(
+        "Unable to adapt '/etc/ui-frameworks/my-framework/themes/my-theme' to ComponentType for "
+        + "resource /content/page-with-framework/jcr:content/component. Invalid or missing "
+        + "ComponentType resource.", exception.getMessage());
   }
 
 }

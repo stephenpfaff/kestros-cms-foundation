@@ -155,7 +155,9 @@ public class BaseComponentTest {
     } catch (InvalidComponentTypeException e) {
       exception = e;
     }
-    assertEquals("Unable to adapt 'component': Invalid or missing ComponentType resource.",
+    assertEquals(
+        "Unable to adapt 'component' to ComponentType for resource /resource. Invalid or missing "
+        + "ComponentType resource.",
         exception.getMessage());
   }
 
