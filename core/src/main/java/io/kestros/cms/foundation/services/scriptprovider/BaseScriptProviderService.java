@@ -18,18 +18,23 @@
 
 package io.kestros.cms.foundation.services.scriptprovider;
 
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
+
+import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
-import io.kestros.cms.foundation.design.theme.Theme;
+import io.kestros.cms.foundation.design.uiframework.UiFramework;
+import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
+import io.kestros.cms.foundation.utils.DesignUtils;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
+import javax.annotation.Nullable;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
@@ -83,20 +88,21 @@ public class BaseScriptProviderService extends BaseServiceResolverService
    * @return The path to a specified script.
    * @throws InvalidScriptException The script was not found, or could not be adapt to *
    *     HtmlFile.
+   * @throws InvalidComponentTypeException expected componentType for the request component was
+   *     missing or invalid.
    */
   public String getScriptPath(ParentComponent parentComponent, final String scriptName,
-      SlingHttpServletRequest request) throws InvalidScriptException {
+      SlingHttpServletRequest request)
+      throws InvalidScriptException, InvalidComponentTypeException {
     LOG.trace("Retrieving Script Path {}", scriptName);
 
+    ComponentType componentType = parentComponent.getComponentType();
+    UiFramework uiFramework = getUiFrameworkForComponentRequest(parentComponent, request);
     if (componentViewScriptResolutionCacheService != null) {
       try {
         LOG.trace("Finished retrieving Script Path {}", scriptName);
         return componentViewScriptResolutionCacheService.getCachedScriptPath(scriptName,
-            parentComponent.getComponentType(), parentComponent.getTheme().getUiFramework(),
-            request);
-      } catch (ModelAdaptionException e) {
-        LOG.warn("Unable to attempt component view script resolution via cache. {}.",
-            e.getMessage());
+            componentType, uiFramework, request);
       } catch (CacheRetrievalException e) {
         LOG.debug("Failed to retrieve cached script resolution. {}.", e.getMessage());
       }
@@ -105,63 +111,91 @@ public class BaseScriptProviderService extends BaseServiceResolverService
           "Unable to attempt component view script resolution via cache. No service registered.");
     }
 
-    Theme theme = null;
-    String requestContext = request.getRequestURI().split(".html")[0];
     try {
-      theme = SlingModelUtils.getResourceAsType(requestContext, request.getResourceResolver(),
-          BaseContentPage.class).getTheme();
-    } catch (ResourceNotFoundException e) {
-      try {
-        theme = parentComponent.getTheme();
-      } catch (ResourceNotFoundException | InvalidThemeException exception) {
-        LOG.trace(exception.getMessage());
-      }
-    } catch (InvalidThemeException exception) {
-      LOG.trace(exception.getMessage());
-    } catch (InvalidResourceTypeException e) {
-      try {
-        theme = SlingModelUtils.getResourceAsType(requestContext, request.getResourceResolver(),
-            BaseSite.class).getTheme();
-      } catch (ResourceNotFoundException | InvalidThemeException exception) {
-        LOG.trace(exception.getMessage());
-      } catch (InvalidResourceTypeException ex) {
-        try {
-          theme = parentComponent.getTheme();
-        } catch (ResourceNotFoundException | InvalidThemeException exception) {
-          LOG.trace(exception.getMessage());
-        }
-      }
-    }
-
-    try {
-      if (theme == null) {
-        theme = parentComponent.getTheme();
-      }
-      String resolvedScriptPath = parentComponent.getComponentType().getScript(scriptName,
-          theme.getUiFramework()).getPath();
+      String resolvedScriptPath = componentType.getScript(scriptName, uiFramework).getPath();
       if (componentViewScriptResolutionCacheService != null) {
         componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
-            parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath,
-            request);
+            componentType, uiFramework, resolvedScriptPath, request);
       }
       LOG.trace("Finished retrieving Script Path {}", scriptName);
       return resolvedScriptPath;
     } catch (final ModelAdaptionException exception) {
       try {
-        String resolvedScriptPath = parentComponent.getComponentType().getScript(scriptName,
-            null).getPath();
-        if (theme != null) {
+        LOG.trace("Attempting to retrieve and cache common view for script resolution for {}.",
+            componentType.getPath());
+        String resolvedScriptPath = componentType.getScript(scriptName, null).getPath();
+        if (uiFramework != null) {
           if (componentViewScriptResolutionCacheService != null) {
             componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
-                parentComponent.getComponentType(), theme.getUiFramework(), resolvedScriptPath,
-                request);
+                componentType, uiFramework, resolvedScriptPath, request);
           }
         }
         LOG.trace("Finished retrieving Script Path {}", scriptName);
         return resolvedScriptPath;
       } catch (final ModelAdaptionException exception1) {
-        throw new InvalidScriptException(scriptName, exception.getMessage());
+        LOG.trace(exception.getMessage());
       }
     }
+    throw new InvalidScriptException(scriptName,
+        String.format("Unable to retrieve theme for resource %s, with request URI %s.",
+            parentComponent.getPath(), request.getRequestURI()));
+  }
+
+  @Nullable
+  private UiFramework getUiFrameworkFromPageOrSite(final SlingHttpServletRequest request) {
+    String requestContext = request.getRequestURI().split(".html")[0];
+    UiFramework uiFramework = null;
+    try {
+      uiFramework = getResourceAsType(requestContext, request.getResourceResolver(),
+          BaseContentPage.class).getTheme().getUiFramework();
+    } catch (ResourceNotFoundException | InvalidThemeException exception) {
+      LOG.trace(exception.getMessage());
+    } catch (InvalidResourceTypeException e) {
+      try {
+        uiFramework = getResourceAsType(requestContext, request.getResourceResolver(),
+            BaseSite.class).getTheme().getUiFramework();
+      } catch (ModelAdaptionException exception) {
+        LOG.trace(exception.getMessage());
+      }
+    }
+    return uiFramework;
+  }
+
+  @Nullable
+  private UiFramework getUiFrameworkForComponentRequest(final ParentComponent parentComponent,
+      final SlingHttpServletRequest request) {
+    UiFramework uiFramework = null;
+    try {
+      uiFramework = parentComponent.getTheme().getUiFramework();
+    } catch (ModelAdaptionException e) {
+      LOG.trace(e.getMessage());
+    }
+    if (uiFramework == null) {
+      uiFramework = getUiFrameworkFromPageOrSite(request);
+    }
+
+    if (uiFramework == null) {
+      try {
+        uiFramework = parentComponent.getTheme().getUiFramework();
+      } catch (ModelAdaptionException e) {
+        LOG.trace(e.getMessage());
+      }
+    }
+    if (uiFramework == null) {
+      uiFramework = getUiFrameworkFromRequestParameter(request);
+    }
+    return uiFramework;
+  }
+
+  @Nullable
+  private UiFramework getUiFrameworkFromRequestParameter(final SlingHttpServletRequest request) {
+    String frameworkCode = request.getParameter("ui-framework");
+    for (UiFramework uiFramework : DesignUtils.getAllUiFrameworks(request.getResourceResolver(),
+        true, true)) {
+      if (uiFramework.getFrameworkCode().equals(frameworkCode)) {
+        return uiFramework;
+      }
+    }
+    return null;
   }
 }

@@ -32,6 +32,7 @@ import static org.apache.sling.jcr.resource.JcrResourceConstants.SLING_RESOURCE_
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
@@ -153,7 +154,7 @@ public class BaseComponent extends BaseResource {
       }
     }
     LOG.trace("Finished ComponentType for {}, but threw InvalidComponentTypeException", getPath());
-    throw new InvalidComponentTypeException(getResourceType());
+    throw new InvalidComponentTypeException(getPath(), getResourceType());
   }
 
   /**
@@ -386,6 +387,7 @@ public class BaseComponent extends BaseResource {
                    configurable = true)
   @Nonnull
   @JsonIgnore
+  @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
   private String[] getVariations() {
     return getProperties().get("variations", new String[]{});
   }
