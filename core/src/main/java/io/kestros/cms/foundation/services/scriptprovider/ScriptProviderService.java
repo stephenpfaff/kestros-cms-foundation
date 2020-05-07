@@ -19,6 +19,7 @@
 package io.kestros.cms.foundation.services.scriptprovider;
 
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
+import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import org.apache.sling.api.SlingHttpServletRequest;
 
@@ -37,8 +38,10 @@ public interface ScriptProviderService {
    * @return An absolute path for the matching scriptName for the passed {@link ParentComponent}.
    * @throws InvalidScriptException Expected HTL script was not not found, or was an invalid
    *     {@link io.kestros.cms.foundation.componenttypes.HtmlFile}
+   * @throws InvalidComponentTypeException expected componentType for the request component was
+   *     missing or invalid.
    */
   String getScriptPath(ParentComponent parentComponent, String scriptName,
-      SlingHttpServletRequest request) throws InvalidScriptException;
+      SlingHttpServletRequest request) throws InvalidScriptException, InvalidComponentTypeException;
 
 }

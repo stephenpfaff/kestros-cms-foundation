@@ -130,10 +130,11 @@ public class ComponentType extends BaseResource {
     } catch (final InvalidResourceTypeException exception) {
       LOG.debug("Unable to retrieve superType of {}: {}", getPath(), exception.getMessage());
       throw new InvalidComponentTypeException(getResourceSuperType(),
-          "Invalid resourceType, must be 'kes:ComponentType'.");
+          "Invalid superTyped resource. jcr:primaryType must be 'kes:ComponentType'.");
     } catch (final ResourceNotFoundException exception) {
       LOG.debug("Unable to retrieve superType of {}: {}", getPath(), exception.getMessage());
-      throw new InvalidComponentTypeException(getResourceSuperType(), "Resource not found.");
+      throw new InvalidComponentTypeException(getPath(), getResourceSuperType(),
+          "SuperTyped resource not found.");
     }
   }
 

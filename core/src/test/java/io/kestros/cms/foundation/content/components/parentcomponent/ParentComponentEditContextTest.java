@@ -24,13 +24,19 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.kestros.cms.foundation.design.theme.Theme;
+import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.editmodeservice.EditModeService;
 import io.kestros.cms.foundation.services.scriptprovider.BaseScriptProviderService;
+import io.kestros.cms.foundation.services.scriptprovider.CachedScriptProviderService;
+import io.kestros.cms.foundation.services.scriptprovider.ComponentViewScriptResolutionCacheService;
 import io.kestros.cms.foundation.services.scriptprovider.ScriptProviderService;
 import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
@@ -52,6 +58,8 @@ public class ParentComponentEditContextTest {
   private ThemeProviderService themeProviderService = new BaseThemeProviderService();
 
   private BaseScriptProviderService baseScriptProviderService = new BaseScriptProviderService();
+
+  private ComponentViewScriptResolutionCacheService componentViewScriptResolutionCacheService;
 
   private EditModeService editModeService;
 
@@ -81,7 +89,10 @@ public class ParentComponentEditContextTest {
   public void setUp() throws Exception {
     context.addModelsForPackage("io.kestros");
 
-    context.registerService(ScriptProviderService.class, baseScriptProviderService);
+    componentViewScriptResolutionCacheService = spy(new CachedScriptProviderService());
+
+    context.registerInjectActivateService(componentViewScriptResolutionCacheService);
+    context.registerInjectActivateService(baseScriptProviderService);
     context.registerService(ThemeProviderService.class, themeProviderService);
 
     editModeService = mock(EditModeService.class);
@@ -232,6 +243,60 @@ public class ParentComponentEditContextTest {
   }
 
   @Test
+  public void testGetScriptPathWhenUsingFrameworkWhenCached() throws Exception {
+
+    pageContentProperties.put("kes:theme", "/etc/ui-frameworks/my-framework/themes/my-theme");
+
+    context.create().resource("/content/page-with-framework", pageProperties);
+    context.create().resource("/content/page-with-framework/jcr:content", pageContentProperties);
+    resource = context.create().resource("/content/page-with-framework/jcr:content/component",
+        properties);
+
+    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
+    context.create().resource("/apps/my-app/my-framework/content.html", fileProperties);
+    context.create().resource("/apps/my-app/my-framework/content.html/jcr:content",
+        fileJcrContentProperties);
+
+    context.request().setResource(resource);
+    parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
+
+    assertEquals("/apps/my-app/my-framework/content.html",
+        parentComponentEditContext.getContentScriptPath());
+    assertEquals("/apps/my-app/my-framework/content.html",
+        parentComponentEditContext.getContentScriptPath());
+    assertEquals("/apps/my-app/my-framework/content.html",
+        parentComponentEditContext.getContentScriptPath());
+
+    verify(componentViewScriptResolutionCacheService, times(3)).getCachedScriptPath(any(), any(),
+        any(), any());
+    verify(componentViewScriptResolutionCacheService, times(1)).cacheComponentViewScriptPath(any(),
+        any(), any(), any(), any());
+
+  }
+
+  @Test
+  public void testGetScriptPathWhenUsingFrameworkFromParameter() throws Exception {
+    Map<String, Object> parameterMap = new HashMap<>();
+    parameterMap.put("ui-framework", "my-framework");
+    context.request().setParameterMap(parameterMap);
+    context.create().resource("/content/page-with-framework", pageProperties);
+    context.create().resource("/content/page-with-framework/jcr:content", pageContentProperties);
+    resource = context.create().resource("/content/page-with-framework/jcr:content/component",
+        properties);
+
+    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
+    context.create().resource("/apps/my-app/my-framework/content.html", fileProperties);
+    context.create().resource("/apps/my-app/my-framework/content.html/jcr:content",
+        fileJcrContentProperties);
+
+    context.request().setResource(resource);
+    parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
+
+    assertEquals("/apps/my-app/my-framework/content.html",
+        parentComponentEditContext.getContentScriptPath());
+  }
+
+  @Test
   public void testGetScriptPathWhenComponentTypeMissing() {
 
     pageContentProperties.put("kes:theme", "/etc/ui-frameworks/my-framework/themes/my-theme");
@@ -253,10 +318,13 @@ public class ParentComponentEditContextTest {
       parentComponentEditContext.getContentScriptPath();
     } catch (InvalidScriptException e) {
       exception = e;
+    } catch (InvalidComponentTypeException e) {
+      exception = e;
     }
-    assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
-                 + "'invalid-resource-type': Invalid or missing ComponentType resource.': Script "
-                 + "not found.", exception.getMessage());
+    assertEquals(InvalidComponentTypeException.class, exception.getClass());
+    assertEquals("Unable to adapt 'invalid-resource-type' to ComponentType for resource "
+                 + "/content/page-with-framework/jcr:content/component. Invalid or missing "
+                 + "ComponentType " + "resource.", exception.getMessage());
   }
 
   @Test
@@ -281,10 +349,14 @@ public class ParentComponentEditContextTest {
       assertNull(parentComponentEditContext.getContentScriptPath());
     } catch (InvalidScriptException e) {
       exception = e;
+    } catch (InvalidComponentTypeException e) {
+      exception = e;
     }
-    assertEquals("Unable to adapt 'content.html' for ComponentUiFrameworkView 'Unable to adapt "
-                 + "'/etc/ui-frameworks/my-framework/themes/my-theme': Invalid or missing "
-                 + "ComponentType " + "resource.': Script not found.", exception.getMessage());
+    assertEquals(InvalidComponentTypeException.class, exception.getClass());
+    assertEquals(
+        "Unable to adapt '/etc/ui-frameworks/my-framework/themes/my-theme' to ComponentType for "
+        + "resource /content/page-with-framework/jcr:content/component. Invalid or missing "
+        + "ComponentType resource.", exception.getMessage());
   }
 
 }

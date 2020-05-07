@@ -128,8 +128,9 @@ public class ComponentTypeTest {
     } catch (InvalidComponentTypeException e) {
       exception = e;
     }
-    assertEquals("Unable to adapt 'components/super-type' to ComponentType. Resource not found.",
-        exception.getMessage());
+    assertEquals(
+        "Unable to adapt 'components/super-type' to ComponentType for resource /apps/component. "
+        + "SuperTyped resource not found.", exception.getMessage());
   }
 
   @Test
@@ -147,7 +148,8 @@ public class ComponentTypeTest {
       exception = e;
     }
     assertEquals(
-        "Unable to adapt '/apps/components/super-type' to ComponentType. Resource not found.",
+        "Unable to adapt '/apps/components/super-type' to ComponentType for resource "
+        + "/apps/component. SuperTyped resource not found.",
         exception.getMessage());
   }
 

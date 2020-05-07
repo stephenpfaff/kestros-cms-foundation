@@ -30,11 +30,11 @@ import static org.mockito.Mockito.when;
 import io.kestros.cms.foundation.content.components.contentarea.ContentArea;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
-import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;
+import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
+import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -155,7 +155,9 @@ public class BaseComponentTest {
     } catch (InvalidComponentTypeException e) {
       exception = e;
     }
-    assertEquals("Unable to adapt 'component': Invalid or missing ComponentType resource.",
+    assertEquals(
+        "Unable to adapt 'component' to ComponentType for resource /resource. Invalid or missing "
+        + "ComponentType resource.",
         exception.getMessage());
   }
 

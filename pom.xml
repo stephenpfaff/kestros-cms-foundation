@@ -16,7 +16,6 @@
   ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
   ~
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -44,6 +43,13 @@
       <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
     </license>
   </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/kestros/kestros-cms-foundation.git</connection>
+    <developerConnection>scm:git:ssh://github.com:kestros/kestros-cms-foundation.git
+    </developerConnection>
+    <url>https://github.com/kestros/kestros-cms-foundation/tree/master</url>
+  </scm>
 
   <packaging>pom</packaging>
 

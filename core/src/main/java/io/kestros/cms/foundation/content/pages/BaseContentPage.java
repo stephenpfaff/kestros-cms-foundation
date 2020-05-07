@@ -287,7 +287,7 @@ public class BaseContentPage extends BasePage {
       }
       LOG.warn("Unable to retrieve ComponentType for {}: {}", getPath(), exception.getMessage());
     }
-    throw new InvalidComponentTypeException(getPath());
+    throw new InvalidComponentTypeException(getPath(), getResourceType());
   }
 
   /**

@@ -487,7 +487,7 @@ public class BaseContentPageTest {
 
     resource = context.create().resource("/page", pageProperties);
 
-    jcrContentProperties.put("sling:resourceType", "component");
+    jcrContentProperties.put("sling:resourceType", "invalid-component-type");
     context.create().resource("/page/jcr:content", jcrContentProperties);
 
     baseContentPage = resource.adaptTo(BaseContentPage.class);
@@ -497,7 +497,9 @@ public class BaseContentPageTest {
     } catch (InvalidComponentTypeException e) {
       exception = e;
     }
-    assertEquals("Unable to adapt '/page': Invalid or missing ComponentType resource.",
+    assertEquals(
+        "Unable to adapt 'invalid-component-type' to ComponentType for resource /page. Invalid or"
+        + " missing ComponentType resource.",
         exception.getMessage());
   }
 
@@ -518,7 +520,9 @@ public class BaseContentPageTest {
       exception = e;
     }
 
-    assertEquals("Unable to adapt '/page': Invalid or missing ComponentType resource.",
+    assertEquals(
+        "Unable to adapt 'kes:Page' to ComponentType for resource /page. Invalid or missing "
+        + "ComponentType resource.",
         exception.getMessage());
   }
 
