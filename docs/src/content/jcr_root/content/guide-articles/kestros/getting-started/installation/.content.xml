@@ -46,7 +46,7 @@
           text="docker run -p 8080:8080 --name kestros-platform-beta -v /tmp/sling/logs:/opt/sling/sling/logs kestros/kestros-platform-beta:latest"/>
         <docker-command-sudo-info jcr:primaryType="nt:unstructured"
           sling:resourceType="kestros/commons/components/content/alert"
-          text="May required sudo to run"
+          text="May require sudo to run"
           variations="[alert-info]"/>
       </docker-command>
       <docker-compose jcr:primaryType="nt:unstructured"
