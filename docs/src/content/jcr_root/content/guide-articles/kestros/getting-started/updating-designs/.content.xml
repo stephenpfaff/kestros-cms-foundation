@@ -29,7 +29,7 @@
       <updating-designs-container
         jcr:primaryType="nt:unstructured"
         sling:resourceType="kestros/commons/components/structure/container">
-        <content-area
+        <content
           jcr:primaryType="nt:unstructured"
           sling:resourceType="kestros/commons/components/content-area">
           <!--          <ui-frameworks-diagram jcr:primaryType="nt:unstructured"-->
@@ -261,7 +261,7 @@
             jcr:primaryType="nt:unstructured"
             sling:resourceType="kestros/commons/components/content/code"
             text="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;\\n&lt;jcr:root\\n    xmlns:sling=&quot;http://sling.apache.org/jcr/sling/1.0&quot;\\n    xmlns:jcr=&quot;http://www.jcp.org/jcr/1.0&quot;\\n    xmlns:nt=&quot;http://www.jcp.org/jcr/nt/1.0&quot;\\n    xmlns:kes=&quot;http://kestros.io/kes/1.0&quot;\\n    jcr:primaryType=&quot;kes:Site&quot;&gt;\\n    &lt;jcr:content\\n        jcr:primaryType=&quot;nt:unstructured&quot;\\n        sling:resourceType=&quot;my-site/components/pages/my-site-base-page&quot;\\n        kes:theme=&quot;/etc/ui-frameworks/my-first-ui-framework/themes/default&quot;\\n        jcr:title=&quot;My Site&quot;&gt;\\n    &lt;/jcr:content&gt;\\n&lt;/jcr:root&gt;"/>
-        </content-area>
+        </content>
       </updating-designs-container>
     </content>
   </jcr:content>
