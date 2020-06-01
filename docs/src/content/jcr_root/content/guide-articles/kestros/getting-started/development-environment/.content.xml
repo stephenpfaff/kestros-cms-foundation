@@ -83,7 +83,7 @@
           <gulp-code-alert jcr:primaryType="nt:unstructured"
             sling:resourceType="kestros/commons/components/content/alert"
             text="Only modified CSS, JS and HTML files can be uploading via the gulp watch.  New files and other file types require a maven install."
-            variations="[alert-info]"/>
+            variations="[alert--info]"/>
 
 
         </content-area>

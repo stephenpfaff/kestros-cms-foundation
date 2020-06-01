@@ -47,7 +47,7 @@
         <docker-command-sudo-info jcr:primaryType="nt:unstructured"
           sling:resourceType="kestros/commons/components/content/alert"
           text="May require sudo to run"
-          variations="[alert-info]"/>
+          variations="[alert--info]"/>
       </docker-command>
       <docker-compose jcr:primaryType="nt:unstructured"
         sling:resourceType="kestros/commons/components/content-area">
