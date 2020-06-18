@@ -61,6 +61,10 @@ public class HtlTemplateFile extends HtmlFile {
     return WordUtils.capitalize(title);
   }
 
+  public String getPathWithoutExtension() {
+    return getPath().replace(".html", "");
+  }
+
   /**
    * All HTL Templates in the current files.
    *
