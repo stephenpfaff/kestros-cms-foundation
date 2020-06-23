@@ -61,6 +61,11 @@ public class HtlTemplateFile extends HtmlFile {
     return WordUtils.capitalize(title);
   }
 
+  /**
+   * File path without the .html extension.
+   *
+   * @return File path without the .html extension.
+   */
   public String getPathWithoutExtension() {
     return getPath().replace(".html", "");
   }
