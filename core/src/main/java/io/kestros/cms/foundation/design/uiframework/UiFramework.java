@@ -29,6 +29,7 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
 import io.kestros.cms.foundation.design.htltemplate.HtlTemplate;
@@ -389,5 +390,20 @@ public class UiFramework extends UiLibrary {
     public int compare(final HtlTemplateFile o1, final HtlTemplateFile o2) {
       return o1.getTitle().compareTo(o2.getTitle());
     }
+  }
+
+  /**
+   * Font Awesome Icon class.
+   *
+   * @return Font Awesome Icon class.
+   */
+  @JsonIgnore
+  @KestrosProperty(description = "Font awesome icon class, used in the Kestros Site Admin UI",
+                   jcrPropertyName = "fontAwesomeIcon",
+                   defaultValue = "fas fa-palette",
+                   configurable = true,
+                   sampleValue = "fas fa-palette")
+  public String getFontAwesomeIcon() {
+    return getProperty("fontAwesomeIcon", "fas fa-palette");
   }
 }
