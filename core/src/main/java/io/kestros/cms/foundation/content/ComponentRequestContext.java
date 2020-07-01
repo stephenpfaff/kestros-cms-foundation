@@ -208,11 +208,11 @@ public class ComponentRequestContext extends BaseRequestContext {
   @Nullable
   @KestrosProperty(description = "The current page's theme.")
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
-    LOG.trace("Retrieving theme for {}.");
+    LOG.trace("Retrieving theme for {}.", getBaseResource().getPath());
     if (theme == null && getCurrentPage() != null) {
       theme = getCurrentPage().getTheme();
     }
-    LOG.trace("Finished retrieving theme for {}.");
+    LOG.trace("Finished retrieving theme for {}.", getBaseResource().getPath());
     return theme;
   }
 

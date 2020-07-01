@@ -89,11 +89,11 @@ public class ParentComponent extends BaseComponent {
    */
   @Nullable
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
-    LOG.trace("Retrieving theme for {}.");
+    LOG.trace("Retrieving theme for {}.", getPath());
     if (theme == null) {
       theme = themeProviderService.getThemeForComponent(this);
     }
-    LOG.trace("Finished retrieving theme for {}.");
+    LOG.trace("Finished retrieving theme for {}.", getPath());
     return theme;
   }
 
