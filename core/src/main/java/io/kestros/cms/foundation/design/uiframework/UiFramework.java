@@ -78,9 +78,10 @@ import org.slf4j.LoggerFactory;
  * </p>
  */
 @KestrosModel(validationService = UiFrameworkValidationService.class,
-              docPaths = {"/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework",
-                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
-                  "/content/guide-articles/kestros/ui-frameworks/creating-themes"})
+              docPaths = {"/content/guide-articles/kestros/ui-frameworks/ui-frameworks",
+                  "/content/guide-articles/kestros/ui-frameworks/themes",
+                  "/content/guide-articles/kestros/ui-frameworks/assigning-htl-templates",
+                  "/content/guide-articles/kestros/ui-frameworks/vendor-libraries"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:UiFramework")
 @Exporter(name = "jackson",

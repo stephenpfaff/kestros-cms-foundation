@@ -43,9 +43,10 @@ import org.slf4j.LoggerFactory;
  * number of UiFrameworks.
  */
 @KestrosModel(validationService = VendorLibraryValidationService.class,
-              docPaths = {
-                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
-                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework"})
+              docPaths = {"/content/guide-articles/kestros/ui-frameworks/vendor-libraries",
+                  "/content/guide-articles/kestros/ui-frameworks/assigning-htl-templates",
+                  "/content/guide-articles/kestros/ui-frameworks/ui-frameworks",
+                  "/content/guide-articles/kestros/ui-frameworks/themes"})
 @Model(adaptables = Resource.class,
        resourceType = {"kes:VendorLibrary"})
 @Exporter(name = "jackson",
