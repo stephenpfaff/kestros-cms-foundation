@@ -285,9 +285,9 @@ public class UiFramework extends UiLibrary {
   }
 
   /**
-   * All ComponentUiFrameworkViews under /apps & /libs that implement the current UiFramework.
+   * All ComponentUiFrameworkViews under /apps and /libs that implement the current UiFramework.
    *
-   * @return All ComponentUiFrameworkViews under /apps & /libs that implement the current
+   * @return All ComponentUiFrameworkViews under /apps and /libs that implement the current
    *     UiFramework.
    */
   @Nonnull
