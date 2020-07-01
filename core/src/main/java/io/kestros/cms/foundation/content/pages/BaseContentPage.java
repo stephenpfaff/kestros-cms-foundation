@@ -322,6 +322,9 @@ public class BaseContentPage extends BasePage {
       if (contentComponent != null) {
         return contentComponent;
       }
+      if (JCR_CONTENT.equals(getName())) {
+        return adaptTo(this, BaseComponent.class);
+      }
       throw new IllegalStateException();
     } catch (final ModelAdaptionException exception) {
       LOG.warn("Unable to get jcr:content Resource for {}. jcr:content Resource not found.",
