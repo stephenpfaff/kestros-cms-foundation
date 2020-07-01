@@ -291,7 +291,7 @@ public class UiFramework extends UiLibrary {
    *     UiFramework.
    */
   @Nonnull
-  private List<ComponentUiFrameworkView> getComponentViews() {
+  public List<ComponentUiFrameworkView> getComponentViews() {
     final List<ComponentUiFrameworkView> componentUiFrameworkViews = new ArrayList<>(
         getAllComponentUiFrameworkViewsInADirectory("/apps"));
     componentUiFrameworkViews.addAll(
