@@ -18,8 +18,11 @@
 
 package io.kestros.cms.foundation.design.vendorlibrary;
 
+import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.getFailedErrorValidators;
+import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.getFailedWarningValidators;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 
+import io.kestros.cms.foundation.design.htltemplate.HtlTemplateFile;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
 import io.kestros.commons.uilibraries.UiLibraryValidationService;
@@ -39,6 +42,20 @@ public class VendorLibraryValidationService extends UiLibraryValidationService {
   public void registerBasicValidators() {
     super.registerBasicValidators();
     addBasicValidator(hasDocumentationUrl());
+    for (HtlTemplateFile templateFile : getModel().getTemplateFiles()) {
+      templateFile.doDetailedValidation();
+      for (ModelValidator validator : getFailedErrorValidators(templateFile)) {
+        addBasicValidator(validator);
+      }
+      for (ModelValidator validator : getFailedWarningValidators(templateFile)) {
+        addBasicValidator(validator);
+      }
+    }
+  }
+
+  @Override
+  public void registerDetailedValidators() {
+
   }
 
   ModelValidator hasDocumentationUrl() {
@@ -59,5 +76,4 @@ public class VendorLibraryValidationService extends UiLibraryValidationService {
       }
     };
   }
-
 }

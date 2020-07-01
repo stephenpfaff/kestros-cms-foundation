@@ -61,6 +61,11 @@ public class VendorLibraryValidationServiceTest {
 
   @Test
   public void testRegisterBasicValidators() {
+    resource = context.create().resource("/vendor-library", properties);
+    vendorLibrary = resource.adaptTo(VendorLibrary.class);
+
+    doReturn(vendorLibrary).when(vendorLibraryValidationService).getGenericModel();
+
     vendorLibraryValidationService.registerBasicValidators();
     assertEquals(6, vendorLibraryValidationService.getBasicValidators().size());
   }
