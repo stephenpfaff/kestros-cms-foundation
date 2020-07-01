@@ -23,6 +23,8 @@ import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getC
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.componenttypes.HtmlFile;
 import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
@@ -31,6 +33,7 @@ import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
 import java.util.Collections;
@@ -47,15 +50,30 @@ import org.slf4j.LoggerFactory;
  */
 @KestrosModel(validationService = ComponentUiFrameworkViewValidationService.class,
               docPaths = {
-                     "/content/guide-articles/kestros-cms/site-building/implementing-ui-framework"
-                     + "-views",
-                     "/content/guide-articles/kestros-cms/site-building/creating-new-component"
-                     + "-types",
-                     "/content/guide-articles/kestros-cms/site-building/creating-ui-frameworks"})
+                  "/content/guide-articles/kestros-cms/site-building/implementing-ui-framework"
+                  + "-views",
+                  "/content/guide-articles/kestros-cms/site-building/creating-new-component"
+                  + "-types",
+                  "/content/guide-articles/kestros-cms/site-building/creating-ui-frameworks"})
 @Model(adaptables = Resource.class)
 public class ComponentUiFrameworkView extends UiLibrary {
 
   private static final Logger LOG = LoggerFactory.getLogger(ComponentUiFrameworkView.class);
+
+  /**
+   * Parent ComponentType.
+   *
+   * @return Parent ComponentType.
+   */
+  @JsonIgnore
+  public ComponentType getComponentType() {
+    try {
+      return SlingModelUtils.getParentResourceAsType(this, ComponentType.class);
+    } catch (ModelAdaptionException e) {
+      LOG.error(e.getMessage());
+    }
+    return null;
+  }
 
   /**
    * Retrieves the specified script.
