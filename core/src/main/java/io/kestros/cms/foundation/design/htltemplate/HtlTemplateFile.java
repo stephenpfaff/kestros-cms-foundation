@@ -19,6 +19,7 @@
 package io.kestros.cms.foundation.design.htltemplate;
 
 import io.kestros.cms.foundation.componenttypes.HtmlFile;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
 /**
  * HTML File that contains HTL Templates.
  */
+@KestrosModel(validationService = HtlTemplateFileValidationService.class)
 @Model(adaptables = Resource.class,
        resourceType = JcrConstants.NT_FILE)
 public class HtlTemplateFile extends HtmlFile {
