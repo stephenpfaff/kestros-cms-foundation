@@ -50,6 +50,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.Exporter;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.Optional;
@@ -103,6 +104,20 @@ public class ComponentType extends BaseResource {
     return super.getResourceSuperType();
   }
 
+  @Override
+  public ValueMap getProperties() {
+    if (!"kes:ComponentType".equals(getResource().getResourceType()) && getPath().startsWith(
+        "/apps")) {
+      try {
+        return getResourceAsType(getPath().replace("/apps/", "/libs/"), getResourceResolver(),
+            ComponentType.class).getProperties();
+      } catch (ModelAdaptionException e) {
+        LOG.debug("Unable to get properties for /libs resource for {}. {}.", getPath(), e.getMessage());
+      }
+    }
+    return super.getProperties();
+  }
+
   /**
    * Group the current ComponentType belongs to. Set by the componentGroup property.
    *
@@ -115,6 +130,7 @@ public class ComponentType extends BaseResource {
   public String getComponentGroup() {
     return getProperties().get(PN_COMPONENT_GROUP, StringUtils.EMPTY);
   }
+
 
   /**
    * The sling:resourceSuperType as a ComponentType.
@@ -169,8 +185,8 @@ public class ComponentType extends BaseResource {
     String libsComponentTypePath = getPath().replaceFirst("/apps/", "/libs/");
     ComponentType libsComponentType = null;
     try {
-      libsComponentType = SlingModelUtils.getResourceAsType(libsComponentTypePath,
-          getResourceResolver(), ComponentType.class);
+      libsComponentType = getResourceAsType(libsComponentTypePath, getResourceResolver(),
+          ComponentType.class);
 
       ComponentUiFrameworkView commonView = getChildAsBaseResource(COMMON_UI_FRAMEWORK_VIEW_NAME,
           libsComponentType).getResource().adaptTo(ComponentUiFrameworkView.class);
@@ -178,8 +194,7 @@ public class ComponentType extends BaseResource {
         this.commonUiFrameworkView = commonView;
         return commonView;
       }
-    } catch (InvalidResourceTypeException | ResourceNotFoundException
-                         | ChildResourceNotFoundException e) {
+    } catch (ModelAdaptionException e) {
       LOG.debug("Unable to retrieve common UI Framework View for {}. {}", getPath(),
           e.getMessage());
     }
