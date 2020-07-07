@@ -19,6 +19,7 @@
 package io.kestros.cms.foundation.componenttypes.frameworkview;
 
 import static io.kestros.cms.foundation.design.DesignConstants.NN_VARIATIONS;
+import static io.kestros.cms.foundation.utils.DesignUtils.getUiFrameworkByFrameworkCode;
 import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getChildAsFileType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
@@ -27,12 +28,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.componenttypes.HtmlFile;
 import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
+import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
+import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
@@ -128,6 +131,16 @@ public class ComponentUiFrameworkView extends UiLibrary {
     return output.toString();
   }
 
+  /**
+   * UiFramework associated to the current view.
+   *
+   * @return UiFramework associated to the current view.
+   * @throws ResourceNotFoundException No UiFramework found for the specified framework code.
+   */
+  @Nonnull
+  public UiFramework getUiFramework() throws ResourceNotFoundException {
+    return getUiFrameworkByFrameworkCode(getName(), true, true, getResourceResolver());
+  }
 
   private BaseResource getComponentVariationsRootResource()
       throws InvalidResourceTypeException, ChildResourceNotFoundException {
