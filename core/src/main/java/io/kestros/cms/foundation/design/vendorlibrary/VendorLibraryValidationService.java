@@ -18,8 +18,7 @@
 
 package io.kestros.cms.foundation.design.vendorlibrary;
 
-import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.getFailedErrorValidators;
-import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.getFailedWarningValidators;
+import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 
 import io.kestros.cms.foundation.design.htltemplate.HtlTemplateFile;
@@ -44,11 +43,15 @@ public class VendorLibraryValidationService extends UiLibraryValidationService {
     addBasicValidator(hasDocumentationUrl());
     for (HtlTemplateFile templateFile : getModel().getTemplateFiles()) {
       templateFile.doDetailedValidation();
-      for (ModelValidator validator : getFailedErrorValidators(templateFile)) {
-        addBasicValidator(validator);
+
+      for (final String errorMessage : templateFile.getErrorMessages()) {
+        addBasicValidator(
+            new TemplateValidator(templateFile.getTitle() + ": " + errorMessage, ERROR));
       }
-      for (ModelValidator validator : getFailedWarningValidators(templateFile)) {
-        addBasicValidator(validator);
+
+      for (final String warningMessage : templateFile.getWarningMessages()) {
+        addBasicValidator(
+            new TemplateValidator(templateFile.getTitle() + ": " + warningMessage, WARNING));
       }
     }
   }
@@ -75,5 +78,34 @@ public class VendorLibraryValidationService extends UiLibraryValidationService {
         return WARNING;
       }
     };
+  }
+
+  /**
+   * Builds validators from template errors and warnings.
+   */
+  private static class TemplateValidator implements ModelValidator {
+
+    private String message;
+    private ModelValidationMessageType type;
+
+    TemplateValidator(String message, ModelValidationMessageType type) {
+      this.message = message;
+      this.type = type;
+    }
+
+    @Override
+    public boolean isValid() {
+      return false;
+    }
+
+    @Override
+    public String getMessage() {
+      return message;
+    }
+
+    @Override
+    public ModelValidationMessageType getType() {
+      return type;
+    }
   }
 }

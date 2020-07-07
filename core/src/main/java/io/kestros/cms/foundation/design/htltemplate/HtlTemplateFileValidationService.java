@@ -38,6 +38,7 @@ public class HtlTemplateFileValidationService extends ModelValidationService {
   public void registerBasicValidators() {
     addBasicValidator(isAllTemplatesHaveTitle());
     addBasicValidator(isAllTemplatesHaveDescriptions());
+    addBasicValidator(isAllTemplateParametersHaveDescriptions());
   }
 
   @Override
@@ -93,7 +94,7 @@ public class HtlTemplateFileValidationService extends ModelValidationService {
       @Override
       public void registerValidators() {
         for (HtlTemplate template : getModel().getTemplates()) {
-          if (StringUtils.isNotBlank(template.getDescription())) {
+          if (StringUtils.isBlank(template.getDescription())) {
             addBasicValidator(new ModelValidator() {
               @Override
               public boolean isValid() {
@@ -116,7 +117,54 @@ public class HtlTemplateFileValidationService extends ModelValidationService {
 
       @Override
       public String getBundleMessage() {
-        return "All templates have titles";
+        return "All templates have descriptions";
+      }
+
+      @Override
+      public boolean isAllMustBeTrue() {
+        return true;
+      }
+
+      @Override
+      public ModelValidationMessageType getType() {
+        return ModelValidationMessageType.WARNING;
+      }
+    };
+  }
+
+  ModelValidator isAllTemplateParametersHaveDescriptions() {
+    return new ModelValidatorBundle() {
+      @Override
+      public void registerValidators() {
+        for (HtlTemplate template : getModel().getTemplates()) {
+          for (HtlTemplateParameter parameter : template.getTemplateParameters()) {
+            if (StringUtils.isBlank(parameter.getDescription())) {
+              addBasicValidator(new ModelValidator() {
+                @Override
+                public boolean isValid() {
+                  return false;
+                }
+
+                @Override
+                public String getMessage() {
+                  return "Parameter " + parameter.getName()
+                         + "must have a configured description for template \""
+                         + template.getTitle() + "\".";
+                }
+
+                @Override
+                public ModelValidationMessageType getType() {
+                  return ModelValidationMessageType.WARNING;
+                }
+              });
+            }
+          }
+        }
+      }
+
+      @Override
+      public String getBundleMessage() {
+        return "All templates parameters must have descriptions.";
       }
 
       @Override

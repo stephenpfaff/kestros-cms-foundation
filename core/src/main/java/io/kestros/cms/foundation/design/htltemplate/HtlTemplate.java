@@ -47,6 +47,11 @@ public class HtlTemplate {
     this.sourcePath = sourcePath;
   }
 
+  /**
+   * Details of template parameters, for automated documentation purposes.
+   *
+   * @return Details of template parameters, for automated documentation purposes.
+   */
   public List<HtlTemplateParameter> getTemplateParameters() {
     List<HtlTemplateParameter> parameters = new ArrayList<>();
     for (String parameter : getParameterNames()) {
