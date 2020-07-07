@@ -74,11 +74,12 @@ public class ComponentTypeUtils {
    * Builds a list of ComponentTypeGroups from a List of ComponentTypes.
    *
    * @param componentTypes ComponentType list to build ComponentTypeGroups from.
+   * @param <T> extends ComponentType.
    * @return List of ComponentTypeGroups from a List of ComponentTypes.
    */
   @Nonnull
-  public static List<ComponentTypeGroup> getComponentTypeGroupsFromComponentTypeList(
-      @Nonnull final List<ComponentType> componentTypes) {
+  public static <T extends ComponentType> List<ComponentTypeGroup>
+      getComponentTypeGroupsFromComponentTypeList(@Nonnull final List<T> componentTypes) {
     final List<ComponentTypeGroup> componentTypeGroups = new ArrayList<>();
 
     final Map<String, ComponentTypeGroup> componentGroupsMap = new HashMap<>();
@@ -102,7 +103,6 @@ public class ComponentTypeUtils {
         unknownGroup.addComponentType(componentType);
       }
     }
-
     for (final Entry group : componentGroupsMap.entrySet()) {
       componentTypeGroups.add(componentGroupsMap.get(group.getKey()));
     }
