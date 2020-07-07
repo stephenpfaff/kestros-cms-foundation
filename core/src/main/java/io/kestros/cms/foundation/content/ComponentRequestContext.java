@@ -19,6 +19,7 @@
 package io.kestros.cms.foundation.content;
 
 import static io.kestros.cms.foundation.design.DesignConstants.NN_VARIATIONS;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
 import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
 import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
@@ -76,21 +77,21 @@ public class ComponentRequestContext extends BaseRequestContext {
    */
   @KestrosProperty(description = "The requested page.")
   public BaseContentPage getCurrentPage() {
+    String pagePath = getRequest().getRequestURI().split(".html")[0];
+    pagePath = pagePath.split("/jcr:content")[0];
     try {
-      return SlingModelUtils.getResourceAsType(getRequest().getRequestURI().split(".html")[0],
-          getResourceResolver(), BaseContentPage.class);
+      return getResourceAsType(pagePath, getResourceResolver(), BaseContentPage.class);
     } catch (InvalidResourceTypeException e) {
       try {
-        return SlingModelUtils.getResourceAsType(getRequest().getRequestURI().split(".html")[0],
-            getResourceResolver(), BaseSite.class);
+        return getResourceAsType(pagePath, getResourceResolver(), BaseSite.class);
       } catch (InvalidResourceTypeException invalidResourceTypeException) {
         LOG.warn("Unable to adapt current page resource to BaseContentPage or BaseSite for "
-                 + "NavigationContext.");
+                 + "ComponentRequestContext.");
       } catch (ResourceNotFoundException resourceNotFoundException) {
-        LOG.warn("Unable to find current page resource for NavigationContext.");
+        LOG.warn("Unable to find current page resource for ComponentRequestContext.");
       }
     } catch (ResourceNotFoundException e) {
-      LOG.warn("Unable to find current page resource for NavigationContext.");
+      LOG.warn("Unable to find current page resource for ComponentRequestContext.");
     }
 
     try {
