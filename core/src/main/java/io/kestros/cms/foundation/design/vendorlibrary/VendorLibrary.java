@@ -70,15 +70,15 @@ public class VendorLibrary extends UiLibrary {
 
     for (final String dependencyPath : getDependencyPaths()) {
       try {
-        for (VendorLibrary vendorLibrary : DesignUtils.getAllVendorLibraries(getResourceResolver(),
-            true, true)) {
+        for (VendorLibrary vendorLibrary : getAllVendorLibraries(getResourceResolver(), true,
+            true)) {
           if (vendorLibrary.getName().equals(dependencyPath) || vendorLibrary.getPath().equals(
               dependencyPath)) {
             dependencies.add(vendorLibrary);
           }
         }
       } catch (ResourceNotFoundException e) {
-        // todo log
+        LOG.warn("Unable to find vendor libraries root resource. {}.", e.getMessage());
       }
     }
 
@@ -103,7 +103,7 @@ public class VendorLibrary extends UiLibrary {
         }
       }
     } catch (ResourceNotFoundException e) {
-      // todo log.
+      LOG.warn("Unable to find vendor libraries root resource. {}.", e.getMessage());
     }
     return dependencyOfList;
   }
