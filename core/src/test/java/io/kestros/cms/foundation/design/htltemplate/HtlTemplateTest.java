@@ -116,7 +116,7 @@ public class HtlTemplateTest {
 
   @Test
   public void getVariables() {
-    assertEquals(1, htlTemplate.getVariables().size());
+    assertEquals(1, htlTemplate.getParameterNames().size());
   }
 
   @Test

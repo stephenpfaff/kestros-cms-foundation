@@ -18,6 +18,7 @@
 
 package io.kestros.cms.foundation.design.htltemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +45,14 @@ public class HtlTemplate {
   HtlTemplate(final Node node, final String sourcePath) {
     this.node = node;
     this.sourcePath = sourcePath;
+  }
+
+  public List<HtlTemplateParameter> getTemplateParameters() {
+    List<HtlTemplateParameter> parameters = new ArrayList<>();
+    for (String parameter : getParameterNames()) {
+      parameters.add(new HtlTemplateParameter(parameter, this.node));
+    }
+    return parameters;
   }
 
   /**
@@ -138,7 +147,7 @@ public class HtlTemplate {
    *
    * @return List of variables required to implement the current Template.
    */
-  public List<String> getVariables() {
+  public List<String> getParameterNames() {
     final Attributes attributes = this.node.attributes();
 
     String value = "";
@@ -169,13 +178,13 @@ public class HtlTemplate {
     sampleUsage.append(getName());
     sampleUsage.append(" @");
     String prefix = "\n" + CALL_VARIABLES_INDENT;
-    for (final String variable : getVariables()) {
+    for (final HtlTemplateParameter parameter : getTemplateParameters()) {
       sampleUsage.append(prefix);
       prefix = ",\n" + CALL_VARIABLES_INDENT;
-      sampleUsage.append(variable);
+      sampleUsage.append(parameter.getName());
       sampleUsage.append("=");
-      final String value = "my" + variable.substring(0, 1).toUpperCase(Locale.ENGLISH)
-                           + variable.substring(1);
+      final String value = "my" + parameter.getName().substring(0, 1).toUpperCase(Locale.ENGLISH)
+                           + parameter.getName().substring(1);
       sampleUsage.append(value);
     }
     sampleUsage.append("}\" />");
