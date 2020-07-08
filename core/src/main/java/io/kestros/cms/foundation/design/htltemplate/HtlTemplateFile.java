@@ -122,7 +122,7 @@ public class HtlTemplateFile extends HtmlFile {
    * @return Font Awesome Icon class.
    */
   public String getFontAwesomeIcon() {
-    return getProperty("fontAwesomeIcon", "fas-fa-code");
+    return getProperty("fontAwesomeIcon", "fa fa-file");
   }
 
 }
