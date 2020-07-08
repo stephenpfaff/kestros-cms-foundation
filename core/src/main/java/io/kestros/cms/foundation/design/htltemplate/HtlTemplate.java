@@ -195,4 +195,18 @@ public class HtlTemplate {
     sampleUsage.append("}\" />");
     return sampleUsage.toString();
   }
+
+  /**
+   * Font Awesome Icon class.
+   *
+   * @return Font Awesome Icon class.
+   */
+  public String getFontAwesomeIcon() {
+    final Attributes attributes = this.node.attributes();
+    final String iconClass = attributes.get("data-fontawesome-icon");
+    if (StringUtils.isNotBlank(iconClass)) {
+      return iconClass;
+    }
+    return "fas fa-code";
+  }
 }
