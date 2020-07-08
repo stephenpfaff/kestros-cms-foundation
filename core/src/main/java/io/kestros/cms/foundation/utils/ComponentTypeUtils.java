@@ -79,7 +79,8 @@ public class ComponentTypeUtils {
    */
   @Nonnull
   public static <T extends ComponentType> List<ComponentTypeGroup>
-      getComponentTypeGroupsFromComponentTypeList(@Nonnull final List<T> componentTypes) {
+      getComponentTypeGroupsFromComponentTypeList(
+      @Nonnull final List<T> componentTypes) {
     final List<ComponentTypeGroup> componentTypeGroups = new ArrayList<>();
 
     final Map<String, ComponentTypeGroup> componentGroupsMap = new HashMap<>();
@@ -227,14 +228,6 @@ public class ComponentTypeUtils {
       final boolean includeLibs, final boolean includeLibsCommons,
       final ResourceResolver resourceResolver) {
     final List<ComponentType> componentTypes = new ArrayList<>();
-    if (includeApps) {
-      try {
-        componentTypes.addAll(
-            getAllDescendantComponentTypes(getAppsRootResource(resourceResolver)));
-      } catch (final ResourceNotFoundException e) {
-        LOG.warn("Unable retrieve /apps ComponentTypes. {}", e.getMessage());
-      }
-    }
     if (includeLibs) {
       try {
         componentTypes.addAll(
@@ -249,6 +242,30 @@ public class ComponentTypeUtils {
       } catch (final ResourceNotFoundException e) {
         LOG.warn("Unable retrieve /libs/kestros/commons ComponentTypes. {}", e.getMessage());
       }
+    }
+    if (includeApps) {
+      try {
+        List<ComponentType> appsComponentTypes = new ArrayList<>();
+        appsComponentTypes.addAll(
+            getAllDescendantComponentTypes(getAppsRootResource(resourceResolver)));
+        if (includeLibs || includeLibsCommons) {
+          for (ComponentType appsComponentType : appsComponentTypes) {
+            String libsPath = appsComponentType.getPath().replace("/apps/", "/libs/");
+            boolean componentTypeExists = componentTypes.stream().filter(
+                o -> o.getPath().equals(libsPath)).findFirst().isPresent();
+            LOG.debug("Excluding {} from all componentTypes list. ComponentType lives under /libs.",
+                appsComponentType.getPath());
+            if (!componentTypeExists) {
+              componentTypes.add(appsComponentType);
+            }
+          }
+        } else {
+          componentTypes.addAll(appsComponentTypes);
+        }
+      } catch (final ResourceNotFoundException e) {
+        LOG.warn("Unable retrieve /apps ComponentTypes. {}", e.getMessage());
+      }
+
     }
     return componentTypes;
   }
