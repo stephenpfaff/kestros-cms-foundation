@@ -65,7 +65,7 @@ public class UiFrameworkValidationServiceTest {
   @Test
   public void testRegisterBasicValidators() {
     validationService.registerBasicValidators();
-    assertEquals(9, validationService.getBasicValidators().size());
+    assertEquals(8, validationService.getBasicValidators().size());
   }
 
   @Test
