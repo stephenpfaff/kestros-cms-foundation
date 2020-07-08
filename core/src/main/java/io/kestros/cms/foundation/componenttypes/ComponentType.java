@@ -112,7 +112,8 @@ public class ComponentType extends BaseResource {
         return getResourceAsType(getPath().replace("/apps/", "/libs/"), getResourceResolver(),
             ComponentType.class).getProperties();
       } catch (ModelAdaptionException e) {
-        LOG.debug("Unable to get properties for /libs resource for {}. {}.", getPath(), e.getMessage());
+        LOG.debug("Unable to get properties for /libs resource for {}. {}.", getPath(),
+            e.getMessage());
       }
     }
     return super.getProperties();
