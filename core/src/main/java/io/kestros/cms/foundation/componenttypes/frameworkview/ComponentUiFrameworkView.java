@@ -23,6 +23,7 @@ import static io.kestros.cms.foundation.utils.DesignUtils.getUiFrameworkByFramew
 import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getChildAsFileType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getParentResourceAsType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
@@ -36,7 +37,6 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
 import java.util.Collections;
@@ -71,7 +71,7 @@ public class ComponentUiFrameworkView extends UiLibrary {
   @JsonIgnore
   public ComponentType getComponentType() {
     try {
-      return SlingModelUtils.getParentResourceAsType(this, ComponentType.class);
+      return getParentResourceAsType(this, ComponentType.class);
     } catch (ModelAdaptionException e) {
       LOG.error(e.getMessage());
     }
