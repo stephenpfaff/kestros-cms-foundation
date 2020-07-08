@@ -107,9 +107,9 @@ public class HtlTemplate {
    */
   public String getDescription() {
     final Attributes attributes = this.node.attributes();
-    final String title = attributes.get("data-description");
-    if (StringUtils.isNotBlank(title)) {
-      return title;
+    final String description = attributes.get("data-description");
+    if (StringUtils.isNotBlank(description)) {
+      return description;
     }
     return StringUtils.EMPTY;
   }
