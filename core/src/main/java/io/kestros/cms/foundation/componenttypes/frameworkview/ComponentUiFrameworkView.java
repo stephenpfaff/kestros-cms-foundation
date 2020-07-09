@@ -24,6 +24,7 @@ import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getC
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getParentResourceAsType;
+import static org.apache.jackrabbit.vault.util.JcrConstants.JCR_TITLE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
@@ -42,6 +43,7 @@ import io.kestros.commons.uilibraries.filetypes.ScriptType;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
 import org.slf4j.Logger;
@@ -62,6 +64,16 @@ import org.slf4j.LoggerFactory;
 public class ComponentUiFrameworkView extends UiLibrary {
 
   private static final Logger LOG = LoggerFactory.getLogger(ComponentUiFrameworkView.class);
+
+  @Override
+  public String getTitle() {
+    try {
+      return getProperty(JCR_TITLE, getUiFramework().getTitle());
+    } catch (ResourceNotFoundException e) {
+      LOG.debug("UiFramework not found for Component View {} while retrieving title.", getPath());
+    }
+    return super.getTitle();
+  }
 
   /**
    * Parent ComponentType.
@@ -140,6 +152,21 @@ public class ComponentUiFrameworkView extends UiLibrary {
   @Nonnull
   public UiFramework getUiFramework() throws ResourceNotFoundException {
     return getUiFrameworkByFrameworkCode(getName(), true, true, getResourceResolver());
+  }
+
+  /**
+   * Font Awesome Icon class.
+   *
+   * @return Font Awesome Icon class.
+   */
+  public String getFontAwesomeIcon() {
+    try {
+      return getProperty("fontAwesomeIcon", getUiFramework().getFontAwesomeIcon());
+    } catch (ResourceNotFoundException e) {
+      LOG.debug("UiFramework not found for Component View {} while retrieving font awesome icon.",
+          getPath());
+    }
+    return StringUtils.EMPTY;
   }
 
   private BaseResource getComponentVariationsRootResource()

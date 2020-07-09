@@ -49,7 +49,7 @@ public class ComponentUiFrameworkViewValidationServiceTest {
   @Test
   public void testRegisterBasicValidators() {
     validationService.registerBasicValidators();
-    assertEquals(6, validationService.getBasicValidators().size());
+    assertEquals(7, validationService.getBasicValidators().size());
   }
 
   @Test

@@ -32,7 +32,8 @@ import org.apache.sling.models.annotations.Model;
     "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",
     "/content/guide-articles/kestros-cms/foundation/defining-content-areas",
     "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
-    "/content/guide-articles/kestros-cms/foundation/grouping-components"})
+    "/content/guide-articles/kestros-cms/foundation/grouping-components"},
+              validationService = ComponentVariationValidationService.class)
 @Model(adaptables = Resource.class,
        resourceType = "kes:ComponentVariation")
 public class ComponentVariation extends UiLibrary {
@@ -54,6 +55,15 @@ public class ComponentVariation extends UiLibrary {
                    sampleValue = "false")
   public boolean isInlineVariation() {
     return getProperty("inline", false);
+  }
+
+  /**
+   * Font Awesome Icon class.
+   *
+   * @return Font Awesome Icon class.
+   */
+  public String getFontAwesomeIcon() {
+    return getProperty("fontAwesomeIcon", "fas fa-paint-brush");
   }
 
 }

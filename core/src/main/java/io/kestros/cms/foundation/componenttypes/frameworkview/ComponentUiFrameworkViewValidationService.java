@@ -18,7 +18,13 @@
 
 package io.kestros.cms.foundation.componenttypes.frameworkview;
 
+import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.hasDescription;
+import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.hasTitle;
+import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
+import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
+
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
+import io.kestros.commons.structuredslingmodels.validation.CommonValidators;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
 import io.kestros.commons.uilibraries.UiLibraryValidationService;
@@ -35,9 +41,16 @@ public class ComponentUiFrameworkViewValidationService extends UiLibraryValidati
 
   @Override
   public void registerBasicValidators() {
-    super.registerBasicValidators();
+    addBasicValidator(hasTitle(getModel()));
+    addBasicValidator(hasDescription(getModel(), WARNING));
+    addBasicValidator(isAllIncludedScriptsFound());
+    addBasicValidator(isAllDependenciesFound());
 
     addBasicValidator(hasValidContentScript());
+    addBasicValidator(CommonValidators.modelListHasNoErrors(getModel().getVariations(),
+        "Variations have no errors."));
+    addBasicValidator(CommonValidators.modelListHasNoWarnings(getModel().getVariations(),
+        "Variations have no warnings."));
   }
 
   ModelValidator hasValidContentScript() {
@@ -59,8 +72,9 @@ public class ComponentUiFrameworkViewValidationService extends UiLibraryValidati
 
       @Override
       public ModelValidationMessageType getType() {
-        return ModelValidationMessageType.ERROR;
+        return ERROR;
       }
     };
   }
+
 }

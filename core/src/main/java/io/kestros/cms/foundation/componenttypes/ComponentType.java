@@ -24,8 +24,10 @@ import static io.kestros.cms.foundation.utils.DesignUtils.getAllUiFrameworks;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourcesAsType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.kestros.cms.foundation.componenttypes.frameworkview.CommonUiFrameworkView;
 import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidCommonUiFrameworkException;
@@ -42,7 +44,6 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,6 +84,9 @@ public class ComponentType extends BaseResource {
   public static final String PN_EXCLUDED_COMPONENT_TYPES = "excludedComponentTypes";
   public static final String PN_ALLOWED_COMPONENT_TYPES = "allowedComponentTypes";
   public static final String PN_ALLOW_LIBS_KESTROS_COMMONS = "allowLibsCommons";
+
+  private static final List<String> RESERVED_COMPONENT_TYPE_CHILD_NAMES = Arrays.asList(
+      new String[]{"edit", "create", "delete"});
 
   @OSGiService
   @Optional
@@ -230,17 +234,34 @@ public class ComponentType extends BaseResource {
     if (this.componentUiFrameworkViews != null) {
       return this.componentUiFrameworkViews;
     }
-    final List<ComponentUiFrameworkView> uiFrameworkViews = new ArrayList<>();
+    this.componentUiFrameworkViews = new ArrayList<>();
 
-    for (final BaseResource uiFrameworkViewResource : getChildrenAsBaseResource(this)) {
-      if (!getExcludedUiFrameworkPaths().contains(uiFrameworkViewResource.getName())) {
-        final ComponentUiFrameworkView uiFrameworkView
-            = uiFrameworkViewResource.getResource().adaptTo(ComponentUiFrameworkView.class);
-        uiFrameworkViews.add(uiFrameworkView);
+    for (final BaseResource childResource : getChildrenAsBaseResource(this)) {
+      if (!getExcludedUiFrameworkPaths().contains(childResource.getName())) {
+        if (COMMON_UI_FRAMEWORK_VIEW_NAME.equals(childResource.getName())) {
+          final CommonUiFrameworkView uiFrameworkView = childResource.getResource().adaptTo(
+              CommonUiFrameworkView.class);
+          this.componentUiFrameworkViews.add(uiFrameworkView);
+        } else if (!RESERVED_COMPONENT_TYPE_CHILD_NAMES.contains(childResource.getName())) {
+          final ComponentUiFrameworkView uiFrameworkView = childResource.getResource().adaptTo(
+              ComponentUiFrameworkView.class);
+          this.componentUiFrameworkViews.add(uiFrameworkView);
+        }
       }
     }
 
-    this.componentUiFrameworkViews = uiFrameworkViews;
+    if (getPath().startsWith("/libs/")) {
+      String appsPath = getPath().replace("/libs/", "/apps/");
+      try {
+        ComponentType appsComponentType = getResourceAsType(appsPath, getResourceResolver(),
+            ComponentType.class);
+        this.componentUiFrameworkViews.addAll(appsComponentType.getUiFrameworkViews());
+      } catch (ModelAdaptionException e) {
+        LOG.debug("Failed to retrieve /apps/ views for ComponentType {}. {}", getPath(),
+            e.getMessage());
+      }
+    }
+
     return this.componentUiFrameworkViews;
   }
 
@@ -255,7 +276,7 @@ public class ComponentType extends BaseResource {
   public List<ComponentTypeGroup> getAllowedComponentTypeGroups() {
     if (!getAllowedComponentTypePaths().isEmpty()) {
       return ComponentTypeUtils.getComponentTypeGroupsFromComponentTypeList(
-          SlingModelUtils.getResourcesAsType(getAllowedComponentTypePaths(), getResourceResolver(),
+          getResourcesAsType(getAllowedComponentTypePaths(), getResourceResolver(),
               ComponentType.class));
     }
     return getComponentTypeGroups(

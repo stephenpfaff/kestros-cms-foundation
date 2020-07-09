@@ -75,7 +75,7 @@ public class ComponentTypeValidationServiceTest {
     when(validationService.getModel()).thenReturn(componentType);
 
     validationService.registerBasicValidators();
-    assertEquals(7, validationService.getBasicValidators().size());
+    assertEquals(9, validationService.getBasicValidators().size());
   }
 
   @Test

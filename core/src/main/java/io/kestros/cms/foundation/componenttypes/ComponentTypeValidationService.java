@@ -28,6 +28,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidCommonUiFrameworkException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
+import io.kestros.commons.structuredslingmodels.validation.CommonValidators;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationService;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
@@ -56,6 +57,10 @@ public class ComponentTypeValidationService extends ModelValidationService {
     addBasicValidator(isValidAcrossAllUiFrameworksOrBypassUiFrameworkValidation());
     addBasicValidator(doesNotSuperTypeItself());
     addBasicValidator(hasFontAwesomeIcon());
+    addBasicValidator(CommonValidators.modelListHasNoErrors(getModel().getUiFrameworkViews(),
+        "Views have no errors."));
+    addBasicValidator(CommonValidators.modelListHasNoWarnings(getModel().getUiFrameworkViews(),
+        "Views have no warnings."));
   }
 
   @Override
