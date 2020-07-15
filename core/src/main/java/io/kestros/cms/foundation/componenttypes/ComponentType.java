@@ -34,6 +34,7 @@ import io.kestros.cms.foundation.exceptions.InvalidCommonUiFrameworkException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
+import io.kestros.cms.foundation.services.modeltracker.ModelTrackerService;
 import io.kestros.cms.foundation.services.scriptprovider.CachedScriptProviderService;
 import io.kestros.cms.foundation.utils.ComponentTypeUtils;
 import io.kestros.cms.foundation.utils.DesignUtils;
@@ -92,8 +93,11 @@ public class ComponentType extends BaseResource {
   @Optional
   private CachedScriptProviderService cachedScriptProviderService;
 
-  private List<ComponentUiFrameworkView> componentUiFrameworkViews;
+  @OSGiService
+  @Optional
+  private ModelTrackerService modelTrackerService;
 
+  private List<ComponentUiFrameworkView> componentUiFrameworkViews;
   private ComponentUiFrameworkView commonUiFrameworkView;
 
   @Override
@@ -237,15 +241,17 @@ public class ComponentType extends BaseResource {
     this.componentUiFrameworkViews = new ArrayList<>();
 
     for (final BaseResource childResource : getChildrenAsBaseResource(this)) {
-      if (!getExcludedUiFrameworkPaths().contains(childResource.getName())) {
-        if (COMMON_UI_FRAMEWORK_VIEW_NAME.equals(childResource.getName())) {
-          final CommonUiFrameworkView uiFrameworkView = childResource.getResource().adaptTo(
-              CommonUiFrameworkView.class);
-          this.componentUiFrameworkViews.add(uiFrameworkView);
-        } else if (!RESERVED_COMPONENT_TYPE_CHILD_NAMES.contains(childResource.getName())) {
-          final ComponentUiFrameworkView uiFrameworkView = childResource.getResource().adaptTo(
-              ComponentUiFrameworkView.class);
-          this.componentUiFrameworkViews.add(uiFrameworkView);
+      if (childResource.getJcrPrimaryType().equals("nt:folder")) {
+        if (!getExcludedUiFrameworkPaths().contains(childResource.getName())) {
+          if (COMMON_UI_FRAMEWORK_VIEW_NAME.equals(childResource.getName())) {
+            final CommonUiFrameworkView uiFrameworkView = childResource.getResource().adaptTo(
+                CommonUiFrameworkView.class);
+            this.componentUiFrameworkViews.add(uiFrameworkView);
+          } else if (!RESERVED_COMPONENT_TYPE_CHILD_NAMES.contains(childResource.getName())) {
+            final ComponentUiFrameworkView uiFrameworkView = childResource.getResource().adaptTo(
+                ComponentUiFrameworkView.class);
+            this.componentUiFrameworkViews.add(uiFrameworkView);
+          }
         }
       }
     }
@@ -388,6 +394,10 @@ public class ComponentType extends BaseResource {
     return fontAwesomeIcon;
   }
 
+  protected String getImplementingComponentResourceType() {
+    return getPath().replaceFirst("/apps/", "").replaceFirst("/libs/", "");
+  }
+
   List<String> getAllowedComponentTypeGroupNames() {
     final List<String> allowedComponentTypeGroups = new ArrayList<>();
 
@@ -467,6 +477,10 @@ public class ComponentType extends BaseResource {
     return missingUiFrameworkCodes;
   }
 
+  protected ModelTrackerService getModelTrackerService() {
+    return this.modelTrackerService;
+  }
+
   private List<String> getExcludedUiFrameworkPaths() {
     return Arrays.asList(getProperties().get(PN_EXCLUDED_UI_FRAMEWORKS, new String[]{}));
   }
@@ -480,6 +494,4 @@ public class ComponentType extends BaseResource {
              InvalidCommonUiFrameworkException {
     return this.getComponentSuperType().getScript(scriptName, uiFramework);
   }
-
-
 }
