@@ -339,7 +339,7 @@ public class ComponentTypeValidationService extends ModelValidationService {
 
     return new DocumentedModelValidator() {
       @Override
-      public String getResourcePath() {
+      public String getResourceType() {
         return "kestros/components/component-management/troubleshooting/multiple-model"
                + "-registration";
       }
