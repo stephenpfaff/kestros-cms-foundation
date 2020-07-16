@@ -56,10 +56,7 @@ public class ComponentTypeValidationService extends ModelValidationService {
 
   @Override
   public void registerBasicValidators() {
-    if (getModel().getModelTrackerService() != null) {
-      this.modelClass = getModel().getModelTrackerService().getModelClassForResourceType(
-          getModel().getImplementingComponentResourceType());
-    }
+
     addBasicValidator(hasTitle(getModel()));
     addBasicValidator(hasDescription(getModel(), WARNING));
     addBasicValidator(hasComponentGroup());
@@ -67,9 +64,14 @@ public class ComponentTypeValidationService extends ModelValidationService {
     addBasicValidator(isValidAcrossAllUiFrameworksOrBypassUiFrameworkValidation());
     addBasicValidator(doesNotSuperTypeItself());
     addBasicValidator(hasFontAwesomeIcon());
-    addBasicValidator(hasProperlyConfiguredModel());
-    addBasicValidator(hasDocumentedModel());
-    addBasicValidator(hasValidationService());
+    if (getModel().getModelTrackerService() != null) {
+      addBasicValidator(hasProperlyConfiguredModel());
+      this.modelClass = getModel().getModelTrackerService().getModelClassForResourceType(
+          getModel().getImplementingComponentResourceType());
+      addBasicValidator(hasDocumentedModel());
+      addBasicValidator(hasValidationService());
+    }
+
     addBasicValidator(CommonValidators.modelListHasNoErrors(getModel().getUiFrameworkViews(),
         "Views have no errors."));
     addBasicValidator(CommonValidators.modelListHasNoWarnings(getModel().getUiFrameworkViews(),
@@ -413,9 +415,11 @@ public class ComponentTypeValidationService extends ModelValidationService {
     return new ModelValidator() {
       @Override
       public boolean isValid() {
-        for (Method method : modelClass.getDeclaredMethods()) {
-          if (method.getAnnotation(KestrosProperty.class) == null) {
-            return false;
+        if (modelClass != null) {
+          for (Method method : modelClass.getDeclaredMethods()) {
+            if (method.getAnnotation(KestrosProperty.class) == null) {
+              return false;
+            }
           }
         }
         return true;
