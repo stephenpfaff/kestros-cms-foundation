@@ -349,12 +349,12 @@ public class ComponentTypeValidationService extends ModelValidationService {
       @Override
       public boolean isValid() {
         return getModel().getModelTrackerService().getAllClassesRegisteredToAResourceType(
-            getModel().getImplementingComponentResourceType()).size() == 1;
+            getModel().getImplementingComponentResourceType()).size() < 2;
       }
 
       @Override
       public String getMessage() {
-        return "Registered to exactly one Model type.";
+        return "ResourceType is not registered multiple model type.";
       }
 
       @Override
