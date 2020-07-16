@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
@@ -42,7 +43,13 @@ public class HtlTemplate {
 
   private static final String CALL_VARIABLES_INDENT = "     ";
 
-  HtlTemplate(final Node node, final String sourcePath) {
+  /**
+   * Constructs an HtlTemplate object.
+   *
+   * @param node HTML Node which created the template.
+   * @param sourcePath HtlTemplateFile path.
+   */
+  public HtlTemplate(final Node node, final String sourcePath) {
     this.node = node;
     this.sourcePath = sourcePath;
   }
@@ -58,6 +65,22 @@ public class HtlTemplate {
       parameters.add(new HtlTemplateParameter(parameter, this.node));
     }
     return parameters;
+  }
+
+  /**
+   * Retrieves a specified parameter.
+   *
+   * @param parameterName Parameter to retrieve.
+   * @return A specified parameter.
+   */
+  @Nullable
+  public HtlTemplateParameter getTemplateParameter(String parameterName) {
+    for (HtlTemplateParameter parameter : getTemplateParameters()) {
+      if (parameter.getName().equalsIgnoreCase(parameterName)) {
+        return parameter;
+      }
+    }
+    return null;
   }
 
   /**
