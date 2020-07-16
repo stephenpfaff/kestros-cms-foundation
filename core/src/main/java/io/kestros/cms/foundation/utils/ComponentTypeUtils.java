@@ -23,8 +23,13 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 
 import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.componenttypes.ComponentTypeGroup;
+import io.kestros.cms.foundation.componenttypes.HtmlFile;
+import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
+import io.kestros.cms.foundation.design.htltemplate.usage.HtlTemplateUsage;
+import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,6 +42,9 @@ import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -333,6 +341,64 @@ public class ComponentTypeUtils {
     public int compare(final ComponentTypeGroup o1, final ComponentTypeGroup o2) {
       return o1.getTitle().compareToIgnoreCase(o2.getTitle());
     }
+  }
+
+  /**
+   * The name of all templates a specified ComponentUiFrameworkView attempts to call.
+   *
+   * @param componentUiFrameworkView View to retrieve called template names from.
+   * @return The name of all templates a specified ComponentUiFrameworkView attempts to call.
+   * @throws InvalidScriptException Failed to find a valid content.html script.
+   * @throws IOException Failed to read view's content.html script.
+   */
+  @Nonnull
+  public static List<String> getTemplateNamesAComponentViewAttemptsToCall(
+      @Nonnull ComponentUiFrameworkView componentUiFrameworkView)
+      throws InvalidScriptException, IOException {
+    List<String> templateNameList = new ArrayList<>();
+    HtmlFile contentScript = componentUiFrameworkView.getUiFrameworkViewScript("content.html");
+
+    final Document contentScriptDocument = Jsoup.parse(contentScript.getFileContent());
+    contentScriptDocument.outputSettings().outline(true);
+    contentScriptDocument.outputSettings().prettyPrint(false);
+
+    for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
+        "data-sly-call")) {
+      if (element.hasAttr("data-sly-call")) {
+        String templateName = element.attr("data-sly-call").split("@")[0];
+        templateName = templateName.split("templates.")[1];
+        templateName = templateName.replaceAll(" ", "");
+        templateNameList.add(templateName);
+      }
+    }
+
+    return templateNameList;
+  }
+
+  /**
+   * All template usages within a specified ComponentUiFrameworkView.
+   *
+   * @param componentUiFrameworkView view to find templates usages from.
+   * @return All template usages within a specified ComponentUiFrameworkView.
+   * @throws InvalidScriptException Failed to find a valid content.html script.
+   * @throws IOException Failed to read view's content.html script.
+   */
+  public static List<HtlTemplateUsage> getHtlTemplateUsageList(
+      @Nonnull ComponentUiFrameworkView componentUiFrameworkView)
+      throws InvalidScriptException, IOException {
+    List<HtlTemplateUsage> templateNameList = new ArrayList<>();
+    HtmlFile contentScript = componentUiFrameworkView.getUiFrameworkViewScript("content.html");
+
+    final Document contentScriptDocument = Jsoup.parse(contentScript.getFileContent());
+    contentScriptDocument.outputSettings().outline(true);
+    contentScriptDocument.outputSettings().prettyPrint(false);
+
+    for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
+        "data-sly-call")) {
+      templateNameList.add(new HtlTemplateUsage(element, this));
+    }
+
+    return templateNameList;
   }
 
 }
