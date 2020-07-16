@@ -75,7 +75,7 @@ public class ComponentTypeValidationServiceTest {
     when(validationService.getModel()).thenReturn(componentType);
 
     validationService.registerBasicValidators();
-    assertEquals(12, validationService.getBasicValidators().size());
+    assertEquals(9, validationService.getBasicValidators().size());
   }
 
   @Test
@@ -366,7 +366,6 @@ public class ComponentTypeValidationServiceTest {
 
     assertFalse(validationService.hasFontAwesomeIcon().isValid());
     assertEquals("Has FontAwesome icon.", validationService.hasFontAwesomeIcon().getMessage());
-    assertEquals(ModelValidationMessageType.WARNING,
-        validationService.hasFontAwesomeIcon().getType());
+    assertEquals(ModelValidationMessageType.INFO, validationService.hasFontAwesomeIcon().getType());
   }
 }

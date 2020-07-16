@@ -59,7 +59,7 @@
     <module>core</module>
     <module>frontend</module>
     <module>docs</module>
-    <module>beta-start-page</module>
+<!--    <module>beta-start-page</module>-->
   </modules>
 
   <dependencyManagement>
