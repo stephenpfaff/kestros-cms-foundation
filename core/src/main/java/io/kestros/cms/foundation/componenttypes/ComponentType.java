@@ -224,7 +224,13 @@ public class ComponentType extends BaseResource {
                    configurable = true,
                    sampleValue = "false")
   public boolean isBypassUiFrameworks() {
-    return getProperties().get("bypassUiFrameworks", Boolean.FALSE);
+    boolean bypassUiFrameworksCheck = getProperties().get("bypassUiFrameworks", Boolean.FALSE);
+    if (!bypassUiFrameworksCheck) {
+      if (getPath().startsWith("/libs/kestros/components")) {
+        return true;
+      }
+    }
+    return bypassUiFrameworksCheck;
   }
 
   /**
