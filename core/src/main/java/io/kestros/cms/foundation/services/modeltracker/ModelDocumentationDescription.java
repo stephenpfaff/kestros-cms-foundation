@@ -56,8 +56,10 @@ public class ModelDocumentationDescription {
     this.bundle = bundle;
     this.deprecated = deprecated;
     this.modelClass = modelClass;
-    Model annotation = ((Model) modelClass.getAnnotation(Model.class));
-    this.resourceTypes.addAll(Arrays.asList(annotation.resourceType()));
+    if (modelClass != null) {
+      Model annotation = ((Model) modelClass.getAnnotation(Model.class));
+      this.resourceTypes.addAll(Arrays.asList(annotation.resourceType()));
+    }
   }
 
   /**
