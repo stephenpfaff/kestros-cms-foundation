@@ -389,13 +389,15 @@ public class ComponentTypeUtils {
     List<HtlTemplateUsage> templateNameList = new ArrayList<>();
     HtmlFile contentScript = componentUiFrameworkView.getUiFrameworkViewScript("content.html");
 
-    final Document contentScriptDocument = Jsoup.parse(contentScript.getFileContent());
-    contentScriptDocument.outputSettings().outline(true);
-    contentScriptDocument.outputSettings().prettyPrint(false);
+    if (contentScript != null) {
+      final Document contentScriptDocument = Jsoup.parse(contentScript.getFileContent());
+      contentScriptDocument.outputSettings().outline(true);
+      contentScriptDocument.outputSettings().prettyPrint(false);
 
-    for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
-        "data-sly-call")) {
-      templateNameList.add(new HtlTemplateUsage(element, componentUiFrameworkView));
+      for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
+          "data-sly-call")) {
+        templateNameList.add(new HtlTemplateUsage(element, componentUiFrameworkView));
+      }
     }
 
     return templateNameList;
