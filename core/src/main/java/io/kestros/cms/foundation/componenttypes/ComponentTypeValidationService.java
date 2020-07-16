@@ -22,6 +22,7 @@ import static io.kestros.cms.foundation.utils.DesignUtils.getAllUiFrameworks;
 import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.hasDescription;
 import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.hasTitle;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
+import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.INFO;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -287,7 +288,7 @@ public class ComponentTypeValidationService extends ModelValidationService {
 
       @Override
       public ModelValidationMessageType getType() {
-        return WARNING;
+        return INFO;
       }
     };
   }
