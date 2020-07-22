@@ -26,8 +26,8 @@
     </sly>
   </sly>
   <sly data-sly-test="${!parentComponentEditContext.editMode}">
-    <link data-sly-test="${page.theme.uiFramework.includeCss}"
-        rel="stylesheet" type="text/css"
+    <link data-sly-test="${page.theme.uiFramework.cssScriptFiles}"
+          rel="stylesheet" type="text/css"
           href="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.css">
   </sly>
 </template>
@@ -41,7 +41,7 @@
     </sly>
   </sly>
   <sly data-sly-test="${!parentComponentEditContext.editMode}">
-    <script data-sly-test="${page.theme.uiFramework.includeJavaScript}"
-        src="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.js"></script>
+    <script data-sly-test="${page.theme.uiFramework.javaScriptScriptFiles}"
+            src="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.js"></script>
   </sly>
 </template>

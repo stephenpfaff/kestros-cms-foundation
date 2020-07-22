@@ -20,5 +20,7 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
   jcr:primaryType="kes:ComponentType"
   jcr:title="Kestros Base Page"
-  componentGroup=".hidden"
+  jcr:description="Baseline page type. Contains a header, main, and footer sections."
+  sling:resourceSuperType="kestros/commons/components/kestros-parent"
+  componentGroup="General Pages"
   fontAwesomeIcon="fa fa-file"/>

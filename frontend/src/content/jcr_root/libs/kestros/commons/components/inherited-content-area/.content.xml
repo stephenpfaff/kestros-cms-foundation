@@ -18,6 +18,9 @@
   -->
 
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
-          jcr:primaryType="kes:ComponentType"
-          jcr:title="Inherited Content Area"
-          componentGroup=".hidden"/>
+  jcr:primaryType="kes:ComponentType"
+  sling:resourceSuperType="kestros/commons/components/kestros-parent"
+  jcr:title="Inherited Content Area"
+  jcr:description="Content Area which will inherit content from resources on ancestor pages with the same relative path."
+  componentGroup="Kestros Framework Components"
+  bypassUiFrameworks="true"/>
