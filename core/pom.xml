@@ -69,6 +69,17 @@
       <artifactId>org.apache.sling.scripting.sightly.compiler.java</artifactId>
     </dependency>
 
+    <!-- Felix Health Checks -->
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.healthcheck.api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.healthcheck.annotation</artifactId>
+    </dependency>
+
     <!-- Less Compilation -->
     <dependency>
       <groupId>de.inetsoftware</groupId>
