@@ -58,7 +58,9 @@ public class ModelDocumentationDescription {
     this.modelClass = modelClass;
     if (modelClass != null) {
       Model annotation = ((Model) modelClass.getAnnotation(Model.class));
-      this.resourceTypes.addAll(Arrays.asList(annotation.resourceType()));
+      if (annotation != null) {
+        this.resourceTypes.addAll(Arrays.asList(annotation.resourceType()));
+      }
     }
   }
 
