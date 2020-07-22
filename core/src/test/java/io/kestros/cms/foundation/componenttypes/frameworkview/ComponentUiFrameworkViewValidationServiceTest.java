@@ -60,7 +60,7 @@ public class ComponentUiFrameworkViewValidationServiceTest {
 
   @Test
   public void testHasValidContentScript() {
-    assertTrue(validationService.hasValidContentScript().isValid());
+    assertTrue(validationService.hasValidSpecificContentScript().isValid());
   }
 
   @Test
@@ -68,11 +68,11 @@ public class ComponentUiFrameworkViewValidationServiceTest {
     when(componentUiFrameworkView.getUiFrameworkViewScript("content.html")).thenThrow(
         InvalidScriptException.class);
 
-    assertFalse(validationService.hasValidContentScript().isValid());
-    assertEquals("Must have content.html script.",
-        validationService.hasValidContentScript().getMessage());
-    assertEquals(ModelValidationMessageType.ERROR,
-        validationService.hasValidContentScript().getType());
+    assertFalse(validationService.hasValidSpecificContentScript().isValid());
+    assertEquals("Has a content.html script.",
+        validationService.hasValidSpecificContentScript().getMessage());
+    assertEquals(ModelValidationMessageType.WARNING,
+        validationService.hasValidSpecificContentScript().getType());
   }
 
   @Test
@@ -80,7 +80,7 @@ public class ComponentUiFrameworkViewValidationServiceTest {
     when(componentUiFrameworkView.getUiFrameworkViewScript("content.html")).thenThrow(
         InvalidScriptException.class);
 
-    assertFalse(validationService.hasValidContentScript().isValid());
+    assertFalse(validationService.hasValidSpecificContentScript().isValid());
   }
 
 }

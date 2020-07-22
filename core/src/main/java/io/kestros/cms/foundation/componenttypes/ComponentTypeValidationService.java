@@ -64,13 +64,13 @@ public class ComponentTypeValidationService extends ModelValidationService {
     addBasicValidator(doesSuperTypeKestrosParentComponent());
     addBasicValidator(isValidAcrossAllUiFrameworksOrBypassUiFrameworkValidation());
     addBasicValidator(doesNotSuperTypeItself());
-    addBasicValidator(hasFontAwesomeIcon());
     if (getModel().getModelTrackerService() != null) {
-      addBasicValidator(hasProperlyConfiguredModel());
       this.modelClass = getModel().getModelTrackerService().getModelClassForResourceType(
           getModel().getImplementingComponentResourceType());
+      addBasicValidator(hasProperlyConfiguredModel());
       addBasicValidator(hasDocumentedModel());
       addBasicValidator(hasValidationService());
+      addBasicValidator(hasFontAwesomeIcon());
     }
 
     addBasicValidator(CommonValidators.modelListHasNoErrors(getModel().getUiFrameworkViews(),
@@ -323,7 +323,15 @@ public class ComponentTypeValidationService extends ModelValidationService {
     return new ModelValidator() {
       @Override
       public boolean isValid() {
-        return modelClass != null;
+
+        if (modelClass != null) {
+          return true;
+        }
+        if (getModel().getImplementingComponentResourceType().equals(
+            "kestros/commons/components/kestros-base-page")) {
+          return true;
+        }
+        return false;
       }
 
       @Override
@@ -397,6 +405,10 @@ public class ComponentTypeValidationService extends ModelValidationService {
         if (modelClass != null) {
           return modelClass.getAnnotation(KestrosModel.class) != null;
         }
+        if (getModel().getImplementingComponentResourceType().equals(
+            "kestros/commons/components/kestros-base-page")) {
+          return true;
+        }
         return false;
       }
 
@@ -418,7 +430,9 @@ public class ComponentTypeValidationService extends ModelValidationService {
       public boolean isValid() {
         if (modelClass != null) {
           for (Method method : modelClass.getDeclaredMethods()) {
-            if (method.getAnnotation(KestrosProperty.class) == null) {
+            if ((method.toString().startsWith("public") && !"void".equals(
+                method.getReturnType().toString())) && method.getAnnotation(KestrosProperty.class)
+                                                       == null) {
               return false;
             }
           }
@@ -449,6 +463,10 @@ public class ComponentTypeValidationService extends ModelValidationService {
             return kestrosModelAnnotation.validationService() != null;
           }
         }
+        if (getModel().getImplementingComponentResourceType().equals(
+            "kestros/commons/components/kestros-base-page")) {
+          return true;
+        }
         return false;
       }
 
@@ -463,4 +481,5 @@ public class ComponentTypeValidationService extends ModelValidationService {
       }
     };
   }
+
 }

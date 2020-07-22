@@ -27,12 +27,14 @@ import io.kestros.cms.foundation.design.htltemplate.usage.HtlTemplateParameterUs
 import io.kestros.cms.foundation.design.htltemplate.usage.HtlTemplateUsage;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.utils.ComponentTypeUtils;
+import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.validation.CommonValidators;
 import io.kestros.commons.structuredslingmodels.validation.DocumentedModelValidator;
 import io.kestros.commons.structuredslingmodels.validation.DocumentedModelValidatorBundle;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
+import io.kestros.commons.structuredslingmodels.validation.ModelValidatorBundle;
 import io.kestros.commons.uilibraries.UiLibraryValidationService;
 import java.util.List;
 import org.slf4j.Logger;
@@ -60,14 +62,12 @@ public class ComponentUiFrameworkViewValidationService extends UiLibraryValidati
       addBasicValidator(isAllUsedTemplatesValid());
       addBasicValidator(isProperParametersUsedForEachTemplateUsage());
     } catch (Exception e) {
-      LOG.warn(
-          "ComponentUiFrameworkView Validation Service failed to register template usage "
-          + "validators. {}.",
-          e.getMessage());
+      LOG.warn("ComponentUiFrameworkView Validation Service failed to register template usage "
+               + "validators. {}.", e.getMessage());
     }
 
     addBasicValidator(isAllIncludedScriptsFound());
-    addBasicValidator(hasValidContentScript());
+    addBasicValidator(hasRenderableContentScript());
 
     addBasicValidator(CommonValidators.modelListHasNoErrors(getModel().getVariations(),
         "Variations have no errors."));
@@ -75,7 +75,57 @@ public class ComponentUiFrameworkViewValidationService extends UiLibraryValidati
         "Variations have no warnings."));
   }
 
-  ModelValidator hasValidContentScript() {
+  ModelValidatorBundle hasRenderableContentScript() {
+    return new ModelValidatorBundle() {
+      @Override
+      public void registerValidators() {
+        addBasicValidator(hasCommonContentScript());
+        addBasicValidator(hasValidSpecificContentScript());
+      }
+
+      @Override
+      public String getBundleMessage() {
+        return "Component will be able to render a content.html script";
+      }
+
+      @Override
+      public boolean isAllMustBeTrue() {
+        return false;
+      }
+
+      @Override
+      public ModelValidationMessageType getType() {
+        return ERROR;
+      }
+    };
+  }
+
+  ModelValidator hasCommonContentScript() {
+    return new ModelValidator() {
+      @Override
+      public boolean isValid() {
+        try {
+          getModel().getComponentType().getCommonUiFrameworkView().getUiFrameworkViewScript(
+              "content.html");
+        } catch (ModelAdaptionException e) {
+          return false;
+        }
+        return true;
+      }
+
+      @Override
+      public String getMessage() {
+        return "Can inherit a content.html script from the common view.";
+      }
+
+      @Override
+      public ModelValidationMessageType getType() {
+        return ERROR;
+      }
+    };
+  }
+
+  ModelValidator hasValidSpecificContentScript() {
     return new ModelValidator() {
       @Override
       public boolean isValid() {
@@ -89,12 +139,12 @@ public class ComponentUiFrameworkViewValidationService extends UiLibraryValidati
 
       @Override
       public String getMessage() {
-        return "Must have content.html script.";
+        return "Has a content.html script.";
       }
 
       @Override
       public ModelValidationMessageType getType() {
-        return ERROR;
+        return WARNING;
       }
     };
   }

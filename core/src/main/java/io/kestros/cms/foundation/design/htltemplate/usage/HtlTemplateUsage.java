@@ -56,7 +56,12 @@ public class HtlTemplateUsage {
     }
 
     List<HtlTemplateParameterUsage> parameters = new ArrayList<>();
-    String parametersArrayString = element.attr("data-sly-call").split("@")[1];
+    String parametersArrayString;
+    if (element.attr("data-sly-call").contains("@")) {
+      parametersArrayString = element.attr("data-sly-call").split("@")[1];
+    } else {
+      parametersArrayString = element.attr("data-sly-call").split("@")[0];
+    }
     parametersArrayString.replaceAll("}", "");
     for (String parameterString : parametersArrayString.split(",")) {
       String parameterName = parameterString.split("=")[0].replaceAll(" ", "").replaceAll("\n", "");
