@@ -24,6 +24,7 @@ import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,6 +67,10 @@ public class ParentComponent extends BaseComponent {
    * @return HTML element ID to give to the component.
    */
   @Nonnull
+  @KestrosProperty(description = "HTML element ID to give to the component.",
+                   configurable = true,
+                   jcrPropertyName = "id",
+                   defaultValue = "")
   public String getId() {
     return getProperties().get("id", StringUtils.EMPTY);
   }
@@ -76,6 +81,10 @@ public class ParentComponent extends BaseComponent {
    * @return Additional CSS classes to add to the component.
    */
   @Nonnull
+  @KestrosProperty(description = "Additional CSS classes to add to the component.",
+                   configurable = true,
+                   jcrPropertyName = "class",
+                   defaultValue = "")
   public String getCssClass() {
     return getProperties().get("class", StringUtils.EMPTY);
   }
@@ -88,6 +97,7 @@ public class ParentComponent extends BaseComponent {
    * @throws ResourceNotFoundException Component's expected Theme resource was missing.
    */
   @Nullable
+  @KestrosProperty(description = "The active theme for the current Page/Component.")
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
     LOG.trace("Retrieving theme for {}.", getPath());
     if (theme == null) {

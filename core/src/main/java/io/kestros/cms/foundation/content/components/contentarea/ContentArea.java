@@ -20,6 +20,7 @@ package io.kestros.cms.foundation.content.components.contentarea;
 
 import io.kestros.cms.foundation.content.BaseComponent;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
@@ -40,6 +41,8 @@ public class ContentArea extends BaseComponent {
    *
    * @return The relative path of the ContentArea. Does not include jcr:content.
    */
+  @KestrosProperty(description = "The relative path of the ContentArea. Does not include "
+                                 + "jcr:content.")
   public String getRelativePath() {
     String path = getPath();
     String jcrContentRelativePath = "/" + JcrConstants.JCR_CONTENT + "/";
