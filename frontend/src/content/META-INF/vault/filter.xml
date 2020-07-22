@@ -46,10 +46,36 @@
     root="/libs/kestros/commons/config/org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-kestros-resource-manager"
     mode="update"/>
 
-  <filter root="/libs/kestros/commons/content-area"/>
-  <filter root="/libs/kestros/commons/inherited-content-area"/>
-  <filter root="/libs/kestros/commons/kestros-base-page"/>
-  <filter root="/libs/kestros/commons/kestros-parent"/>
+  <filter root="/libs/kestros/commons/components/content-area">
+    <exclude pattern="/libs/kestros/commons/components/content-area/.*"/>
+  </filter>
+  <filter root="/libs/kestros/commons/components/content-area/common" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/content-area/create" mode="replace"/>
+
+  <filter root="/libs/kestros/commons/components/inherited-content-area">
+    <exclude pattern="/libs/kestros/commons/components/inherited-content-area/.*"/>
+  </filter>
+  <filter root="/libs/kestros/commons/components/inherited-content-area/common" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/inherited-content-area/create" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/inherited-content-area/edit" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/inherited-content-area/delete" mode="replace"/>
+
+
+  <filter root="/libs/kestros/commons/components/kestros-base-page">
+    <exclude pattern="/libs/kestros/commons/components/kestros-base-page/.*"/>
+  </filter>
+  <filter root="/libs/kestros/commons/components/kestros-base-page/common" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/kestros-base-page/create" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/kestros-base-page/edit" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/kestros-base-page/delete" mode="replace"/>
+
+  <filter root="/libs/kestros/commons/components/kestros-parent">
+    <exclude pattern="/libs/kestros/commons/components/kestros-parent/.*"/>
+  </filter>
+  <filter root="/libs/kestros/commons/components/kestros-parent/common" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/kestros-parent/create" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/kestros-parent/edit" mode="replace"/>
+  <filter root="/libs/kestros/commons/components/kestros-parent/delete" mode="replace"/>
 
   <filter root="/etc/ui-frameworks">
     <exclude pattern="/etc/ui-frameworks/.*"/>
