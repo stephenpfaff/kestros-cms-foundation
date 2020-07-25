@@ -109,7 +109,9 @@ public class ComponentTypeValidationService extends ModelValidationService {
       public boolean isValid() {
         ComponentType componentType = getModel();
         while (componentType != null) {
-          if (componentType.getPath().equals("/libs/kestros/commons/components/kestros-parent")) {
+          if (componentType.getPath().equals("/libs/kestros/commons/components/kestros-parent")
+              || componentType.getPath().equals(
+              "/libs/kestros/commons/components/kestros-base-page")) {
             return true;
           }
           try {
@@ -123,7 +125,7 @@ public class ComponentTypeValidationService extends ModelValidationService {
 
       @Override
       public String getMessage() {
-        return "SuperTypes Kestros Parent Component.";
+        return "SuperTypes Kestros Parent Component or Kestros Base Page.";
       }
 
       @Override
