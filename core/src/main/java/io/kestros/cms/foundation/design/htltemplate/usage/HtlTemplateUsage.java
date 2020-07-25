@@ -36,6 +36,7 @@ public class HtlTemplateUsage {
   private ComponentUiFrameworkView componentUiFrameworkView;
   private HtlTemplate usedHtlTemplate;
   private String name;
+  private String title;
   private List<HtlTemplateParameterUsage> templateParameterUsageList;
 
   /**
@@ -47,32 +48,41 @@ public class HtlTemplateUsage {
   public HtlTemplateUsage(Element element, ComponentUiFrameworkView componentUiFrameworkView) {
     setComponentUiFrameworkView(componentUiFrameworkView);
 
-    setName(element.attr("data-sly-call").split("@")[0].split("templates.")[1].replaceAll(" ", ""));
-    try {
-      setUsedHtlTemplate(
-          getHtlTemplateFromUiFramework(this.componentUiFrameworkView.getUiFramework(), getName()));
-    } catch (ResourceNotFoundException e) {
-      // todo log.
-    }
-
-    List<HtlTemplateParameterUsage> parameters = new ArrayList<>();
-    String parametersArrayString;
-    if (element.attr("data-sly-call").contains("@")) {
-      parametersArrayString = element.attr("data-sly-call").split("@")[1];
-    } else {
-      parametersArrayString = element.attr("data-sly-call").split("@")[0];
-    }
-    parametersArrayString.replaceAll("}", "");
-    for (String parameterString : parametersArrayString.split(",")) {
-      String parameterName = parameterString.split("=")[0].replaceAll(" ", "").replaceAll("\n", "");
+    if (element.attr("data-sly-call").split("@")[0].split("templates.").length > 1) {
+      setName(element.attr("data-sly-call").split("@")[0].split("templates.")[1].replaceAll(" ",
+          ""));
       try {
-        parameters.add(new HtlTemplateParameterUsage(parameterName, "",
-            getUsedHtlTemplate().getTemplateParameter(parameterName), getUsedHtlTemplate()));
+        setUsedHtlTemplate(
+            getHtlTemplateFromUiFramework(this.componentUiFrameworkView.getUiFramework(),
+                getName()));
+        if (usedHtlTemplate != null) {
+          setTitle(usedHtlTemplate.getTitle());
+
+          List<HtlTemplateParameterUsage> parameters = new ArrayList<>();
+          String parametersArrayString;
+          if (element.attr("data-sly-call").contains("@")) {
+            parametersArrayString = element.attr("data-sly-call").split("@")[1];
+          } else {
+            parametersArrayString = element.attr("data-sly-call").split("@")[0];
+          }
+          parametersArrayString.replaceAll("}", "");
+          for (String parameterString : parametersArrayString.split(",")) {
+            String parameterName = parameterString.split("=")[0].replaceAll(" ", "").replaceAll(
+                "\n", "");
+            try {
+              parameters.add(new HtlTemplateParameterUsage(parameterName, "",
+                  getUsedHtlTemplate().getTemplateParameter(parameterName), getUsedHtlTemplate()));
+            } catch (ResourceNotFoundException e) {
+              // todo log.
+            }
+          }
+          setTemplateParameterUsageList(parameters);
+        }
       } catch (ResourceNotFoundException e) {
         // todo log.
       }
+
     }
-    setTemplateParameterUsageList(parameters);
 
   }
 
@@ -130,5 +140,11 @@ public class HtlTemplateUsage {
     this.templateParameterUsageList = templateParameterUsageList;
   }
 
+  public String getTitle() {
+    return title;
+  }
 
+  public void setTitle(String title) {
+    this.title = title;
+  }
 }

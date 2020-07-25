@@ -29,6 +29,7 @@ import io.kestros.cms.foundation.design.htltemplate.usage.HtlTemplateUsage;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.FileModelUtils;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -86,8 +87,7 @@ public class ComponentTypeUtils {
    * @return List of ComponentTypeGroups from a List of ComponentTypes.
    */
   @Nonnull
-  public static <T extends ComponentType> List<ComponentTypeGroup>
-      getComponentTypeGroupsFromComponentTypeList(
+  public static <T extends ComponentType> List<ComponentTypeGroup> getComponentTypeGroupsFromComponentTypeList(
       @Nonnull final List<T> componentTypes) {
     final List<ComponentTypeGroup> componentTypeGroups = new ArrayList<>();
 
@@ -356,19 +356,21 @@ public class ComponentTypeUtils {
       @Nonnull ComponentUiFrameworkView componentUiFrameworkView)
       throws InvalidScriptException, IOException {
     List<String> templateNameList = new ArrayList<>();
-    HtmlFile contentScript = componentUiFrameworkView.getUiFrameworkViewScript("content.html");
+    for (HtmlFile htlScriptFile : FileModelUtils.getChildrenOfFileType(componentUiFrameworkView,
+        HtmlFile.class)) {
 
-    final Document contentScriptDocument = Jsoup.parse(contentScript.getFileContent());
-    contentScriptDocument.outputSettings().outline(true);
-    contentScriptDocument.outputSettings().prettyPrint(false);
+      final Document contentScriptDocument = Jsoup.parse(htlScriptFile.getFileContent());
+      contentScriptDocument.outputSettings().outline(true);
+      contentScriptDocument.outputSettings().prettyPrint(false);
 
-    for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
-        "data-sly-call")) {
-      if (element.hasAttr("data-sly-call")) {
-        String templateName = element.attr("data-sly-call").split("@")[0];
-        templateName = templateName.split("templates.")[1];
-        templateName = templateName.replaceAll(" ", "");
-        templateNameList.add(templateName);
+      for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
+          "data-sly-call")) {
+        if (element.hasAttr("data-sly-call")) {
+          String templateName = element.attr("data-sly-call").split("@")[0];
+          templateName = templateName.split("templates.")[1];
+          templateName = templateName.replaceAll(" ", "");
+          templateNameList.add(templateName);
+        }
       }
     }
 
@@ -387,16 +389,19 @@ public class ComponentTypeUtils {
       @Nonnull ComponentUiFrameworkView componentUiFrameworkView)
       throws InvalidScriptException, IOException {
     List<HtlTemplateUsage> templateNameList = new ArrayList<>();
-    HtmlFile contentScript = componentUiFrameworkView.getUiFrameworkViewScript("content.html");
+    for (HtmlFile htlScriptFile : FileModelUtils.getChildrenOfFileType(componentUiFrameworkView,
+        HtmlFile.class)) {
 
-    if (contentScript != null) {
-      final Document contentScriptDocument = Jsoup.parse(contentScript.getFileContent());
-      contentScriptDocument.outputSettings().outline(true);
-      contentScriptDocument.outputSettings().prettyPrint(false);
+      if (htlScriptFile != null) {
+        final Document contentScriptDocument = Jsoup.parse(htlScriptFile.getFileContent());
+        contentScriptDocument.outputSettings().outline(true);
+        contentScriptDocument.outputSettings().prettyPrint(false);
 
-      for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
-          "data-sly-call")) {
-        templateNameList.add(new HtlTemplateUsage(element, componentUiFrameworkView));
+        for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
+            "data-sly-call")) {
+          HtlTemplateUsage templateUsage = new HtlTemplateUsage(element, componentUiFrameworkView);
+          templateNameList.add(templateUsage);
+        }
       }
     }
 

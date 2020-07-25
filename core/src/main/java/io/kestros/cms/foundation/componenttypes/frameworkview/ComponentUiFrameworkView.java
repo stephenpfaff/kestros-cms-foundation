@@ -37,6 +37,7 @@ import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
+import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
@@ -81,13 +82,10 @@ public class ComponentUiFrameworkView extends UiLibrary {
    * @return Parent ComponentType.
    */
   @JsonIgnore
-  public ComponentType getComponentType() {
-    try {
-      return getParentResourceAsType(this, ComponentType.class);
-    } catch (ModelAdaptionException e) {
-      LOG.error(e.getMessage());
-    }
-    return null;
+  @Nonnull
+  public ComponentType getComponentType()
+      throws InvalidResourceTypeException, NoParentResourceException {
+    return getParentResourceAsType(this, ComponentType.class);
   }
 
   /**

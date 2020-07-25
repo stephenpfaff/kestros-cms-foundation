@@ -18,15 +18,16 @@
 
 package io.kestros.cms.foundation.componenttypes.frameworkview;
 
+import static io.kestros.cms.foundation.utils.ComponentTypeUtils.getHtlTemplateUsageList;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.kestros.cms.foundation.design.htltemplate.HtlTemplate;
 import io.kestros.cms.foundation.design.htltemplate.HtlTemplateParameter;
 import io.kestros.cms.foundation.design.htltemplate.usage.HtlTemplateParameterUsage;
 import io.kestros.cms.foundation.design.htltemplate.usage.HtlTemplateUsage;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
-import io.kestros.cms.foundation.utils.ComponentTypeUtils;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.validation.CommonValidators;
@@ -58,7 +59,7 @@ public class ComponentUiFrameworkViewValidationService extends UiLibraryValidati
   @Override
   public void registerBasicValidators() {
     try {
-      htlTemplateUsageList = ComponentTypeUtils.getHtlTemplateUsageList(getModel());
+      htlTemplateUsageList = getHtlTemplateUsageList(getModel());
       addBasicValidator(isAllUsedTemplatesValid());
       addBasicValidator(isProperParametersUsedForEachTemplateUsage());
     } catch (Exception e) {
@@ -213,7 +214,8 @@ public class ComponentUiFrameworkViewValidationService extends UiLibraryValidati
                 }
               }
               if (!parameterIsUsed) {
-                addBasicValidator(isHtlTemplateParameterMissing(parameter));
+                addBasicValidator(
+                    isHtlTemplateParameterMissing(templateUsage.getUsedHtlTemplate(), parameter));
               }
             }
           } catch (ResourceNotFoundException e) {
@@ -242,7 +244,8 @@ public class ComponentUiFrameworkViewValidationService extends UiLibraryValidati
   }
 
   @SuppressFBWarnings("SIC_INNER_SHOULD_BE_STATIC_ANON")
-  ModelValidator isHtlTemplateParameterMissing(HtlTemplateParameter parameter) {
+  ModelValidator isHtlTemplateParameterMissing(HtlTemplate htlTemplate,
+      HtlTemplateParameter parameter) {
     return new ModelValidator() {
       @Override
       public boolean isValid() {
@@ -251,7 +254,8 @@ public class ComponentUiFrameworkViewValidationService extends UiLibraryValidati
 
       @Override
       public String getMessage() {
-        return parameter.getName() + " is not used.";
+        return String.format("%s is not used in %s call.", parameter.getName(),
+            htlTemplate.getName());
       }
 
       @Override
