@@ -87,7 +87,8 @@ public class ComponentTypeUtils {
    * @return List of ComponentTypeGroups from a List of ComponentTypes.
    */
   @Nonnull
-  public static <T extends ComponentType> List<ComponentTypeGroup> getComponentTypeGroupsFromComponentTypeList(
+  public static <T extends ComponentType> List<ComponentTypeGroup>
+      getComponentTypeGroupsFromComponentTypeList(
       @Nonnull final List<T> componentTypes) {
     final List<ComponentTypeGroup> componentTypeGroups = new ArrayList<>();
 

@@ -149,7 +149,7 @@ public class ComponentTypeValidationServiceTest {
     when(validationService.getModel()).thenReturn(componentType);
 
     assertFalse(validationService.doesSuperTypeKestrosParentComponent().isValid());
-    assertEquals("SuperTypes Kestros Parent Component.",
+    assertEquals("SuperTypes Kestros Parent Component or Kestros Base Page.",
         validationService.doesSuperTypeKestrosParentComponent().getMessage());
     assertEquals(ModelValidationMessageType.WARNING,
         validationService.doesSuperTypeKestrosParentComponent().getType());

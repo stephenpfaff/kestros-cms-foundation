@@ -140,10 +140,18 @@ public class HtlTemplateUsage {
     this.templateParameterUsageList = templateParameterUsageList;
   }
 
+  /**
+   * Template title.
+   * @return Template title.
+   */
   public String getTitle() {
     return title;
   }
 
+  /**
+   * Sets Template title.
+   * @param title Template title.
+   */
   public void setTitle(String title) {
     this.title = title;
   }

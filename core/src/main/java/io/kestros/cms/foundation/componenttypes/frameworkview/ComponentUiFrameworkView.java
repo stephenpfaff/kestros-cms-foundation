@@ -34,6 +34,7 @@ import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -41,7 +42,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceExcep
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
@@ -80,6 +81,8 @@ public class ComponentUiFrameworkView extends UiLibrary {
    * Parent ComponentType.
    *
    * @return Parent ComponentType.
+   * @throws InvalidResourceTypeException Parent Resource found, but not a valid ComponentType.
+   * @throws NoParentResourceException No parent ComponentType found.
    */
   @JsonIgnore
   @Nonnull
@@ -112,13 +115,23 @@ public class ComponentUiFrameworkView extends UiLibrary {
    */
   @Nonnull
   public List<ComponentVariation> getVariations() {
+    List<ComponentVariation> variationList = new ArrayList<>();
+    if (isInheritVariations()) {
+      try {
+        variationList.addAll(getComponentType().getComponentSuperType().getComponentUiFrameworkView(
+            getUiFramework()).getVariations());
+      } catch (ModelAdaptionException e) {
+        // todo log.
+      }
+    }
     try {
-      return getChildrenOfType(getComponentVariationsRootResource(), ComponentVariation.class);
+      variationList.addAll(
+          getChildrenOfType(getComponentVariationsRootResource(), ComponentVariation.class));
     } catch (final ModelAdaptionException exception) {
       LOG.debug("Unable to find Variations for {} due to missing {} resource.", getPath(),
           NN_VARIATIONS);
     }
-    return Collections.emptyList();
+    return variationList;
   }
 
   /**
@@ -150,6 +163,23 @@ public class ComponentUiFrameworkView extends UiLibrary {
   @Nonnull
   public UiFramework getUiFramework() throws ResourceNotFoundException {
     return getUiFrameworkByFrameworkCode(getName(), true, true, getResourceResolver());
+  }
+
+  /**
+   * Whether the view should inherit variations from the matching view on the super typed
+   * ComponentType.
+   *
+   * @return Whether the view should inherit variations from the matching view on the super typed
+   *     ComponentType.
+   */
+  @KestrosProperty(description = "Whether the view should inherit variations from the matching "
+                                 + "view on the super typed ComponentType.",
+                   configurable = true,
+                   jcrPropertyName = "inheritVariations",
+                   defaultValue = "true",
+                   sampleValue = "true")
+  public boolean isInheritVariations() {
+    return getProperty("inheritVariations", Boolean.TRUE);
   }
 
   /**
