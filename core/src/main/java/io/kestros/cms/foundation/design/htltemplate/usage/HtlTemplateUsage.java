@@ -50,7 +50,7 @@ public class HtlTemplateUsage {
 
     if (element.attr("data-sly-call").split("@")[0].split("templates.").length > 1) {
       setName(element.attr("data-sly-call").split("@")[0].split("templates.")[1].replaceAll(" ",
-          ""));
+          "").replaceAll("}", ""));
       try {
         setUsedHtlTemplate(
             getHtlTemplateFromUiFramework(this.componentUiFrameworkView.getUiFramework(),
@@ -62,21 +62,20 @@ public class HtlTemplateUsage {
           String parametersArrayString;
           if (element.attr("data-sly-call").contains("@")) {
             parametersArrayString = element.attr("data-sly-call").split("@")[1];
-          } else {
-            parametersArrayString = element.attr("data-sly-call").split("@")[0];
-          }
-          parametersArrayString.replaceAll("}", "");
-          for (String parameterString : parametersArrayString.split(",")) {
-            String parameterName = parameterString.split("=")[0].replaceAll(" ", "").replaceAll(
-                "\n", "");
-            try {
-              parameters.add(new HtlTemplateParameterUsage(parameterName, "",
-                  getUsedHtlTemplate().getTemplateParameter(parameterName), getUsedHtlTemplate()));
-            } catch (ResourceNotFoundException e) {
-              // todo log.
+            parametersArrayString.replaceAll("}", "");
+            for (String parameterString : parametersArrayString.split(",")) {
+              String parameterName = parameterString.split("=")[0].replaceAll(" ", "").replaceAll(
+                  "\n", "").replaceAll("\t", "");
+              try {
+                parameters.add(new HtlTemplateParameterUsage(parameterName, "",
+                    getUsedHtlTemplate().getTemplateParameter(parameterName),
+                    getUsedHtlTemplate()));
+              } catch (ResourceNotFoundException e) {
+                // todo log.
+              }
             }
+            setTemplateParameterUsageList(parameters);
           }
-          setTemplateParameterUsageList(parameters);
         }
       } catch (ResourceNotFoundException e) {
         // todo log.
@@ -142,6 +141,7 @@ public class HtlTemplateUsage {
 
   /**
    * Template title.
+   *
    * @return Template title.
    */
   public String getTitle() {
@@ -150,6 +150,7 @@ public class HtlTemplateUsage {
 
   /**
    * Sets Template title.
+   *
    * @param title Template title.
    */
   public void setTitle(String title) {

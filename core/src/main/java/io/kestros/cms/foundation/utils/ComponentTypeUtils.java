@@ -401,7 +401,9 @@ public class ComponentTypeUtils {
         for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
             "data-sly-call")) {
           HtlTemplateUsage templateUsage = new HtlTemplateUsage(element, componentUiFrameworkView);
-          templateNameList.add(templateUsage);
+          if (templateUsage.getName() != null) {
+            templateNameList.add(templateUsage);
+          }
         }
       }
     }
