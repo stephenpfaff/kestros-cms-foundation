@@ -38,7 +38,8 @@ import org.osgi.service.component.annotations.Reference;
                ResourceChangeListener.CHANGES + "=REMOVED",
                ResourceChangeListener.CHANGES + "=PROVIDER_ADDED",
                ResourceChangeListener.CHANGES + "=PROVIDER_REMOVED",
-               ResourceChangeListener.PATHS + "=/etc", ResourceChangeListener.PATHS + "=/libs"},
+               ResourceChangeListener.PATHS + "=/etc", ResourceChangeListener.PATHS + "=/libs",
+               ResourceChangeListener.PATHS + "=/apps"},
            immediate = true)
 public class HtlTemplateCachePurgeEventListener
     extends BaseCachePurgeOnResourceChangeEventListener {
@@ -64,4 +65,10 @@ public class HtlTemplateCachePurgeEventListener
   protected String getServiceUserName() {
     return KESTROS_HTL_TEMPLATE_CACHE_PURGE_SERVICE_USER;
   }
+
+  @Override
+  protected boolean purgeOnActivation() {
+    return false;
+  }
+
 }

@@ -60,14 +60,17 @@ public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeE
   }
 
   @Override
+  protected boolean purgeOnActivation() {
+    return false;
+  }
+
+  @Override
   public List<CacheService> getCacheServices() {
     List<CacheService> cacheServices = new ArrayList<>();
     cacheServices.addAll(getAllOsgiServicesOfType(getComponentContext(), PageCacheService.class));
     cacheServices.addAll(getAllOsgiServicesOfType(getComponentContext(), ComponentTypeCache.class));
     cacheServices.addAll(getAllOsgiServicesOfType(getComponentContext(),
         ComponentViewScriptResolutionCacheService.class));
-    cacheServices.addAll(
-        getAllOsgiServicesOfType(getComponentContext(), ValidationCacheService.class));
     return cacheServices;
   }
 

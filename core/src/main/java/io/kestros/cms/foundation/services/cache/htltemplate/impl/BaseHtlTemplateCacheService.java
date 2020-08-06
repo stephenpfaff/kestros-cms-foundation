@@ -148,6 +148,11 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
   }
 
   @Override
+  protected void afterCachePurgeComplete(ResourceResolver resourceResolver) {
+    // Does nothing.
+  }
+
+  @Override
   protected long getMinimumTimeBetweenCachePurges() {
     return 1000;
   }
