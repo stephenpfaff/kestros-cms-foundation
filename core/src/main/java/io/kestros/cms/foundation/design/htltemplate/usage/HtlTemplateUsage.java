@@ -62,7 +62,7 @@ public class HtlTemplateUsage {
           String parametersArrayString;
           if (element.attr("data-sly-call").contains("@")) {
             parametersArrayString = element.attr("data-sly-call").split("@")[1];
-            parametersArrayString.replaceAll("}", "");
+            parametersArrayString = parametersArrayString.replaceAll("}", "");
             for (String parameterString : parametersArrayString.split(",")) {
               String parameterName = parameterString.split("=")[0].replaceAll(" ", "").replaceAll(
                   "\n", "").replaceAll("\t", "");
