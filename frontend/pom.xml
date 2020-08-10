@@ -31,58 +31,73 @@
   <artifactId>kestros-cms-foundation-frontend</artifactId>
 
   <name>Kestros Content Management System Foundation - Frontend Package</name>
+  <packaging>bundle</packaging>
+
+  <properties>
+    <rootPackage>io.kestros.cms.foundation.frontend</rootPackage>
+    <bundleCategory>kestros</bundleCategory>
+  </properties>
 
   <build>
     <resources>
       <resource>
-        <directory>src/content/jcr_root</directory>
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
 
     <plugins>
-      <!-- Builds the content package -->
       <plugin>
-        <groupId>org.apache.jackrabbit</groupId>
-        <artifactId>filevault-package-maven-plugin</artifactId>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.13</version>
+        <configuration>
+          <excludes>
+            <!-- don't check anything in target -->
+            <exclude>target/*</exclude>
+            <!-- Fixing issues with deleted modules -->
+            <exclude>**/target/*</exclude>
+            <exclude>**/target/**/*</exclude>
+            <exclude>**/*.json</exclude>
+            <exclude>node/**/*</exclude>
+            <exclude>node_modules/**/*</exclude>
+            <exclude>**/README.md</exclude>
+            <exclude>package.json</exclude>
+            <exclude>package-lock.json</exclude>
+            <exclude>*-maven-settings.xml</exclude>
+            <exclude>src/main/resources/content/ROOT.json</exclude>
+            <exclude>src/main/resources/startup/favicon.svg</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>htl-maven-plugin</artifactId>
-        <version>1.2.2-1.4.0</version>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
         <configuration>
-          <failOnWarnings>true</failOnWarnings>
+          <instructions>
+            <Sling-Nodetypes>nodetypes.cnd</Sling-Nodetypes>
+            <Import-Package>
+              org.apache.jackrabbit.vault.*;version="[2.4.0,4)",
+              org.apache.sling.event.jobs.consumer.*;version="[1.1,3)",
+              org.apache.sling.event.jobs.*;version="[1.3,3)",
+              !javax.annotation,
+              *
+            </Import-Package>
+            <Sling-Initial-Content>
+              content/components;overwrite:=true;path:=/libs/kestros/commons/components
+            </Sling-Initial-Content>
+          </instructions>
         </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>installPackage</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.wcm.maven.plugins</groupId>
-            <artifactId>wcmio-content-package-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>install</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <serviceURL>
-                ${sling.protocol}://${sling.host}:${sling.port}/bin/cpm/package.service.html
-              </serviceURL>
-              <userId>${sling.username}</userId>
-              <password>${sling.password}</password>
-              <packageFile>target/${project.artifactId}-${project.version}.zip</packageFile>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>

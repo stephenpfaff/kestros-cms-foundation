@@ -55,7 +55,6 @@
 
   <modules>
     <module>startup</module>
-    <module>users</module>
     <module>core</module>
     <module>frontend</module>
     <module>docs</module>
