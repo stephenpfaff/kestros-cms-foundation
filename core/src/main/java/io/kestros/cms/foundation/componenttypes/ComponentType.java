@@ -247,7 +247,8 @@ public class ComponentType extends BaseResource {
     this.componentUiFrameworkViews = new ArrayList<>();
 
     for (final BaseResource childResource : getChildrenAsBaseResource(this)) {
-      if (childResource.getJcrPrimaryType().equals("nt:folder")) {
+      if (childResource.getJcrPrimaryType().equals("nt:folder")
+          || childResource.getJcrPrimaryType().equals("sling:Folder")) {
         if (!getExcludedUiFrameworkPaths().contains(childResource.getName())) {
           if (COMMON_UI_FRAMEWORK_VIEW_NAME.equals(childResource.getName())) {
             final CommonUiFrameworkView uiFrameworkView = childResource.getResource().adaptTo(
