@@ -1,0 +1,46 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "sling:resourceType": "kestros/cms/dialog",
+  "jcr:title": "Edit Component",
+  "content-area": {
+    "jcr:primaryType": "nt:unstructured",
+    "tabs": {
+      "jcr:primaryType": "nt:unstructured",
+      "sling:resourceType": "kestros/cms/general/tabs",
+      "container": true,
+      "general": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/cms/general/container",
+        "jcr:title": "General",
+        "container": true
+      },
+      "styles": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/cms/general/container",
+        "jcr:title": "Styles",
+        "container": true,
+        "component-variation-picker": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/dialog-fields/general/component-variations-picker",
+          "label": "Variations",
+          "propertyName": "variations",
+          "autofocus": "false"
+        },
+        "id": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "ID",
+          "propertyName": "id",
+          "autofocus": "false"
+        },
+        "css-class": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "CSS Classes",
+          "propertyName": "class",
+          "autofocus": "false"
+        }
+      }
+    }
+  }
+}

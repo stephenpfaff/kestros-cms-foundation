@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "kes:Dialog",
+  "sling:resourceType": "kestros/cms/dialog",
+  "jcr:title": "Confirm Deletion",
+  "submitButtonText": "Delete",
+  "selector": "delete-page"
+}
