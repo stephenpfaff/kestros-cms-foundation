@@ -20,6 +20,7 @@ package io.kestros.cms.foundation.services.cache.htltemplate;
 
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.osgiserviceutils.services.cache.CacheService;
+import org.apache.sling.api.resource.ResourceResolver;
 
 /**
  * Service for building and purging HTL Template caches.
@@ -39,5 +40,12 @@ public interface HtlTemplateCacheService extends CacheService {
    * @throws CacheBuilderException Failed to build HTL Template cache.
    */
   void cacheAllUiFrameworkCompiledHtlTemplates() throws CacheBuilderException;
+
+  /**
+   * Service ResourceResolver.
+   *
+   * @return Service ResourceResolver.
+   */
+  ResourceResolver getServiceResourceResolver();
 
 }

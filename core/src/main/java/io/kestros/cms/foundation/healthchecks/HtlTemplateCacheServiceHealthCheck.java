@@ -18,7 +18,13 @@
 
 package io.kestros.cms.foundation.healthchecks;
 
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getAllDescendantsOfType;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsBaseResource;
+
+import io.kestros.cms.foundation.componenttypes.HtmlFile;
 import io.kestros.cms.foundation.services.cache.htltemplate.HtlTemplateCacheService;
+import io.kestros.commons.structuredslingmodels.BaseResource;
+import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import org.apache.felix.hc.annotation.Async;
 import org.apache.felix.hc.annotation.HealthCheckMBean;
 import org.apache.felix.hc.annotation.HealthCheckService;
@@ -54,8 +60,25 @@ public class HtlTemplateCacheServiceHealthCheck implements HealthCheck {
     if (htlTemplateCacheService == null) {
       log.critical("HtlTemplateCacheService is not registered.");
     } else {
-      log.info("HtlTemplateCacheService is registered and running properly.");
+      if (htlTemplateCacheService.getServiceResourceResolver() == null) {
+        log.critical("HtlTemplateCacheService has null Service ResourceResolver.");
+      }
+      try {
+        if (getAllDescendantsOfType(getCacheRootResource(), HtmlFile.class).size() == 0) {
+          log.critical("HtlTemplateCacheService has no cached compilation files.");
+        }
+      } catch (ResourceNotFoundException e) {
+        log.critical("Root template cache folder not found.");
+      }
     }
+    log.info("HtlTemplateCacheService is registered and running properly.");
     return new Result(log);
   }
+
+  private BaseResource getCacheRootResource() throws ResourceNotFoundException {
+    return getResourceAsBaseResource(htlTemplateCacheService.getServiceCacheRootPath(),
+        htlTemplateCacheService.getServiceResourceResolver());
+  }
 }
+
+
