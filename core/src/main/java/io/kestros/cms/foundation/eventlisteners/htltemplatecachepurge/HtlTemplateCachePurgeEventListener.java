@@ -38,8 +38,7 @@ import org.osgi.service.component.annotations.Reference;
                ResourceChangeListener.CHANGES + "=REMOVED",
                ResourceChangeListener.CHANGES + "=PROVIDER_ADDED",
                ResourceChangeListener.CHANGES + "=PROVIDER_REMOVED",
-               ResourceChangeListener.PATHS + "=/etc", ResourceChangeListener.PATHS + "=/libs",
-               ResourceChangeListener.PATHS + "=/apps"},
+               ResourceChangeListener.PATHS + "=/etc", ResourceChangeListener.PATHS + "=/libs"},
            immediate = true)
 public class HtlTemplateCachePurgeEventListener
     extends BaseCachePurgeOnResourceChangeEventListener {
