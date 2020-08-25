@@ -116,6 +116,9 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
     LOG.info("Attempting to cache compiled HTL Template files for all UiFrameworks.");
     while (attempts < 10) {
       try {
+        if (getAllUiFrameworks(getServiceResourceResolver(), true, true).size() == 0) {
+          getServiceResourceResolver().refresh();
+        }
         cacheAllUiFrameworkCompiledHtlTemplates(attempts);
         break;
       } catch (final CacheBuilderException e) {
