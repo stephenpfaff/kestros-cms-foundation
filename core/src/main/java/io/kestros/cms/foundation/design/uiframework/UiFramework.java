@@ -127,6 +127,7 @@ public class UiFramework extends UiLibrary {
   @KestrosProperty(description = "All Vendor Libraries that are to be compiled into the "
                                  + "UiFramework",
                    defaultValue = "[]")
+  @JsonIgnore
   public List<VendorLibrary> getVendorLibraries() {
     final List<VendorLibrary> vendorLibraries = new ArrayList<>();
     for (final String vendorLibraryName : getIncludedVendorLibraryNames()) {
@@ -185,6 +186,7 @@ public class UiFramework extends UiLibrary {
    * @throws ChildResourceNotFoundException Default theme was not found.
    */
   @Nullable
+  @JsonIgnore
   public Theme getDefaultTheme() throws InvalidThemeException, ChildResourceNotFoundException {
     try {
       return getChildAsType("default", getThemeRootResource(), Theme.class);
@@ -201,6 +203,7 @@ public class UiFramework extends UiLibrary {
    * @return All HTL Templates associated to the current UiFramework.
    */
   @Nonnull
+  @JsonIgnore
   public List<HtlTemplate> getTemplates() {
     final List<HtlTemplate> templates = new ArrayList<>();
 
@@ -291,6 +294,7 @@ public class UiFramework extends UiLibrary {
    *     UiFramework.
    */
   @Nonnull
+  @JsonIgnore
   public List<ComponentUiFrameworkView> getComponentViews() {
     final List<ComponentUiFrameworkView> componentUiFrameworkViews = new ArrayList<>(
         getAllComponentUiFrameworkViewsInADirectory("/apps"));
@@ -358,6 +362,7 @@ public class UiFramework extends UiLibrary {
    * @return List of template files associated to the current UiFramework.
    */
   @Nonnull
+  @JsonIgnore
   public List<HtlTemplateFile> getTemplateFiles() {
     final List<HtlTemplateFile> templateFiles = new ArrayList<>();
 
