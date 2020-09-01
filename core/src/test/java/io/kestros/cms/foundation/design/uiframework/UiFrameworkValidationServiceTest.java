@@ -64,8 +64,15 @@ public class UiFrameworkValidationServiceTest {
 
   @Test
   public void testRegisterBasicValidators() {
+    properties.put("kes:uiFrameworkCode", "code");
+    resource = context.create().resource("/ui-framework", properties);
+
+    uiFramework = resource.adaptTo(UiFramework.class);
+
+    when(validationService.getGenericModel()).thenReturn(uiFramework);
+
     validationService.registerBasicValidators();
-    assertEquals(8, validationService.getBasicValidators().size());
+    assertEquals(10, validationService.getBasicValidators().size());
   }
 
   @Test
