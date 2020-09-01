@@ -24,6 +24,7 @@ import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getC
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getParentResourceAsType;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 import static org.apache.jackrabbit.vault.util.JcrConstants.JCR_TITLE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -87,8 +88,24 @@ public class ComponentUiFrameworkView extends UiLibrary {
   @JsonIgnore
   @Nonnull
   public ComponentType getComponentType()
-      throws InvalidResourceTypeException, NoParentResourceException {
-    return getParentResourceAsType(this, ComponentType.class);
+      throws NoParentResourceException, InvalidResourceTypeException {
+    try {
+      return getParentResourceAsType(this, ComponentType.class);
+    } catch (InvalidResourceTypeException e) {
+      if (getPath().startsWith("/apps")) {
+        String libsPath = getPath().replaceFirst("/apps/", "/libs/");
+        libsPath = libsPath.replace("/" + getName(), "");
+        try {
+          return getResourceAsType(libsPath, getResourceResolver(), ComponentType.class);
+        } catch (ResourceNotFoundException resourceNotFoundException) {
+          throw new NoParentResourceException(getPath());
+        }
+      } else {
+        throw new InvalidResourceTypeException(getPath(), ComponentType.class,
+            "Unable to find ComponentType for ComponentUiFrameworkView.");
+      }
+    }
+
   }
 
   /**
