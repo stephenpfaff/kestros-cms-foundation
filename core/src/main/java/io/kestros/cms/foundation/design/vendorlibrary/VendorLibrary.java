@@ -186,10 +186,10 @@ public class VendorLibrary extends UiLibrary {
   @JsonIgnore
   @KestrosProperty(description = "Font awesome icon class, used in the Kestros Site Admin UI",
                    jcrPropertyName = "fontAwesomeIcon",
-                   defaultValue = "fas fa-palette",
+                   defaultValue = "fas fa-shapes",
                    configurable = true,
-                   sampleValue = "fas fa-palette")
+                   sampleValue = "fas fa-shapes")
   public String getFontAwesomeIcon() {
-    return getProperty("fontAwesomeIcon", "fas fa-palette");
+    return getProperty("fontAwesomeIcon", "fas fa-shapes");
   }
 }
