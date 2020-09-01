@@ -54,7 +54,24 @@ public class ComponentVariation extends UiLibrary {
                    defaultValue = "false",
                    sampleValue = "false")
   public boolean isInlineVariation() {
-    return getProperty("inline", false);
+    return getProperty("inline", Boolean.FALSE);
+  }
+
+  /**
+   * Components without variation properties will be assigned this (and possibly other) variation by
+   * default.
+   *
+   * @return Components without variation properties will be assigned this (and possibly other)
+   *     variation by default.
+   */
+  @KestrosProperty(description = "When set to true, components without variation properties will "
+                                 + "be assigned this (and possibly other) variation by default.",
+                   jcrPropertyName = "inline",
+                   configurable = true,
+                   defaultValue = "false",
+                   sampleValue = "false")
+  public boolean isDefault() {
+    return getProperty("default", Boolean.FALSE);
   }
 
   /**

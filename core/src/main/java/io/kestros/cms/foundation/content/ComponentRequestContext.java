@@ -194,6 +194,20 @@ public class ComponentRequestContext extends BaseRequestContext {
       }
     }
 
+    if (appliedVariationNames.isEmpty() && !getComponent().getResource().getValueMap().containsKey(
+        "variations")) {
+      try {
+        for (ComponentVariation variation : getComponentUiFrameworkView().getVariations()) {
+          if (variation.isDefault()) {
+            appliedVariations.add(variation);
+          }
+        }
+      } catch (ModelAdaptionException e) {
+        LOG.debug("Unable to apply default variations to {}. {}.", getComponent().getPath(),
+            e.getMessage());
+      }
+    }
+
     LOG.trace("Finished retrieving applied variations for {}", getComponent().getPath());
     appliedComponentVariations = appliedVariations;
     return appliedComponentVariations;
