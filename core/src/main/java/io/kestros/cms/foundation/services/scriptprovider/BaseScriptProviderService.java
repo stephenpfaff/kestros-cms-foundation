@@ -21,6 +21,7 @@ package io.kestros.cms.foundation.services.scriptprovider;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
 import io.kestros.cms.foundation.componenttypes.ComponentType;
+import io.kestros.cms.foundation.content.ComponentRequestContext;
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
@@ -166,7 +167,12 @@ public class BaseScriptProviderService extends BaseServiceResolverService
       final SlingHttpServletRequest request) {
     UiFramework uiFramework = null;
     try {
-      uiFramework = parentComponent.getTheme().getUiFramework();
+      ComponentRequestContext requestContext = request.adaptTo(ComponentRequestContext.class);
+      if (requestContext != null && requestContext.getCurrentPage() != null) {
+        uiFramework = requestContext.getCurrentPage().getTheme().getUiFramework();
+      } else {
+        uiFramework = parentComponent.getTheme().getUiFramework();
+      }
     } catch (ModelAdaptionException e) {
       LOG.trace(e.getMessage());
     }
