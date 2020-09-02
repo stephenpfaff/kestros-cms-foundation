@@ -23,6 +23,7 @@ import static io.kestros.cms.foundation.utils.ComponentTypeUtils.getComponentTyp
 import static io.kestros.cms.foundation.utils.DesignUtils.getAllUiFrameworks;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenAsBaseResource;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourcesAsType;
 
@@ -266,9 +267,11 @@ public class ComponentType extends BaseResource {
     if (getPath().startsWith("/libs/")) {
       String appsPath = getPath().replace("/libs/", "/apps/");
       try {
-        ComponentType appsComponentType = getResourceAsType(appsPath, getResourceResolver(),
-            ComponentType.class);
-        this.componentUiFrameworkViews.addAll(appsComponentType.getUiFrameworkViews());
+        ComponentType appsComponentType = getResourceAsBaseResource(appsPath,
+            getResourceResolver()).getResource().adaptTo(ComponentType.class);
+        if (appsComponentType != null) {
+          this.componentUiFrameworkViews.addAll(appsComponentType.getUiFrameworkViews());
+        }
       } catch (ModelAdaptionException e) {
         LOG.debug("Failed to retrieve /apps/ views for ComponentType {}. {}", getPath(),
             e.getMessage());
