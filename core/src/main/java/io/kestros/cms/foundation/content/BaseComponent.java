@@ -397,7 +397,8 @@ public class BaseComponent extends BaseResource {
       try {
         final ModifiableValueMap modifiableValueMap = getResource().adaptTo(
             ModifiableValueMap.class);
-        if (modifiableValueMap != null) {
+        if (modifiableValueMap != null && !"nt:unstructured".equals(
+            getResource().getResourceType())) {
           modifiableValueMap.put(SLING_RESOURCE_TYPE_PROPERTY, getResource().getResourceType());
           getResourceResolver().commit();
         } else {
