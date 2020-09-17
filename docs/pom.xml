@@ -83,7 +83,13 @@
           <instructions>
             <Sling-Initial-Content>
               /content/guide-articles/kestros.json;overwrite:=true;path:=/content/guide-articles,
-              /content/guide-articles/kestros;overwrite:=true;path:=/content/guide-articles/kestros
+              /content/guide-articles/kestros/components;overwrite:=true;path:=/content/guide-articles/kestros/components,
+              /content/guide-articles/kestros/sling;overwrite:=true;path:=/content/guide-articles/kestros/sling,
+              /content/guide-articles/kestros/ui-frameworks/ui-frameworks.json;overwrite:=true;path:=/content/guide-articles/kestros/ui-frameworks,
+              /content/guide-articles/kestros/ui-frameworks/themes.json;overwrite:=true;path:=/content/guide-articles/kestros/ui-frameworks,
+              /content/guide-articles/kestros/ui-frameworks/assigning-htl-templates.json;overwrite:=true;path:=/content/guide-articles/kestros/ui-frameworks,
+              /content/guide-articles/kestros/ui-frameworks/vendor-libraries.json;overwrite:=true;path:=/content/guide-articles/kestros/ui-frameworks,
+              /content/guide-articles/kestros/ui-frameworks/ui-frameworks/jcr:content/content/ui-frameworks-diagram/image;overwrite:=true;path:=/content/guide-articles/kestros/ui-frameworks/ui-frameworks/jcr:content/content/ui-frameworks-diagram
             </Sling-Initial-Content>
           </instructions>
         </configuration>
