@@ -362,13 +362,18 @@ public class BaseComponent extends BaseResource {
   }
 
   @Override
-  @KestrosProperty(description = "")
+  @KestrosProperty(description = "Component title. Generally used for administrative purposes.",
+                   configurable = true,
+                   jcrPropertyName = "jcr:title")
   public String getTitle() {
     return super.getTitle();
   }
 
   @Override
-  @KestrosProperty(description = "")
+  @KestrosProperty(description = "Component description. Generally used for administrative "
+                                 + "purposes.",
+                   configurable = true,
+                   jcrPropertyName = "jcr:description")
   public String getDescription() {
     return super.getDescription();
   }
@@ -397,7 +402,8 @@ public class BaseComponent extends BaseResource {
       try {
         final ModifiableValueMap modifiableValueMap = getResource().adaptTo(
             ModifiableValueMap.class);
-        if (modifiableValueMap != null) {
+        if (modifiableValueMap != null && !"nt:unstructured".equals(
+            getResource().getResourceType())) {
           modifiableValueMap.put(SLING_RESOURCE_TYPE_PROPERTY, getResource().getResourceType());
           getResourceResolver().commit();
         } else {

@@ -19,7 +19,7 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
   jcr:primaryType="kes:GuideArticle">
   <jcr:content jcr:primaryType="nt:unstructured"
-    jcr:title="Vendor Libraries"
+    jcr:title="Ui Frameworks"
     group="UI Frameworks"
     sling:resourceType="kestros/components/guides/pages/guide-article">
     <content jcr:primaryType="nt:unstructured"

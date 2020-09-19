@@ -1,0 +1,39 @@
+{
+  "jcr:primaryType": "kes:GuideArticle",
+  "jcr:content": {
+    "jcr:primaryType": "nt:unstructured",
+    "jcr:title": "Contributing to Kestros",
+    "group": "Getting Started",
+    "sling:resourceType": "kestros/components/guides/pages/guide-article",
+    "content": {
+      "jcr:primaryType": "nt:unstructured",
+      "github-text": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/commons/components/content/richtext",
+        "text": "All open Kestros Repositories can be found on the Kestros GitHub page &lt;a href=&quot;https://github.com/kestros&quot;&gt;https://github.com/kestros&lt;/a&gt;."
+      },
+      "contribute-header": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/commons/components/content/heading",
+        "text": "How to Contribute",
+        "level": "h2"
+      },
+      "contribute-text": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/commons/components/content/richtext",
+        "text": "how to contribute."
+      },
+      "plugins-header": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/commons/components/content/heading",
+        "text": "Creating Community Plugins",
+        "level": "h2"
+      },
+      "contribute-text": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/commons/components/content/richtext",
+        "text": "Community plugins"
+      }
+    }
+  }
+}

@@ -19,6 +19,7 @@
 package io.kestros.cms.foundation.services.themeprovider;
 
 import static io.kestros.cms.foundation.design.DesignConstants.PN_THEME_PATH;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getFirstAncestorOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
 import io.kestros.cms.foundation.content.BaseComponent;
@@ -60,9 +61,13 @@ public class BaseThemeProviderService implements ThemeProviderService {
       try {
         return getThemeForPage(page.getParent());
       } catch (final NoParentResourceException exception1) {
-        LOG.error(
-            "Unable to inherit Theme for resource {}. No ancestor with a valid Theme could be "
-            + "found.", page.getPath());
+        try {
+          return getFirstAncestorOfType(page, BaseContentPage.class).getTheme();
+        } catch (NoValidAncestorException e) {
+          LOG.error(
+              "Unable to inherit Theme for resource {}. No ancestor with a valid Theme could be "
+              + "found.", page.getPath());
+        }
       }
     } catch (final InvalidResourceTypeException e) {
       throw new InvalidThemeException(themePath,

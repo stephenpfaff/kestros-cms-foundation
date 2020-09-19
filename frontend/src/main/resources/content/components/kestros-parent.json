@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "kes:ComponentType",
+  "jcr:title": "Kestros Parent Component",
+  "jcr:description": "Baseline ComponentType that all others should extend from. Provides dynamic script resolution based on the current UiFramework, and variations.",
+  "componentGroup": "Kestros Framework Components",
+  "bypassUiFrameworks": true
+}

@@ -79,6 +79,25 @@ public class Theme extends UiLibrary {
   }
 
   /**
+   * Css or Javascript output prior to being compiled or minified.
+   *
+   * @param scriptType ScriptType to retrieve.
+   * @return Css or Javascript output prior to being compiled or minified.
+   * @throws InvalidResourceTypeException Thrown when a referenced dependency could not be
+   *     adapted to UiLibrary.
+   */
+  public String getUncompiledOutput(final ScriptType scriptType)
+      throws InvalidResourceTypeException {
+    final StringBuilder output = new StringBuilder();
+
+    output.append(getUiFramework().getOutput(scriptType));
+
+    output.append(super.getOutput(scriptType, false));
+
+    return output.toString();
+  }
+
+  /**
    * Returns the uncached output for the specified ScriptType.
    *
    * @param scriptType ScriptType to retrieve.
@@ -87,25 +106,30 @@ public class Theme extends UiLibrary {
   @Override
   public String getOutput(final ScriptType scriptType, final boolean minify)
       throws InvalidResourceTypeException {
-    final StringBuilder output = new StringBuilder();
-
-    output.append(getUiFramework().getOutput(scriptType));
-
-    output.append(super.getOutput(scriptType, false));
-
+    String uncompiledOutput = getUncompiledOutput(scriptType);
     if (CSS.equals(scriptType) || LESS.equals(scriptType)) {
-      return Less.compile(null, output.toString(), minify);
+      return Less.compile(null, uncompiledOutput, minify);
     }
 
     if (uiLibraryMinificationService != null && minify) {
       try {
-        return uiLibraryMinificationService.getMinifiedOutput(output.toString(), scriptType);
+        return uiLibraryMinificationService.getMinifiedOutput(uncompiledOutput, scriptType);
       } catch (final ScriptCompressionException e) {
         LOG.error("Unable to compress {} script for Theme {} when minification is {}. {}",
             scriptType.getName(), getPath(), minify, e.getMessage());
       }
     }
-    return output.toString();
+    return uncompiledOutput;
+  }
+
+  /**
+   * Font Awesome Icon class.
+   *
+   * @return Font Awesome Icon class.
+   */
+  @JsonIgnore
+  public String getFontAwesomeIcon() {
+    return getProperty("fontAwesomeIcon", "fas fa-paint-brush");
   }
 
 }

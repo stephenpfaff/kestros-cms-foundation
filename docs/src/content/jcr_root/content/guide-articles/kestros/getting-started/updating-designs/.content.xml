@@ -222,7 +222,7 @@
             jcr:primaryType="nt:unstructured"
             sling:resourceType="kestros/commons/components/content/alert"
             text="Additional Themes can be created in the same way, but are not required."
-            variations="[alert-info]"/>
+            variations="[alert--info]"/>
           <add-filters-heading
             jcr:primaryType="nt:unstructured"
             sling:resourceType="kestros/commons/components/content/heading"

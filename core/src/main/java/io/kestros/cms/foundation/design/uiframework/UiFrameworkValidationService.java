@@ -20,6 +20,10 @@ package io.kestros.cms.foundation.design.uiframework;
 
 import static io.kestros.cms.foundation.design.DesignConstants.THEME_PRIMARY_TYPE;
 import static io.kestros.cms.foundation.utils.DesignUtils.getAllUiFrameworks;
+import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.hasDescription;
+import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.hasTitle;
+import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.modelListHasNoErrors;
+import static io.kestros.commons.structuredslingmodels.validation.CommonValidators.modelListHasNoWarnings;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 
@@ -43,11 +47,17 @@ public class UiFrameworkValidationService extends UiLibraryValidationService {
 
   @Override
   public void registerBasicValidators() {
-    super.registerBasicValidators();
+    addBasicValidator(hasTitle(getModel()));
+    addBasicValidator(hasDescription(getModel(), WARNING));
+    addBasicValidator(isAllIncludedScriptsFound());
+    addBasicValidator(isAllDependenciesFound());
+
     addBasicValidator(hasFrameworkCode());
     addBasicValidator(isAllVendorLibrariesExist());
     addBasicValidator(hasValidDefaultTheme());
     addBasicValidator(isFrameworkCodeUnique());
+    addBasicValidator(modelListHasNoWarnings(getModel().getThemes(), "Themes have no warnings."));
+    addBasicValidator(modelListHasNoErrors(getModel().getThemes(), "Themes have no errors."));
   }
 
   ModelValidator hasFrameworkCode() {

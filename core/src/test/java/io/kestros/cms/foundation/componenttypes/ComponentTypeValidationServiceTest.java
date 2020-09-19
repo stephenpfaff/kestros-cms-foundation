@@ -75,7 +75,7 @@ public class ComponentTypeValidationServiceTest {
     when(validationService.getModel()).thenReturn(componentType);
 
     validationService.registerBasicValidators();
-    assertEquals(7, validationService.getBasicValidators().size());
+    assertEquals(8, validationService.getBasicValidators().size());
   }
 
   @Test
@@ -149,7 +149,7 @@ public class ComponentTypeValidationServiceTest {
     when(validationService.getModel()).thenReturn(componentType);
 
     assertFalse(validationService.doesSuperTypeKestrosParentComponent().isValid());
-    assertEquals("SuperTypes Kestros Parent Component.",
+    assertEquals("SuperTypes Kestros Parent Component or Kestros Base Page.",
         validationService.doesSuperTypeKestrosParentComponent().getMessage());
     assertEquals(ModelValidationMessageType.WARNING,
         validationService.doesSuperTypeKestrosParentComponent().getType());
@@ -366,7 +366,6 @@ public class ComponentTypeValidationServiceTest {
 
     assertFalse(validationService.hasFontAwesomeIcon().isValid());
     assertEquals("Has FontAwesome icon.", validationService.hasFontAwesomeIcon().getMessage());
-    assertEquals(ModelValidationMessageType.WARNING,
-        validationService.hasFontAwesomeIcon().getType());
+    assertEquals(ModelValidationMessageType.INFO, validationService.hasFontAwesomeIcon().getType());
   }
 }

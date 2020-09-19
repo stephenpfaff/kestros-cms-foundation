@@ -33,6 +33,8 @@ import io.kestros.commons.osgiserviceutils.services.cache.impl.JcrFileCacheServi
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.event.jobs.JobManager;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -59,6 +61,17 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
   @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   @Reference
   private transient ResourceResolverFactory resourceResolverFactory;
+
+  @Override
+  @Activate
+  public void activate(ComponentContext componentContext) {
+    super.activate(componentContext);
+    try {
+      this.cacheAllUiFrameworkCompiledHtlTemplates(10);
+    } catch (CacheBuilderException e) {
+      LOG.error("Failed to rebuild compiled HTL Template files during bundle activation.");
+    }
+  }
 
   @Override
   public String getServiceCacheRootPath() {
@@ -98,11 +111,14 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
       this.serviceResourceResolver = getOpenServiceResourceResolverOrNullAndLogExceptions(
           getServiceUserName(), getServiceResourceResolver(), getResourceResolverFactory(), this);
     }
-    
+
     int attempts = 0;
     LOG.info("Attempting to cache compiled HTL Template files for all UiFrameworks.");
     while (attempts < 10) {
       try {
+        if (getAllUiFrameworks(getServiceResourceResolver(), true, true).size() == 0) {
+          getServiceResourceResolver().refresh();
+        }
         cacheAllUiFrameworkCompiledHtlTemplates(attempts);
         break;
       } catch (final CacheBuilderException e) {
@@ -144,7 +160,16 @@ public class BaseHtlTemplateCacheService extends JcrFileCacheService
   @Override
   protected void doPurge(final ResourceResolver resourceResolver) throws CachePurgeException {
     super.doPurge(resourceResolver);
-    cacheAllUiFrameworkCompiledHtlTemplates();
+    try {
+      cacheAllUiFrameworkCompiledHtlTemplates(10);
+    } catch (CacheBuilderException e) {
+      LOG.error("Failed to rebuild compiled HTL Template files after cache purge.");
+    }
+  }
+
+  @Override
+  protected void afterCachePurgeComplete(ResourceResolver resourceResolver) {
+    // Does nothing.
   }
 
   @Override

@@ -18,8 +18,10 @@
 
 package io.kestros.cms.foundation.design.vendorlibrary;
 
+import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.ERROR;
 import static io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType.WARNING;
 
+import io.kestros.cms.foundation.design.htltemplate.HtlTemplateFile;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidationMessageType;
 import io.kestros.commons.structuredslingmodels.validation.ModelValidator;
 import io.kestros.commons.uilibraries.UiLibraryValidationService;
@@ -39,6 +41,24 @@ public class VendorLibraryValidationService extends UiLibraryValidationService {
   public void registerBasicValidators() {
     super.registerBasicValidators();
     addBasicValidator(hasDocumentationUrl());
+    for (HtlTemplateFile templateFile : getModel().getTemplateFiles()) {
+      templateFile.doDetailedValidation();
+
+      for (final String errorMessage : templateFile.getErrorMessages()) {
+        addBasicValidator(
+            new TemplateValidator(templateFile.getTitle() + ": " + errorMessage, ERROR));
+      }
+
+      for (final String warningMessage : templateFile.getWarningMessages()) {
+        addBasicValidator(
+            new TemplateValidator(templateFile.getTitle() + ": " + warningMessage, WARNING));
+      }
+    }
+  }
+
+  @Override
+  public void registerDetailedValidators() {
+
   }
 
   ModelValidator hasDocumentationUrl() {
@@ -60,4 +80,32 @@ public class VendorLibraryValidationService extends UiLibraryValidationService {
     };
   }
 
+  /**
+   * Builds validators from template errors and warnings.
+   */
+  private static class TemplateValidator implements ModelValidator {
+
+    private String message;
+    private ModelValidationMessageType type;
+
+    TemplateValidator(String message, ModelValidationMessageType type) {
+      this.message = message;
+      this.type = type;
+    }
+
+    @Override
+    public boolean isValid() {
+      return false;
+    }
+
+    @Override
+    public String getMessage() {
+      return message;
+    }
+
+    @Override
+    public ModelValidationMessageType getType() {
+      return type;
+    }
+  }
 }

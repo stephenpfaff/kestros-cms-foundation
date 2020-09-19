@@ -149,7 +149,7 @@ public class VendorLibraryTest {
 
   @Test
   public void testGetTemplateFilesWhenFileTypesAreInvalid() {
-      resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
+    resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
     context.create().resource("/etc/vendor-libraries/vendor-library/templates");
 
     context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-1",

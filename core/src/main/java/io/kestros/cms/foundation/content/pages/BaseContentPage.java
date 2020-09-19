@@ -38,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.content.BaseComponent;
+import io.kestros.cms.foundation.content.ComponentRequestContext;
 import io.kestros.cms.foundation.content.sites.BaseSite;
 import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
@@ -81,9 +82,10 @@ import org.slf4j.LoggerFactory;
                   "/content/guide-articles/kestros/site-management/editing-page-properties",
                   "/content/guide-articles/kestros/site-management/creating-components",
                   "/content/guide-articles/kestros/getting-started/understanding-validation"},
-              usesJcrContent = true)
+              usesJcrContent = true,
+              contextModel = ComponentRequestContext.class)
 @Model(adaptables = Resource.class,
-       resourceType = "kes:Page")
+       resourceType = {"kes:Page"})
 @Exporter(name = "jackson",
           selector = "base-content-page",
           extensions = "json")
@@ -110,6 +112,13 @@ public class BaseContentPage extends BasePage {
    *
    * @return Display title of the current site.
    */
+  @KestrosProperty(description = "Display title of the current site.  Display title is generally "
+                                 + "used for frontend, whereas title is used showing in the "
+                                 + "platform.",
+                   configurable = true,
+                   jcrPropertyName = "displayTitle",
+                   defaultValue = "[title]",
+                   sampleValue = "Display Title")
   public String getDisplayTitle() {
     String displayTitle = getProperties().get("displayTitle", StringUtils.EMPTY);
     if (StringUtils.isNotEmpty(displayTitle)) {
@@ -123,6 +132,11 @@ public class BaseContentPage extends BasePage {
    *
    * @return Description to be displayed in administration UI.
    */
+  @KestrosProperty(description = "Description to be displayed in administration UI.",
+                   jcrPropertyName = "displayDescription",
+                   sampleValue = "Display Description",
+                   configurable = true,
+                   defaultValue = "[description]")
   public String getDisplayDescription() {
     String displayDescription = getProperties().get("displayDescription", StringUtils.EMPTY);
     if (StringUtils.isNotEmpty(displayDescription)) {
@@ -174,6 +188,7 @@ public class BaseContentPage extends BasePage {
    */
   @JsonIgnore
   @Override
+  @KestrosProperty(description = "Parent page.")
   public BaseContentPage getParent() throws NoParentResourceException {
     try {
       return getParentResourceAsType(this, BaseContentPage.class);
@@ -212,6 +227,7 @@ public class BaseContentPage extends BasePage {
    */
   @Nullable
   @JsonIgnore
+  @KestrosProperty(description = "Site which the belongs to.")
   public BaseSite getSite() {
     try {
       return getFirstAncestorOfType(this, BaseSite.class);
@@ -235,6 +251,7 @@ public class BaseContentPage extends BasePage {
   @Nonnull
   @JsonProperty("childPages")
   @JsonIgnoreProperties("childPages")
+  @KestrosProperty(description = "List of child pages.")
   public List<BaseContentPage> getChildPages() {
     return getChildrenOfType(this, BaseContentPage.class);
   }
@@ -246,6 +263,7 @@ public class BaseContentPage extends BasePage {
    */
   @Nonnull
   @JsonIgnore
+  @KestrosProperty(description = "Flat list of all components that live on the page.")
   public List<BaseComponent> getAllComponents() {
     final List<BaseComponent> components = new ArrayList<>();
     for (final BaseComponent component : getAllDescendantsOfType(getContentComponent(),
@@ -269,6 +287,7 @@ public class BaseContentPage extends BasePage {
    */
   @Nullable
   @JsonIgnore
+  @KestrosProperty(description = "The ComponentType the page will use to render.")
   public ComponentType getComponentType() throws InvalidComponentTypeException {
     try {
       return getResourceAsType(getResourceType(), getResourceResolver(), ComponentType.class);
@@ -296,6 +315,10 @@ public class BaseContentPage extends BasePage {
    * @return All UiFrameworks that the current Page is allowed to use.
    */
   @JsonIgnore
+  @KestrosProperty(description = "All UiFrameworks that the current Page is allowed to use.",
+                   configurable = true,
+                   jcrPropertyName = "allowedUiFrameworks",
+                   defaultValue = "[all]")
   public List<UiFramework> getAllowedUiFrameworks() {
     final List<String> allowedFrameworkPaths = Arrays.asList(getAllowedUiFrameworkPaths());
 
@@ -314,6 +337,7 @@ public class BaseContentPage extends BasePage {
    */
   @Nonnull
   @JsonIgnore
+  @KestrosProperty(description = "The page's jcr:content resource.")
   public BaseComponent getContentComponent() {
     BaseComponent contentComponent;
     try {
@@ -321,6 +345,9 @@ public class BaseContentPage extends BasePage {
           BaseComponent.class);
       if (contentComponent != null) {
         return contentComponent;
+      }
+      if (JCR_CONTENT.equals(getName())) {
+        return adaptTo(this, BaseComponent.class);
       }
       throw new IllegalStateException();
     } catch (final ModelAdaptionException exception) {
@@ -359,6 +386,7 @@ public class BaseContentPage extends BasePage {
    * @return User who created the current component.
    */
   @JsonIgnore
+  @KestrosProperty(description = "The user who initially created the page.")
   public KestrosUser getCreatedBy() {
     final String username = getProperties().get("kes:createdBy", StringUtils.EMPTY);
     try {
@@ -376,6 +404,7 @@ public class BaseContentPage extends BasePage {
    */
   @JsonIgnore
   @Nullable
+  @KestrosProperty(description = "The user who last modified the page.")
   public KestrosUser getLastModifiedBy() {
     final String username = getProperties().get("kes:lastModifiedBy", StringUtils.EMPTY);
     try {

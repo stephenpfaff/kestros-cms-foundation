@@ -18,9 +18,11 @@
 
 package io.kestros.cms.foundation.design.htltemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
@@ -41,9 +43,44 @@ public class HtlTemplate {
 
   private static final String CALL_VARIABLES_INDENT = "     ";
 
-  HtlTemplate(final Node node, final String sourcePath) {
+  /**
+   * Constructs an HtlTemplate object.
+   *
+   * @param node HTML Node which created the template.
+   * @param sourcePath HtlTemplateFile path.
+   */
+  public HtlTemplate(final Node node, final String sourcePath) {
     this.node = node;
     this.sourcePath = sourcePath;
+  }
+
+  /**
+   * Details of template parameters, for automated documentation purposes.
+   *
+   * @return Details of template parameters, for automated documentation purposes.
+   */
+  public List<HtlTemplateParameter> getTemplateParameters() {
+    List<HtlTemplateParameter> parameters = new ArrayList<>();
+    for (String parameter : getParameterNames()) {
+      parameters.add(new HtlTemplateParameter(parameter, this.node));
+    }
+    return parameters;
+  }
+
+  /**
+   * Retrieves a specified parameter.
+   *
+   * @param parameterName Parameter to retrieve.
+   * @return A specified parameter.
+   */
+  @Nullable
+  public HtlTemplateParameter getTemplateParameter(String parameterName) {
+    for (HtlTemplateParameter parameter : getTemplateParameters()) {
+      if (parameter.getName().equalsIgnoreCase(parameterName)) {
+        return parameter;
+      }
+    }
+    return null;
   }
 
   /**
@@ -93,9 +130,9 @@ public class HtlTemplate {
    */
   public String getDescription() {
     final Attributes attributes = this.node.attributes();
-    final String title = attributes.get("data-description");
-    if (StringUtils.isNotBlank(title)) {
-      return title;
+    final String description = attributes.get("data-description");
+    if (StringUtils.isNotBlank(description)) {
+      return description;
     }
     return StringUtils.EMPTY;
   }
@@ -138,7 +175,7 @@ public class HtlTemplate {
    *
    * @return List of variables required to implement the current Template.
    */
-  public List<String> getVariables() {
+  public List<String> getParameterNames() {
     final Attributes attributes = this.node.attributes();
 
     String value = "";
@@ -169,16 +206,30 @@ public class HtlTemplate {
     sampleUsage.append(getName());
     sampleUsage.append(" @");
     String prefix = "\n" + CALL_VARIABLES_INDENT;
-    for (final String variable : getVariables()) {
+    for (final HtlTemplateParameter parameter : getTemplateParameters()) {
       sampleUsage.append(prefix);
       prefix = ",\n" + CALL_VARIABLES_INDENT;
-      sampleUsage.append(variable);
+      sampleUsage.append(parameter.getName());
       sampleUsage.append("=");
-      final String value = "my" + variable.substring(0, 1).toUpperCase(Locale.ENGLISH)
-                           + variable.substring(1);
+      final String value = "my" + parameter.getName().substring(0, 1).toUpperCase(Locale.ENGLISH)
+                           + parameter.getName().substring(1);
       sampleUsage.append(value);
     }
     sampleUsage.append("}\" />");
     return sampleUsage.toString();
+  }
+
+  /**
+   * Font Awesome Icon class.
+   *
+   * @return Font Awesome Icon class.
+   */
+  public String getFontAwesomeIcon() {
+    final Attributes attributes = this.node.attributes();
+    final String iconClass = attributes.get("data-fontawesome-icon");
+    if (StringUtils.isNotBlank(iconClass)) {
+      return iconClass;
+    }
+    return "fas fa-code";
   }
 }
