@@ -48,6 +48,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
@@ -397,6 +398,19 @@ public class UiFramework extends UiLibrary {
     public int compare(final HtlTemplateFile o1, final HtlTemplateFile o2) {
       return o1.getTitle().compareTo(o2.getTitle());
     }
+  }
+
+  /**
+   * List of files that should be externalized (fonts, images, etc).
+   * @return List of files that should be externalized (fonts, images, etc).
+   */
+  @Nonnull
+  public List<BaseFile> getExternalizedFiles() {
+    List<BaseFile> externalizedFiles = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : getVendorLibraries()) {
+      externalizedFiles.addAll(vendorLibrary.getExternalizedFiles());
+    }
+    return externalizedFiles;
   }
 
   /**

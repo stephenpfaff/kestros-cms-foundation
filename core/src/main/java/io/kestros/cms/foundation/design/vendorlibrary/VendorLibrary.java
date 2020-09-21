@@ -34,8 +34,10 @@ import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
 import io.kestros.commons.uilibraries.UiLibrary;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -176,6 +178,15 @@ public class VendorLibrary extends UiLibrary {
     }
     htlTemplateFiles.sort(Comparator.comparing(HtlTemplateFile::getTitle));
     return htlTemplateFiles;
+  }
+
+  /**
+   * List of files that should be externalized (fonts, images, etc).
+   * @return List of files that should be externalized (fonts, images, etc).
+   */
+  @Nonnull
+  public List<BaseFile> getExternalizedFiles() {
+    return Collections.emptyList();
   }
 
   /**
