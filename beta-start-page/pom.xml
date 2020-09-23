@@ -38,8 +38,6 @@
     <bundleCategory>kestros</bundleCategory>
   </properties>
 
-  <packaging>content-package</packaging>
-
   <build>
     <resources>
       <resource>
