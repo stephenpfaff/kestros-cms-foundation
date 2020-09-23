@@ -28,6 +28,7 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourcesAsType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
@@ -48,6 +49,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
@@ -92,6 +94,8 @@ public class UiFramework extends UiLibrary {
 
   private static final Logger LOG = LoggerFactory.getLogger(UiFramework.class);
   public static final String EXTENSION_HTML = ".html";
+
+  private static final String PN_EXTERNALIZED_FILES = "externalizedFiles";
 
   @OSGiService
   @Optional
@@ -397,6 +401,28 @@ public class UiFramework extends UiLibrary {
     public int compare(final HtlTemplateFile o1, final HtlTemplateFile o2) {
       return o1.getTitle().compareTo(o2.getTitle());
     }
+  }
+
+  /**
+   * List of files that should be externalized (fonts, images, etc).
+   *
+   * @return List of files that should be externalized (fonts, images, etc).
+   */
+  @Nonnull
+  public List<BaseResource> getExternalizedFiles() {
+    List<BaseResource> externalizedFiles = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : getVendorLibraries()) {
+      externalizedFiles.addAll(vendorLibrary.getExternalizedFiles());
+    }
+
+    externalizedFiles.addAll(getResourcesAsType(getExternalizedFilesProperty(),
+        getResourceResolver(), BaseResource.class));
+
+    return externalizedFiles;
+  }
+
+  private List<String> getExternalizedFilesProperty() {
+    return Arrays.asList(getProperties().get(PN_EXTERNALIZED_FILES, new String[]{}));
   }
 
   /**
