@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "kes:ComponentType",
+  "jcr:title": "Kestros Base Page",
+  "jcr:description": "Baseline page type. Contains a header, main, and footer sections.",
+  "componentGroup": "General Pages",
+  "fontAwesomeIcon": "fa fa-file"
+}

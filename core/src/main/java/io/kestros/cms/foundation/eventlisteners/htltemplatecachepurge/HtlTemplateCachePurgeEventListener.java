@@ -64,4 +64,10 @@ public class HtlTemplateCachePurgeEventListener
   protected String getServiceUserName() {
     return KESTROS_HTL_TEMPLATE_CACHE_PURGE_SERVICE_USER;
   }
+
+  @Override
+  protected boolean purgeOnActivation() {
+    return false;
+  }
+
 }

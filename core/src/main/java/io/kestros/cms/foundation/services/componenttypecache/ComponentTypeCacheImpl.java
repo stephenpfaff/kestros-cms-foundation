@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.event.jobs.JobManager;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -73,6 +74,11 @@ public class ComponentTypeCacheImpl extends BaseCacheService implements Componen
   }
 
   @Override
+  protected void afterCachePurgeComplete(ResourceResolver resourceResolver) {
+    // Does nothing.
+  }
+
+  @Override
   protected long getMinimumTimeBetweenCachePurges() {
     return 10;
   }
@@ -88,13 +94,13 @@ public class ComponentTypeCacheImpl extends BaseCacheService implements Componen
   }
 
   @Override
-  public void activate() {
-
+  public void activate(ComponentContext componentContext) {
+    // Does nothing.
   }
 
   @Override
-  public void deactivate() {
-
+  public void deactivate(ComponentContext componentContext) {
+    // Does nothing.
   }
 
   @Override

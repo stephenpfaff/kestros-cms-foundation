@@ -23,6 +23,8 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 
 import io.kestros.cms.foundation.content.components.contentarea.ContentArea;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
@@ -39,6 +41,7 @@ import org.slf4j.LoggerFactory;
  * path on the parent page to determine rendered content. Descendant components can prepend or
  * append content, or reset inheritance altogether.
  */
+@KestrosModel
 @Model(adaptables = Resource.class,
        resourceType = "kestros/commons/components/inherited-content-area")
 public class InheritedContentArea extends ContentArea {
@@ -51,6 +54,13 @@ public class InheritedContentArea extends ContentArea {
    *
    * @return Whether to allow the inherited content to be prepended.
    */
+  @KestrosProperty(description = "Whether to allow the inherited content to be prepended. "
+                                 + "Appended content is then inherited by descendant "
+                                 + "InheritedContentAreas.",
+                   configurable = true,
+                   jcrPropertyName = "allowComponentsBefore",
+                   defaultValue = "false",
+                   sampleValue = "false")
   public boolean isAllowComponentsBefore() {
     return getProperty("allowComponentsBefore", Boolean.FALSE);
   }
@@ -61,6 +71,13 @@ public class InheritedContentArea extends ContentArea {
    *
    * @return Whether to allow the inherited content to be appended.
    */
+  @KestrosProperty(description = "Whether to allow the inherited content to be appended. "
+                                 + "Appended content is then inherited by descendant "
+                                 + "InheritedContentAreas",
+                   configurable = true,
+                   jcrPropertyName = "allowComponentsAfter",
+                   defaultValue = "false",
+                   sampleValue = "false")
   public boolean isAllowComponentsAfter() {
     return getProperty("allowComponentsAfter", Boolean.FALSE);
   }
@@ -73,17 +90,25 @@ public class InheritedContentArea extends ContentArea {
    * @return Whether to reset inheritance on InheritedContentAreas with the same relative path as
    *     the current InheritedContentArea component
    */
+  @KestrosProperty(description = "Whether the current InheritedContentArea resets inheritance. "
+                                 + "When true, descendants will only retrieve inherited content "
+                                 + "up to this resource/page.",
+                   configurable = true,
+                   jcrPropertyName = "reset",
+                   defaultValue = "false",
+                   sampleValue = "false")
   public boolean isReset() {
     return getProperty("reset", Boolean.FALSE);
   }
 
   /**
-   * Whether the InheritedContentArea is the root ancestor.  This will be true if {@link #isReset()}
-   * is true, or no InheritedContentArea could be found at the same relative path on the containing
-   * page's parent page.
+   * Whether the InheritedContentArea is the root level ancestor.  This will be true if {@link
+   * #isReset()} is true, or no InheritedContentArea could be found at the same relative path on the
+   * containing page's parent page.
    *
    * @return Whether the InheritedContentArea is the root ancestor.
    */
+  @KestrosProperty(description = "Whether the InheritedContentArea is the root level ancestor.")
   public boolean isRootLevelContentArea() {
     return isReset() || getInheritedFromContentArea() == null;
   }
@@ -95,6 +120,8 @@ public class InheritedContentArea extends ContentArea {
    * @return the ContentArea which should appear before the inherited content area.
    */
   @Nullable
+  @KestrosProperty(description = "Content area which should appear before the inherited content "
+                                 + "area.")
   public ContentArea getBeforeContentArea() {
     if (isAllowComponentsBefore() && !isRootLevelContentArea()) {
       try {
@@ -114,6 +141,8 @@ public class InheritedContentArea extends ContentArea {
    * @return the ContentArea which should appear after the inherited content area.
    */
   @Nullable
+  @KestrosProperty(description = "Content area which should appear after the inherited content "
+                                 + "area.")
   public ContentArea getAfterContentArea() {
     if (isAllowComponentsAfter() && !isRootLevelContentArea()) {
       try {
@@ -135,6 +164,8 @@ public class InheritedContentArea extends ContentArea {
    *     InheritedContentArea.
    */
   @Nullable
+  @KestrosProperty(description = "The content area from the parent page with the same relative "
+                                 + "path, or null.")
   public InheritedContentArea getInheritedFromContentArea() {
     InheritedContentArea inheritedFromContentArea = null;
     BaseContentPage page;

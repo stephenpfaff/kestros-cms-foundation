@@ -1,0 +1,86 @@
+{
+  "jcr:primaryType": "kes:Dialog",
+  "sling:resourceType": "kestros/cms/dialog",
+  "content-area": {
+    "jcr:primaryType": "nt:unstructured",
+    "tabs": {
+      "jcr:primaryType": "nt:unstructured",
+      "sling:resourceType": "kestros/cms/general/tabs",
+      "container": true,
+      "general": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/cms/general/container",
+        "jcr:title": "General",
+        "container": true,
+        "title": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "Title",
+          "propertyName": "jcr:title",
+          "required": true,
+          "autofocus": true
+        },
+        "display-title": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "Display Title",
+          "propertyName": "displayTitle"
+        },
+        "meta-title": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "Metadata Title",
+          "propertyName": "metaTitle"
+        },
+        "description": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textarea",
+          "label": "Description",
+          "propertyName": "jcr:description"
+        },
+        "page-image": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/file-upload",
+          "label": "Page Image",
+          "propertyName": "image"
+        }
+      },
+      "styles": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/cms/general/container",
+        "jcr:title": "Styles",
+        "container": true,
+        "theme": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/dialog-fields/general/theme-picker",
+          "label": "Theme",
+          "propertyName": "kes:theme"
+        }
+      },
+      "advanced": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/cms/general/container",
+        "jcr:title": "Advanced",
+        "container": true,
+        "display-description": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/richtext",
+          "label": "Display Description",
+          "propertyName": "displayDescription"
+        },
+        "meta-description": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textarea",
+          "label": "Metadata Description",
+          "propertyName": "metaDescription"
+        },
+        "font-awesome-icon": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "FontAwesome Icon",
+          "propertyName": "fontAwesomeIcon"
+        }
+      }
+    }
+  }
+}

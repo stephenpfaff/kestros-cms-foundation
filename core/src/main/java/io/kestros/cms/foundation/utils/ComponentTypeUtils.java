@@ -23,8 +23,14 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 
 import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.componenttypes.ComponentTypeGroup;
+import io.kestros.cms.foundation.componenttypes.HtmlFile;
+import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
+import io.kestros.cms.foundation.design.htltemplate.usage.HtlTemplateUsage;
+import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.FileModelUtils;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,6 +43,9 @@ import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,11 +83,13 @@ public class ComponentTypeUtils {
    * Builds a list of ComponentTypeGroups from a List of ComponentTypes.
    *
    * @param componentTypes ComponentType list to build ComponentTypeGroups from.
+   * @param <T> extends ComponentType.
    * @return List of ComponentTypeGroups from a List of ComponentTypes.
    */
   @Nonnull
-  public static List<ComponentTypeGroup> getComponentTypeGroupsFromComponentTypeList(
-      @Nonnull final List<ComponentType> componentTypes) {
+  public static <T extends ComponentType> List<ComponentTypeGroup>
+      getComponentTypeGroupsFromComponentTypeList(
+      @Nonnull final List<T> componentTypes) {
     final List<ComponentTypeGroup> componentTypeGroups = new ArrayList<>();
 
     final Map<String, ComponentTypeGroup> componentGroupsMap = new HashMap<>();
@@ -102,7 +113,6 @@ public class ComponentTypeUtils {
         unknownGroup.addComponentType(componentType);
       }
     }
-
     for (final Entry group : componentGroupsMap.entrySet()) {
       componentTypeGroups.add(componentGroupsMap.get(group.getKey()));
     }
@@ -227,14 +237,6 @@ public class ComponentTypeUtils {
       final boolean includeLibs, final boolean includeLibsCommons,
       final ResourceResolver resourceResolver) {
     final List<ComponentType> componentTypes = new ArrayList<>();
-    if (includeApps) {
-      try {
-        componentTypes.addAll(
-            getAllDescendantComponentTypes(getAppsRootResource(resourceResolver)));
-      } catch (final ResourceNotFoundException e) {
-        LOG.warn("Unable retrieve /apps ComponentTypes. {}", e.getMessage());
-      }
-    }
     if (includeLibs) {
       try {
         componentTypes.addAll(
@@ -249,6 +251,30 @@ public class ComponentTypeUtils {
       } catch (final ResourceNotFoundException e) {
         LOG.warn("Unable retrieve /libs/kestros/commons ComponentTypes. {}", e.getMessage());
       }
+    }
+    if (includeApps) {
+      try {
+        List<ComponentType> appsComponentTypes = new ArrayList<>();
+        appsComponentTypes.addAll(
+            getAllDescendantComponentTypes(getAppsRootResource(resourceResolver)));
+        if (includeLibs || includeLibsCommons) {
+          for (ComponentType appsComponentType : appsComponentTypes) {
+            String libsPath = appsComponentType.getPath().replace("/apps/", "/libs/");
+            boolean componentTypeExists = componentTypes.stream().filter(
+                o -> o.getPath().equals(libsPath)).findFirst().isPresent();
+            LOG.debug("Excluding {} from all componentTypes list. ComponentType lives under /libs.",
+                appsComponentType.getPath());
+            if (!componentTypeExists) {
+              componentTypes.add(appsComponentType);
+            }
+          }
+        } else {
+          componentTypes.addAll(appsComponentTypes);
+        }
+      } catch (final ResourceNotFoundException e) {
+        LOG.warn("Unable retrieve /apps ComponentTypes. {}", e.getMessage());
+      }
+
     }
     return componentTypes;
   }
@@ -316,6 +342,73 @@ public class ComponentTypeUtils {
     public int compare(final ComponentTypeGroup o1, final ComponentTypeGroup o2) {
       return o1.getTitle().compareToIgnoreCase(o2.getTitle());
     }
+  }
+
+  /**
+   * The name of all templates a specified ComponentUiFrameworkView attempts to call.
+   *
+   * @param componentUiFrameworkView View to retrieve called template names from.
+   * @return The name of all templates a specified ComponentUiFrameworkView attempts to call.
+   * @throws InvalidScriptException Failed to find a valid content.html script.
+   * @throws IOException Failed to read view's content.html script.
+   */
+  @Nonnull
+  public static List<String> getTemplateNamesAComponentViewAttemptsToCall(
+      @Nonnull ComponentUiFrameworkView componentUiFrameworkView)
+      throws InvalidScriptException, IOException {
+    List<String> templateNameList = new ArrayList<>();
+    for (HtmlFile htlScriptFile : FileModelUtils.getChildrenOfFileType(componentUiFrameworkView,
+        HtmlFile.class)) {
+
+      final Document contentScriptDocument = Jsoup.parse(htlScriptFile.getFileContent());
+      contentScriptDocument.outputSettings().outline(true);
+      contentScriptDocument.outputSettings().prettyPrint(false);
+
+      for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
+          "data-sly-call")) {
+        if (element.hasAttr("data-sly-call")) {
+          String templateName = element.attr("data-sly-call").split("@")[0];
+          templateName = templateName.split("templates.")[1];
+          templateName = templateName.replaceAll(" ", "");
+          templateNameList.add(templateName);
+        }
+      }
+    }
+
+    return templateNameList;
+  }
+
+  /**
+   * All template usages within a specified ComponentUiFrameworkView.
+   *
+   * @param componentUiFrameworkView view to find templates usages from.
+   * @return All template usages within a specified ComponentUiFrameworkView.
+   * @throws InvalidScriptException Failed to find a valid content.html script.
+   * @throws IOException Failed to read view's content.html script.
+   */
+  public static List<HtlTemplateUsage> getHtlTemplateUsageList(
+      @Nonnull ComponentUiFrameworkView componentUiFrameworkView)
+      throws InvalidScriptException, IOException {
+    List<HtlTemplateUsage> templateNameList = new ArrayList<>();
+    for (HtmlFile htlScriptFile : FileModelUtils.getChildrenOfFileType(componentUiFrameworkView,
+        HtmlFile.class)) {
+
+      if (htlScriptFile != null) {
+        final Document contentScriptDocument = Jsoup.parse(htlScriptFile.getFileContent());
+        contentScriptDocument.outputSettings().outline(true);
+        contentScriptDocument.outputSettings().prettyPrint(false);
+
+        for (Element element : contentScriptDocument.body().getElementsByAttributeStarting(
+            "data-sly-call")) {
+          HtlTemplateUsage templateUsage = new HtlTemplateUsage(element, componentUiFrameworkView);
+          if (templateUsage.getName() != null) {
+            templateNameList.add(templateUsage);
+          }
+        }
+      }
+    }
+
+    return templateNameList;
   }
 
 }

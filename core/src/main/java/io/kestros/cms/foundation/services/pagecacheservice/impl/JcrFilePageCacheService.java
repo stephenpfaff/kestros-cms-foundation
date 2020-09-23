@@ -31,6 +31,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeEx
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.io.IOException;
 import javax.annotation.Nonnull;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
@@ -75,6 +76,11 @@ public class JcrFilePageCacheService extends JcrFileCacheService
   @Override
   protected ResourceResolverFactory getResourceResolverFactory() {
     return resourceResolverFactory;
+  }
+
+  @Override
+  protected void afterCachePurgeComplete(ResourceResolver resourceResolver) {
+    // Does nothing.
   }
 
   @Override

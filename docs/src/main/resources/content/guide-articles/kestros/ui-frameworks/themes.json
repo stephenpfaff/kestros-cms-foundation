@@ -1,0 +1,18 @@
+{
+  "jcr:primaryType": "kes:GuideArticle",
+  "jcr:content": {
+    "jcr:primaryType": "nt:unstructured",
+    "jcr:title": "Creating New Themes",
+    "group": "UI Frameworks",
+    "sling:resourceType": "kestros/components/guides/pages/guide-article",
+    "content": {
+      "jcr:primaryType": "nt:unstructured",
+      "sling:resourceType": "kestros/commons/components/content-area",
+      "text": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/commons/components/content/text",
+        "text": "Creating new guides text"
+      }
+    }
+  }
+}

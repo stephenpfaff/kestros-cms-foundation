@@ -28,7 +28,9 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourcesAsType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
 import io.kestros.cms.foundation.design.htltemplate.HtlTemplate;
@@ -47,6 +49,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
@@ -78,9 +81,10 @@ import org.slf4j.LoggerFactory;
  * </p>
  */
 @KestrosModel(validationService = UiFrameworkValidationService.class,
-              docPaths = {"/content/guide-articles/kestros/ui-frameworks/create-a-new-ui-framework",
-                  "/content/guide-articles/kestros/ui-frameworks/create-a-new-vendor-library",
-                  "/content/guide-articles/kestros/ui-frameworks/creating-themes"})
+              docPaths = {"/content/guide-articles/kestros/ui-frameworks/ui-frameworks",
+                  "/content/guide-articles/kestros/ui-frameworks/themes",
+                  "/content/guide-articles/kestros/ui-frameworks/assigning-htl-templates",
+                  "/content/guide-articles/kestros/ui-frameworks/vendor-libraries"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:UiFramework")
 @Exporter(name = "jackson",
@@ -90,6 +94,8 @@ public class UiFramework extends UiLibrary {
 
   private static final Logger LOG = LoggerFactory.getLogger(UiFramework.class);
   public static final String EXTENSION_HTML = ".html";
+
+  private static final String PN_EXTERNALIZED_FILES = "externalizedFiles";
 
   @OSGiService
   @Optional
@@ -125,6 +131,7 @@ public class UiFramework extends UiLibrary {
   @KestrosProperty(description = "All Vendor Libraries that are to be compiled into the "
                                  + "UiFramework",
                    defaultValue = "[]")
+  @JsonIgnore
   public List<VendorLibrary> getVendorLibraries() {
     final List<VendorLibrary> vendorLibraries = new ArrayList<>();
     for (final String vendorLibraryName : getIncludedVendorLibraryNames()) {
@@ -183,6 +190,7 @@ public class UiFramework extends UiLibrary {
    * @throws ChildResourceNotFoundException Default theme was not found.
    */
   @Nullable
+  @JsonIgnore
   public Theme getDefaultTheme() throws InvalidThemeException, ChildResourceNotFoundException {
     try {
       return getChildAsType("default", getThemeRootResource(), Theme.class);
@@ -199,6 +207,7 @@ public class UiFramework extends UiLibrary {
    * @return All HTL Templates associated to the current UiFramework.
    */
   @Nonnull
+  @JsonIgnore
   public List<HtlTemplate> getTemplates() {
     final List<HtlTemplate> templates = new ArrayList<>();
 
@@ -283,15 +292,18 @@ public class UiFramework extends UiLibrary {
   }
 
   /**
-   * All ComponentUiFrameworkViews under /apps & /libs that implement the current UiFramework.
+   * All ComponentUiFrameworkViews under /apps and /libs that implement the current UiFramework.
    *
-   * @return All ComponentUiFrameworkViews under /apps & /libs that implement the current
+   * @return All ComponentUiFrameworkViews under /apps and /libs that implement the current
    *     UiFramework.
    */
   @Nonnull
-  private List<ComponentUiFrameworkView> getComponentViews() {
+  @JsonIgnore
+  public List<ComponentUiFrameworkView> getComponentViews() {
     final List<ComponentUiFrameworkView> componentUiFrameworkViews = new ArrayList<>(
         getAllComponentUiFrameworkViewsInADirectory("/apps"));
+    componentUiFrameworkViews.addAll(
+        getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/commons"));
     componentUiFrameworkViews.addAll(
         getAllComponentUiFrameworkViewsInADirectory("/libs/kestros/components"));
     componentUiFrameworkViews.addAll(
@@ -356,6 +368,7 @@ public class UiFramework extends UiLibrary {
    * @return List of template files associated to the current UiFramework.
    */
   @Nonnull
+  @JsonIgnore
   public List<HtlTemplateFile> getTemplateFiles() {
     final List<HtlTemplateFile> templateFiles = new ArrayList<>();
 
@@ -388,5 +401,42 @@ public class UiFramework extends UiLibrary {
     public int compare(final HtlTemplateFile o1, final HtlTemplateFile o2) {
       return o1.getTitle().compareTo(o2.getTitle());
     }
+  }
+
+  /**
+   * List of files that should be externalized (fonts, images, etc).
+   *
+   * @return List of files that should be externalized (fonts, images, etc).
+   */
+  @Nonnull
+  public List<BaseResource> getExternalizedFiles() {
+    List<BaseResource> externalizedFiles = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : getVendorLibraries()) {
+      externalizedFiles.addAll(vendorLibrary.getExternalizedFiles());
+    }
+
+    externalizedFiles.addAll(getResourcesAsType(getExternalizedFilesProperty(),
+        getResourceResolver(), BaseResource.class));
+
+    return externalizedFiles;
+  }
+
+  private List<String> getExternalizedFilesProperty() {
+    return Arrays.asList(getProperties().get(PN_EXTERNALIZED_FILES, new String[]{}));
+  }
+
+  /**
+   * Font Awesome Icon class.
+   *
+   * @return Font Awesome Icon class.
+   */
+  @JsonIgnore
+  @KestrosProperty(description = "Font awesome icon class, used in the Kestros Site Admin UI",
+                   jcrPropertyName = "fontAwesomeIcon",
+                   defaultValue = "fas fa-palette",
+                   configurable = true,
+                   sampleValue = "fas fa-palette")
+  public String getFontAwesomeIcon() {
+    return getProperty("fontAwesomeIcon", "fas fa-palette");
   }
 }

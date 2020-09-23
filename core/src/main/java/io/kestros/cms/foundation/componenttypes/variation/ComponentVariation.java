@@ -32,7 +32,8 @@ import org.apache.sling.models.annotations.Model;
     "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",
     "/content/guide-articles/kestros-cms/foundation/defining-content-areas",
     "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
-    "/content/guide-articles/kestros-cms/foundation/grouping-components"})
+    "/content/guide-articles/kestros-cms/foundation/grouping-components"},
+              validationService = ComponentVariationValidationService.class)
 @Model(adaptables = Resource.class,
        resourceType = "kes:ComponentVariation")
 public class ComponentVariation extends UiLibrary {
@@ -53,7 +54,33 @@ public class ComponentVariation extends UiLibrary {
                    defaultValue = "false",
                    sampleValue = "false")
   public boolean isInlineVariation() {
-    return getProperty("inline", false);
+    return getProperty("inline", Boolean.FALSE);
+  }
+
+  /**
+   * Components without variation properties will be assigned this (and possibly other) variation by
+   * default.
+   *
+   * @return Components without variation properties will be assigned this (and possibly other)
+   *     variation by default.
+   */
+  @KestrosProperty(description = "When set to true, components without variation properties will "
+                                 + "be assigned this (and possibly other) variation by default.",
+                   jcrPropertyName = "inline",
+                   configurable = true,
+                   defaultValue = "false",
+                   sampleValue = "false")
+  public boolean isDefault() {
+    return getProperty("default", Boolean.FALSE);
+  }
+
+  /**
+   * Font Awesome Icon class.
+   *
+   * @return Font Awesome Icon class.
+   */
+  public String getFontAwesomeIcon() {
+    return getProperty("fontAwesomeIcon", "fas fa-paint-brush");
   }
 
 }

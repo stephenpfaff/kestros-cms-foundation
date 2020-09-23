@@ -33,6 +33,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Nonnull;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Exporter;
 import org.apache.sling.models.annotations.Model;
@@ -46,7 +47,8 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> Extends {@link BaseContentPage}
  */
-@KestrosModel(validationService = BaseSiteValidationService.class)
+@KestrosModel(validationService = BaseSiteValidationService.class,
+              usesJcrContent = true)
 @Model(adaptables = Resource.class,
        resourceType = "kes:Site")
 @Exporter(name = "jackson",
@@ -114,6 +116,10 @@ public class BaseSite<T extends BaseContentPage> extends BaseContentPage {
                    sampleValue = "fa fa-sitemap")
   public String getFontAwesomeIcon() {
     try {
+      String iconPropertyValue = getProperty("fontAwesomeIcon", StringUtils.EMPTY);
+      if (StringUtils.isNotEmpty(iconPropertyValue)) {
+        return iconPropertyValue;
+      }
       final String componentTypeFontAwesomeIcon = getComponentType().getFontAwesomeIcon();
       if (!"fa fa-cube".equals(componentTypeFontAwesomeIcon)) {
         return componentTypeFontAwesomeIcon;

@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "kes:ComponentType",
+  "jcr:title": "Content Area",
+  "jcr:description": "Statically embedded within container components in order to render child components.",
+  "componentGroup": "Kestros Framework Components",
+  "bypassUiFrameworks": true,
+  "sling:resourceSuperType": "kestros/commons/components/kestros-parent"
+}

@@ -1,0 +1,123 @@
+{
+  "jcr:primaryType": "kes:Dialog",
+  "sling:resourceType": "kestros/cms/dialog",
+  "selector": "create-page",
+  "submitButtonText": "Create",
+  "content-area": {
+    "jcr:primaryType": "nt:unstructured",
+    "tabs": {
+      "jcr:primaryType": "nt:unstructured",
+      "sling:resourceType": "kestros/cms/general/tabs",
+      "container": true,
+      "general": {
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/cms/general/container",
+        "jcr:title": "Advanced",
+        "container": true,
+        "title": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "Title",
+          "propertyName": "jcr:title",
+          "required": true,
+          "initialValue": "",
+          "autofocus": true
+        },
+        "name": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "Resource Name",
+          "propertyName": "name",
+          "required": true,
+          "initialValue": "",
+          "validators": {
+            "jcr:primaryType": "nt:unstructured",
+            "lower-case": {
+              "jcr:primaryType": "nt:unstructured",
+              "sling:resourceType": "kestros/cms/validators/regex-validator",
+              "message": "Must be lower case",
+              "pattern": "^[A-Z]*$"
+            },
+            "no-spaces": {
+              "jcr:primaryType": "nt:unstructured",
+              "sling:resourceType": "kestros/cms/validators/regex-validator",
+              "message": "No spaces allowed",
+              "pattern": "\\s"
+            }
+          }
+        },
+        "description": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textarea",
+          "label": "Description",
+          "propertyName": "jcr:description",
+          "initialValue": ""
+        },
+        "template": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/dialog-fields/general/template-picker",
+          "label": "Template",
+          "propertyName": "template",
+          "rootPath": [
+            "/apps",
+            "/libs/kestros/commons"
+          ]
+        },
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/cms/general/container",
+        "jcr:title": "General",
+        "container": true
+      },
+      "styles": {
+        "theme": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/dialog-fields/general/theme-picker",
+          "label": "Theme",
+          "propertyName": "kes:theme"
+        },
+        "jcr:primaryType": "nt:unstructured",
+        "sling:resourceType": "kestros/cms/general/container",
+        "jcr:title": "Styles",
+        "container": true
+      },
+      "advanced": {
+        "display-title": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "Display Title",
+          "propertyName": "displayTitle"
+        },
+        "meta-title": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "Metadata Title",
+          "propertyName": "metaTitle"
+        },
+        "page-image": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/file-upload",
+          "label": "Page Image",
+          "propertyName": "image"
+        },
+        "display-description": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textarea",
+          "label": "Display Description",
+          "propertyName": "displayDescription"
+        },
+        "meta-description": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textarea",
+          "label": "Metadata Description",
+          "propertyName": "metaDescription"
+        },
+        "font-awesome-icon": {
+          "jcr:primaryType": "nt:unstructured",
+          "sling:resourceType": "kestros/cms/fields/textfield",
+          "label": "FontAwesome Icon",
+          "propertyName": "fontAwesomeIcon"
+        }
+      }
+    }
+  }
+}

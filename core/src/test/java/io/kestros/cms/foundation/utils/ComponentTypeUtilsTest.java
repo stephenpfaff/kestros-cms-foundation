@@ -69,18 +69,13 @@ public class ComponentTypeUtilsTest {
 
   @Test
   public void testGetAllComponentTypeGroups() {
-    assertEquals(4, ComponentTypeUtils.getAllComponentTypeGroups(true, true, true,
+    assertEquals(2, ComponentTypeUtils.getAllComponentTypeGroups(true, true, true,
         context.resourceResolver()).size());
 
-    assertEquals("Group 1", ComponentTypeUtils.getAllComponentTypeGroups(true, false, false,
-        context.resourceResolver()).get(0).getTitle());
-    assertEquals("Group 2", ComponentTypeUtils.getAllComponentTypeGroups(true, false, false,
-        context.resourceResolver()).get(1).getTitle());
-
     assertEquals("Group 3", ComponentTypeUtils.getAllComponentTypeGroups(true, true, false,
-        context.resourceResolver()).get(2).getTitle());
+        context.resourceResolver()).get(0).getTitle());
     assertEquals("No Group", ComponentTypeUtils.getAllComponentTypeGroups(true, true, false,
-        context.resourceResolver()).get(3).getTitle());
+        context.resourceResolver()).get(1).getTitle());
   }
 
   @Test
@@ -109,28 +104,22 @@ public class ComponentTypeUtilsTest {
     List<ComponentType> allComponentTypes = ComponentTypeUtils.getAllComponentTypes(true, true,
         false, context.resourceResolver());
 
-    assertEquals(4, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
+    assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
         null).size());
 
-    assertEquals("Group 1", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
+    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
         null, null).get(0).getTitle());
     assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
         null).get(0).getComponentTypes().size());
-
-    assertEquals("Group 2", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
-        null, null).get(1).getTitle());
-    assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
-        null).get(1).getComponentTypes().size());
-
-    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
-        null, null).get(2).getTitle());
-    assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
-        null).get(2).getComponentTypes().size());
+    assertEquals("/libs/component-type-1", ComponentTypeUtils.getComponentTypeGroups(
+        allComponentTypes, null, null, null, null).get(0).getComponentTypes().get(0).getPath());
 
     assertEquals("No Group", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
-        null, null, null).get(3).getTitle());
+        null, null, null).get(1).getTitle());
     assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
-        null).get(3).getComponentTypes().size());
+        null).get(1).getComponentTypes().size());
+    assertEquals("/libs/parent/parent/component-type-3", ComponentTypeUtils.getComponentTypeGroups(
+        allComponentTypes, null, null, null, null).get(1).getComponentTypes().get(0).getPath());
   }
 
   @Test
@@ -141,31 +130,26 @@ public class ComponentTypeUtilsTest {
     List<ComponentType> allComponentTypes = ComponentTypeUtils.getAllComponentTypes(true, true,
         false, context.resourceResolver());
 
-    assertEquals(4,
+    assertEquals(2,
         ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, allowedComponentPaths, null,
             null, null).size());
 
-    assertEquals("Group 1", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
+    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
         allowedComponentPaths, null, null, null).get(0).getTitle());
     assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
         allowedComponentPaths, null, null, null).get(0).getComponentTypes().size());
+    assertEquals("/libs/component-type-1", ComponentTypeUtils.getComponentTypeGroups(
+        allComponentTypes, allowedComponentPaths, null, null, null).get(0).getComponentTypes().get(
+        0).getPath());
 
-    assertEquals("Group 2", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
+    assertEquals("No Group", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
         allowedComponentPaths, null, null, null).get(1).getTitle());
     assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
         allowedComponentPaths, null, null, null).get(1).getComponentTypes().size());
-
-    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
-        allowedComponentPaths, null, null, null).get(2).getTitle());
-    assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
-        allowedComponentPaths, null, null, null).get(2).getComponentTypes().size());
-
-    assertEquals("No Group", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
-        allowedComponentPaths, null, null, null).get(3).getTitle());
-    assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
-        allowedComponentPaths, null, null, null).get(3).getComponentTypes().size());
+    assertEquals("/libs/parent/parent/parent/component-type-4",
+        ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, allowedComponentPaths, null,
+            null, null).get(1).getComponentTypes().get(0).getPath());
   }
-
 
   @Test
   public void testGetComponentTypeGroupsWhenFilteringByExcludedComponentPath() {
@@ -175,29 +159,25 @@ public class ComponentTypeUtilsTest {
     List<ComponentType> allComponentTypes = ComponentTypeUtils.getAllComponentTypes(true, true,
         false, context.resourceResolver());
 
-    assertEquals(4,
+    assertEquals(2,
         ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, excludedComponentPaths,
             null, null).size());
 
-    assertEquals("Group 1", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
+    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
         excludedComponentPaths, null, null).get(0).getTitle());
     assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
         excludedComponentPaths, null, null).get(0).getComponentTypes().size());
+    assertEquals("/libs/parent/component-type-2", ComponentTypeUtils.getComponentTypeGroups(
+        allComponentTypes, null, excludedComponentPaths, null, null).get(0).getComponentTypes().get(
+        0).getPath());
 
-    assertEquals("Group 2", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
+    assertEquals("No Group", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
         excludedComponentPaths, null, null).get(1).getTitle());
     assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
         excludedComponentPaths, null, null).get(1).getComponentTypes().size());
-
-    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
-        excludedComponentPaths, null, null).get(2).getTitle());
-    assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
-        excludedComponentPaths, null, null).get(2).getComponentTypes().size());
-
-    assertEquals("No Group", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
-        excludedComponentPaths, null, null).get(3).getTitle());
-    assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
-        excludedComponentPaths, null, null).get(3).getComponentTypes().size());
+    assertEquals("/libs/parent/parent/component-type-3", ComponentTypeUtils.getComponentTypeGroups(
+        allComponentTypes, null, excludedComponentPaths, null, null).get(1).getComponentTypes().get(
+        0).getPath());
   }
 
   @Test
@@ -209,29 +189,25 @@ public class ComponentTypeUtilsTest {
     List<ComponentType> allComponentTypes = ComponentTypeUtils.getAllComponentTypes(true, true,
         false, context.resourceResolver());
 
-    assertEquals(4,
+    assertEquals(2,
         ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, allowedComponentPaths, null,
             null, null).size());
 
-    assertEquals("Group 1", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
+    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
         allowedComponentPaths, null, null, null).get(0).getTitle());
     assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
         allowedComponentPaths, null, null, null).get(0).getComponentTypes().size());
+    assertEquals("/libs/component-type-1", ComponentTypeUtils.getComponentTypeGroups(
+        allComponentTypes, allowedComponentPaths, null, null, null).get(0).getComponentTypes().get(
+        0).getPath());
 
-    assertEquals("Group 2", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
+    assertEquals("No Group", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
         allowedComponentPaths, null, null, null).get(1).getTitle());
     assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
         allowedComponentPaths, null, null, null).get(1).getComponentTypes().size());
-
-    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
-        allowedComponentPaths, null, null, null).get(2).getTitle());
-    assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
-        allowedComponentPaths, null, null, null).get(2).getComponentTypes().size());
-
-    assertEquals("No Group", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
-        allowedComponentPaths, null, null, null).get(3).getTitle());
-    assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes,
-        allowedComponentPaths, null, null, null).get(3).getComponentTypes().size());
+    assertEquals("/libs/parent/parent/component-type-3", ComponentTypeUtils.getComponentTypeGroups(
+        allComponentTypes, allowedComponentPaths, null, null, null).get(1).getComponentTypes().get(
+        0).getPath());
   }
 
   @Test
@@ -240,19 +216,17 @@ public class ComponentTypeUtilsTest {
     List<ComponentType> allComponentTypes = ComponentTypeUtils.getAllComponentTypes(true, true,
         true, context.resourceResolver());
 
-    assertEquals(2,
+    assertEquals(1,
         ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, allowedGroupNames,
             null).size());
 
-    assertEquals("Group 1", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
+    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
         allowedGroupNames, null).get(0).getTitle());
     assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
         allowedGroupNames, null).get(0).getComponentTypes().size());
-
-    assertEquals("Group 3", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
-        allowedGroupNames, null).get(1).getTitle());
-    assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
-        allowedGroupNames, null).get(1).getComponentTypes().size());
+    assertEquals("/libs/component-type-1", ComponentTypeUtils.getComponentTypeGroups(
+        allComponentTypes, null, null, allowedGroupNames, null).get(0).getComponentTypes().get(
+        0).getPath());
   }
 
   @Test
@@ -261,22 +235,18 @@ public class ComponentTypeUtilsTest {
     List<ComponentType> allComponentTypes = ComponentTypeUtils.getAllComponentTypes(true, true,
         false, context.resourceResolver());
 
-    assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
+    assertEquals(1, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
         excludedGroupNames).size());
-    assertEquals("Group 2", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null,
-        null, excludedGroupNames).get(0).getTitle());
-    assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
-        excludedGroupNames).get(0).getComponentTypes().size());
 
     assertEquals("No Group", ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null,
-        null, null, excludedGroupNames).get(1).getTitle());
+        null, null, excludedGroupNames).get(0).getTitle());
     assertEquals(2, ComponentTypeUtils.getComponentTypeGroups(allComponentTypes, null, null, null,
-        excludedGroupNames).get(1).getComponentTypes().size());
+        excludedGroupNames).get(0).getComponentTypes().size());
   }
 
   @Test
   public void testGetAllComponentTypes() throws ResourceNotFoundException {
-    assertEquals(8, ComponentTypeUtils.getAllComponentTypes(true, true, true,
+    assertEquals(4, ComponentTypeUtils.getAllComponentTypes(true, true, true,
         context.resourceResolver()).size());
   }
 

@@ -16,7 +16,6 @@
   ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
   ~
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -25,13 +24,13 @@
   <parent>
     <groupId>io.kestros.commons</groupId>
     <artifactId>kestros-parent-strict</artifactId>
-    <version>0.0.6</version>
+    <version>0.1.2</version>
     <relativePath/>
   </parent>
 
   <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-cms-foundation</artifactId>
-  <version>0.0.1</version>
+  <version>0.1.0</version>
 
   <name>Kestros Content Management System Foundation</name>
   <description>Foundational logic for the Kestros CMS. Contains all the models, scripts, and
@@ -45,15 +44,21 @@
     </license>
   </licenses>
 
+  <scm>
+    <connection>scm:git:git://github.com/kestros/kestros-cms-foundation.git</connection>
+    <developerConnection>scm:git:ssh://github.com:kestros/kestros-cms-foundation.git
+    </developerConnection>
+    <url>https://github.com/kestros/kestros-cms-foundation/tree/master</url>
+  </scm>
+
   <packaging>pom</packaging>
 
   <modules>
     <module>startup</module>
-    <module>users</module>
     <module>core</module>
     <module>frontend</module>
     <module>docs</module>
-    <module>beta-start-page</module>
+<!--    <module>beta-start-page</module>-->
   </modules>
 
   <dependencyManagement>
@@ -62,22 +67,22 @@
       <dependency>
         <groupId>io.kestros.commons</groupId>
         <artifactId>kestros-structured-sling-models</artifactId>
-        <version>0.0.2</version>
+        <version>0.1.1</version>
       </dependency>
       <dependency>
         <groupId>io.kestros.commons</groupId>
         <artifactId>kestros-sling-ui-libraries-core</artifactId>
-        <version>0.0.1</version>
+        <version>0.1.1</version>
       </dependency>
       <dependency>
         <groupId>io.kestros.cms</groupId>
         <artifactId>kestros-user-foundation-core</artifactId>
-        <version>0.0.2</version>
+        <version>0.1.1</version>
       </dependency>
       <dependency>
         <groupId>de.inetsoftware</groupId>
         <artifactId>jlessc</artifactId>
-        <version>1.6</version>
+        <version>1.10</version>
       </dependency>
       <dependency>
         <groupId>org.jsoup</groupId>

@@ -19,10 +19,12 @@
 package io.kestros.cms.foundation.design.htltemplate;
 
 import io.kestros.cms.foundation.componenttypes.HtmlFile;
+import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.jackrabbit.JcrConstants;
@@ -37,6 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * HTML File that contains HTL Templates.
  */
+@KestrosModel(validationService = HtlTemplateFileValidationService.class)
 @Model(adaptables = Resource.class,
        resourceType = JcrConstants.NT_FILE)
 public class HtlTemplateFile extends HtmlFile {
@@ -59,6 +62,15 @@ public class HtlTemplateFile extends HtmlFile {
     title = title.replaceAll(EXTENSION_HTML, "");
 
     return WordUtils.capitalize(title);
+  }
+
+  /**
+   * File path without the .html extension.
+   *
+   * @return File path without the .html extension.
+   */
+  public String getPathWithoutExtension() {
+    return getPath().replace(".html", "");
   }
 
   /**
@@ -86,6 +98,31 @@ public class HtlTemplateFile extends HtmlFile {
           getPath(), exception.getMessage());
     }
     return templates;
+  }
+
+  /**
+   * Retrieve a specified HTL Template.
+   *
+   * @param name Template name.
+   * @return A specified HTL Template.
+   */
+  @Nullable
+  public HtlTemplate getTemplate(String name) {
+    for (HtlTemplate htlTemplate : getTemplates()) {
+      if (htlTemplate.getName().equals(name)) {
+        return htlTemplate;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Font Awesome Icon class.
+   *
+   * @return Font Awesome Icon class.
+   */
+  public String getFontAwesomeIcon() {
+    return getProperty("fontAwesomeIcon", "fa fa-file");
   }
 
 }

@@ -29,6 +29,7 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 
 import io.kestros.cms.foundation.componenttypes.ComponentType;
 import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
+import io.kestros.cms.foundation.design.htltemplate.HtlTemplate;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.design.vendorlibrary.VendorLibrary;
 import io.kestros.commons.structuredslingmodels.BaseResource;
@@ -304,5 +305,24 @@ public class DesignUtils {
     }
 
     throw new ChildResourceNotFoundException(name, componentType.getPath(), "Child not found.");
+  }
+
+  /**
+   * Retrieves a specified HTL Template from a UiFramework.
+   *
+   * @param uiFramework UiFramework to retrieve template from.
+   * @param templateName Name of template to look up.
+   * @return A specified HTL Template from a UiFramework.
+   */
+  @Nullable
+  public static HtlTemplate getHtlTemplateFromUiFramework(@Nonnull UiFramework uiFramework,
+      @Nonnull String templateName) {
+    for (HtlTemplate htlTemplate : uiFramework.getTemplates()) {
+      if (htlTemplate.getName().equalsIgnoreCase(templateName)) {
+        return htlTemplate;
+      }
+    }
+    // TODO throw exception?
+    return null;
   }
 }

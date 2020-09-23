@@ -19,6 +19,7 @@
 package io.kestros.cms.foundation.content;
 
 import static io.kestros.cms.foundation.design.DesignConstants.NN_VARIATIONS;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
 import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
 import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
@@ -32,7 +33,7 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewExcep
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
 import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
-import io.kestros.commons.structuredslingmodels.BaseSlingRequest;
+import io.kestros.commons.structuredslingmodels.BaseRequestContext;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -53,10 +54,9 @@ import org.slf4j.LoggerFactory;
  * Component request context.
  */
 @Model(adaptables = SlingHttpServletRequest.class)
-public class ComponentRequestContext extends BaseSlingRequest {
+public class ComponentRequestContext extends BaseRequestContext {
 
   private static final Logger LOG = LoggerFactory.getLogger(ComponentRequestContext.class);
-
 
   @OSGiService
   private ThemeProviderService themeProviderService;
@@ -75,22 +75,23 @@ public class ComponentRequestContext extends BaseSlingRequest {
    *
    * @return requested page.
    */
+  @KestrosProperty(description = "The requested page.")
   public BaseContentPage getCurrentPage() {
+    String pagePath = getRequest().getRequestURI().split(".html")[0];
+    pagePath = pagePath.split("/jcr:content")[0];
     try {
-      return SlingModelUtils.getResourceAsType(getRequest().getRequestURI().split(".html")[0],
-          getResourceResolver(), BaseContentPage.class);
+      return getResourceAsType(pagePath, getResourceResolver(), BaseContentPage.class);
     } catch (InvalidResourceTypeException e) {
       try {
-        return SlingModelUtils.getResourceAsType(getRequest().getRequestURI().split(".html")[0],
-            getResourceResolver(), BaseSite.class);
+        return getResourceAsType(pagePath, getResourceResolver(), BaseSite.class);
       } catch (InvalidResourceTypeException invalidResourceTypeException) {
         LOG.warn("Unable to adapt current page resource to BaseContentPage or BaseSite for "
-                 + "NavigationContext.");
+                 + "ComponentRequestContext.");
       } catch (ResourceNotFoundException resourceNotFoundException) {
-        LOG.warn("Unable to find current page resource for NavigationContext.");
+        LOG.warn("Unable to find current page resource for ComponentRequestContext.");
       }
     } catch (ResourceNotFoundException e) {
-      LOG.warn("Unable to find current page resource for NavigationContext.");
+      LOG.warn("Unable to find current page resource for ComponentRequestContext.");
     }
 
     try {
@@ -111,7 +112,7 @@ public class ComponentRequestContext extends BaseSlingRequest {
    *
    * @return Applied inline variation CSS classes
    */
-  @KestrosProperty(description = "All applied inline variation CSS classes")
+  @KestrosProperty(description = "All applied inline variation CSS classes.")
   @Nonnull
   public String getInlineVariations() {
     LOG.trace("Getting applied inline variations as String.");
@@ -193,6 +194,20 @@ public class ComponentRequestContext extends BaseSlingRequest {
       }
     }
 
+    if (appliedVariationNames.isEmpty() && !getComponent().getResource().getValueMap().containsKey(
+        "variations")) {
+      try {
+        for (ComponentVariation variation : getComponentUiFrameworkView().getVariations()) {
+          if (variation.isDefault()) {
+            appliedVariations.add(variation);
+          }
+        }
+      } catch (ModelAdaptionException e) {
+        LOG.debug("Unable to apply default variations to {}. {}.", getComponent().getPath(),
+            e.getMessage());
+      }
+    }
+
     LOG.trace("Finished retrieving applied variations for {}", getComponent().getPath());
     appliedComponentVariations = appliedVariations;
     return appliedComponentVariations;
@@ -206,19 +221,19 @@ public class ComponentRequestContext extends BaseSlingRequest {
    * @throws ResourceNotFoundException Component's expected Theme resource was missing.
    */
   @Nullable
+  @KestrosProperty(description = "The current page's theme.")
   public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
-    LOG.trace("Retrieving theme for {}.");
-    if (theme == null) {
+    LOG.trace("Retrieving theme for {}.", getBaseResource().getPath());
+    if (theme == null && getCurrentPage() != null) {
       theme = getCurrentPage().getTheme();
     }
-    LOG.trace("Finished retrieving theme for {}.");
+    LOG.trace("Finished retrieving theme for {}.", getBaseResource().getPath());
     return theme;
   }
 
   protected void setTheme(final Theme theme) {
     this.theme = theme;
   }
-
 
   private UiFramework getUiFramework()
       throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {

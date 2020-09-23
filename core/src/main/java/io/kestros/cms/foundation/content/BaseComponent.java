@@ -32,9 +32,8 @@ import static org.apache.sling.jcr.resource.JcrResourceConstants.SLING_RESOURCE_
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.componenttypes.ComponentType;
-import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
-import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
@@ -76,7 +75,8 @@ import org.slf4j.LoggerFactory;
  */
 @KestrosModel(docPaths = {"/content/guide-articles/kestros/site-management/creating-components",
     "/content/guide-articles/kestros/site-management/editing-components",
-    "/content/guide-articles/kestros/getting-started/understanding-validation"})
+    "/content/guide-articles/kestros/getting-started/understanding-validation"},
+              contextModel = ComponentRequestContext.class)
 @Model(adaptables = Resource.class,
        resourceType = "sling/servlet/default")
 @Exporter(name = "jackson",
@@ -154,7 +154,7 @@ public class BaseComponent extends BaseResource {
       }
     }
     LOG.trace("Finished ComponentType for {}, but threw InvalidComponentTypeException", getPath());
-    throw new InvalidComponentTypeException(getResourceType());
+    throw new InvalidComponentTypeException(getPath(), getResourceType());
   }
 
   /**
@@ -361,12 +361,49 @@ public class BaseComponent extends BaseResource {
     }
   }
 
+  @Override
+  @KestrosProperty(description = "Component title. Generally used for administrative purposes.",
+                   configurable = true,
+                   jcrPropertyName = "jcr:title")
+  public String getTitle() {
+    return super.getTitle();
+  }
+
+  @Override
+  @KestrosProperty(description = "Component description. Generally used for administrative "
+                                 + "purposes.",
+                   configurable = true,
+                   jcrPropertyName = "jcr:description")
+  public String getDescription() {
+    return super.getDescription();
+  }
+
+  /**
+   * Variations property value.
+   *
+   * @return Variations property value.
+   */
+  @SuppressWarnings("unused")
+  @KestrosProperty(description = "Variations applied to the component. Only valid variations are "
+                                 + "rendered.",
+                   jcrPropertyName = "variations",
+                   defaultValue = "[]",
+                   sampleValue = "[]",
+                   configurable = true)
+  @Nonnull
+  @JsonIgnore
+  @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
+  private String[] getVariations() {
+    return getProperties().get("variations", new String[]{});
+  }
+
   private void attemptSlingResourceTypeAssignment() {
     if (StringUtils.isBlank(getJcrPrimaryType()) || getJcrPrimaryType().equals(NT_UNSTRUCTURED)) {
       try {
         final ModifiableValueMap modifiableValueMap = getResource().adaptTo(
             ModifiableValueMap.class);
-        if (modifiableValueMap != null) {
+        if (modifiableValueMap != null && !"nt:unstructured".equals(
+            getResource().getResourceType())) {
           modifiableValueMap.put(SLING_RESOURCE_TYPE_PROPERTY, getResource().getResourceType());
           getResourceResolver().commit();
         } else {

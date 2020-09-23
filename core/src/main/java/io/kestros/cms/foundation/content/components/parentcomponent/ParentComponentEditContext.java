@@ -18,30 +18,15 @@
 
 package io.kestros.cms.foundation.content.components.parentcomponent;
 
-import static io.kestros.cms.foundation.design.DesignConstants.NN_VARIATIONS;
 import static java.lang.Boolean.parseBoolean;
 
-import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
-import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
-import io.kestros.cms.foundation.content.BaseComponent;
 import io.kestros.cms.foundation.content.ComponentRequestContext;
 import io.kestros.cms.foundation.design.theme.Theme;
-import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
-import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
 import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
 import io.kestros.cms.foundation.services.editmodeservice.EditModeService;
 import io.kestros.cms.foundation.services.scriptprovider.ScriptProviderService;
-import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
-import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
-import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -73,9 +58,12 @@ public class ParentComponentEditContext extends ComponentRequestContext {
    * @return The path to the content.html script.
    * @throws InvalidScriptException The script was not found, or could not be adapt to
    *     HtmlFile.
+   * @throws InvalidComponentTypeException The componentType configured for the requested
+   *     resource was missing or invalid.
    */
   @Nonnull
-  public String getContentScriptPath() throws InvalidScriptException {
+  public String getContentScriptPath()
+      throws InvalidScriptException, InvalidComponentTypeException {
     LOG.trace("Getting Content Script Path for {}", getBaseResource().getPath());
     final String contentScriptPath = getScriptPath("content.html");
     LOG.trace("Retrieved Content Script Path for {}", getBaseResource().getPath());
@@ -90,9 +78,12 @@ public class ParentComponentEditContext extends ComponentRequestContext {
    * @return The path to a specified script.
    * @throws InvalidScriptException The script was not found, or could not be adapt to *
    *     HtmlFile.
+   * @throws InvalidComponentTypeException The componentType configured for the requested
+   *     resource was missing or invalid.
    */
   @Nonnull
-  public String getScriptPath(final String scriptName) throws InvalidScriptException {
+  public String getScriptPath(final String scriptName)
+      throws InvalidScriptException, InvalidComponentTypeException {
     return scriptProviderService.getScriptPath(
         getBaseResource().getResource().adaptTo(ParentComponent.class), scriptName, getRequest());
   }

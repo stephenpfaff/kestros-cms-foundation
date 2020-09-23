@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.event.jobs.JobManager;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -47,13 +48,13 @@ public class CachedScriptProviderService extends BaseCacheService
   private Map<String, Object> componentViewCacheMap = new HashMap<>();
 
   @Override
-  public void activate() {
-
+  public void activate(ComponentContext componentContext) {
+    // Does nothing.
   }
 
   @Override
-  public void deactivate() {
-
+  public void deactivate(ComponentContext componentContext) {
+    // Does nothing.
   }
 
   @Override
@@ -92,6 +93,11 @@ public class CachedScriptProviderService extends BaseCacheService
   @Override
   protected void doPurge(ResourceResolver resourceResolver) throws CachePurgeException {
     componentViewCacheMap = new HashMap<>();
+  }
+
+  @Override
+  protected void afterCachePurgeComplete(ResourceResolver resourceResolver) {
+    // Does nothing.
   }
 
   @Override
