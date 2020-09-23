@@ -72,7 +72,7 @@
       <dependency>
         <groupId>io.kestros.commons</groupId>
         <artifactId>kestros-sling-ui-libraries-core</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1</version>
       </dependency>
       <dependency>
         <groupId>io.kestros.cms</groupId>
