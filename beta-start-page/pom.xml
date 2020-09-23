@@ -28,7 +28,6 @@
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-cms-foundation-beta-start-page</artifactId>
 
   <name>Kestros Content Management System Foundation - Beta Start Page Frontend Package</name>
