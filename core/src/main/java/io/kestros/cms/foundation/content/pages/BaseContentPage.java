@@ -77,11 +77,10 @@ import org.slf4j.LoggerFactory;
  * Base content page to extend Page Types from.  Contains logic for themes, site relationships, and
  * retrieving child pages.
  */
-@KestrosModel(validationService = BaseContentPageValidationService.class,
-              docPaths = {"/content/guide-articles/kestros/site-management/creating-pages",
-                  "/content/guide-articles/kestros/site-management/editing-page-properties",
-                  "/content/guide-articles/kestros/site-management/creating-components",
-                  "/content/guide-articles/kestros/getting-started/understanding-validation"},
+@KestrosModel(docPaths = {"/content/guide-articles/kestros/site-management/creating-pages",
+    "/content/guide-articles/kestros/site-management/editing-page-properties",
+    "/content/guide-articles/kestros/site-management/creating-components",
+    "/content/guide-articles/kestros/getting-started/understanding-validation"},
               usesJcrContent = true,
               contextModel = ComponentRequestContext.class)
 @Model(adaptables = Resource.class,

@@ -80,7 +80,7 @@ public class UiFrameworkTest {
     componentTypeUiFrameworkViewProperties.put("jcr:primaryType", "kes:ComponentUiFrameworkView");
 
     fileProperties.put("jcr:primaryType", "nt:file");
-    fileJcrContentProperties.put("jcr:mimeType", "text/less");
+    fileJcrContentProperties.put("jcr:mimeType", "text/css");
   }
 
   @Test
@@ -247,7 +247,7 @@ public class UiFrameworkTest {
 
     uiFramework = resource.adaptTo(UiFramework.class);
 
-    assertEquals(".test-output{}", uiFramework.getOutput(CSS));
+    assertEquals(".test-output{}\n", uiFramework.getOutput(CSS));
   }
 
   @Test
@@ -273,7 +273,7 @@ public class UiFrameworkTest {
     resource = context.create().resource("/ui-framework", properties);
     uiFramework = resource.adaptTo(UiFramework.class);
 
-    assertEquals(".test-output{}", uiFramework.getOutput(CSS));
+    assertEquals(".test-output{}\n", uiFramework.getOutput(CSS));
   }
 
   @Test
@@ -301,7 +301,7 @@ public class UiFrameworkTest {
     resource = context.create().resource("/ui-framework", properties);
     uiFramework = resource.adaptTo(UiFramework.class);
 
-    assertEquals(".test-output{}", uiFramework.getOutput(CSS));
+    assertEquals(".test-output{}\n", uiFramework.getOutput(CSS));
   }
 
   @Test
@@ -334,7 +334,7 @@ public class UiFrameworkTest {
     resource = context.create().resource("/ui-framework", properties);
     uiFramework = resource.adaptTo(UiFramework.class);
 
-    assertEquals(".test-output{}", uiFramework.getOutput(CSS));
+    assertEquals(".test-output{}\n", uiFramework.getOutput(CSS));
   }
 
   @Test
@@ -360,7 +360,7 @@ public class UiFrameworkTest {
     resource = context.create().resource("/ui-framework", properties);
     uiFramework = resource.adaptTo(UiFramework.class);
 
-    assertEquals(".test-output{}", uiFramework.getOutput(CSS));
+    assertEquals(".test-output{}\n", uiFramework.getOutput(CSS));
   }
 
   @Test
@@ -388,7 +388,7 @@ public class UiFrameworkTest {
     resource = context.create().resource("/ui-framework", properties);
     uiFramework = resource.adaptTo(UiFramework.class);
 
-    assertEquals(".test-output{}", uiFramework.getOutput(CSS));
+    assertEquals(".test-output{}\n", uiFramework.getOutput(CSS));
   }
 
   @Test

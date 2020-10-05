@@ -22,6 +22,7 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsClosestType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.kestros.cms.foundation.content.ComponentRequestContext;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
@@ -47,8 +48,8 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> Extends {@link BaseContentPage}
  */
-@KestrosModel(validationService = BaseSiteValidationService.class,
-              usesJcrContent = true)
+@KestrosModel(usesJcrContent = true,
+              contextModel = ComponentRequestContext.class)
 @Model(adaptables = Resource.class,
        resourceType = "kes:Site")
 @Exporter(name = "jackson",

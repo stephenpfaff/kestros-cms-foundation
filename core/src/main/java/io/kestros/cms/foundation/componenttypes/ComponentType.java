@@ -64,12 +64,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Model for resource that will be implemented by Components via sling:resourceType property.
  */
-@KestrosModel(validationService = ComponentTypeValidationService.class,
-              docPaths = {"/content/guide-articles/kestros/components/creating-new-component-types",
-                  "/content/guide-articles/kestros/components/implementing-ui-framework-views",
-                  "/content/guide-articles/kestros/components/defining-content-areas",
-                  "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
-                  "/content/guide-articles/kestros-cms/foundation/grouping-components"})
+@KestrosModel(docPaths = {"/content/guide-articles/kestros/components/creating-new-component-types",
+    "/content/guide-articles/kestros/components/implementing-ui-framework-views",
+    "/content/guide-articles/kestros/components/defining-content-areas",
+    "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
+    "/content/guide-articles/kestros-cms/foundation/grouping-components"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:ComponentType")
 @Exporter(name = "jackson",
