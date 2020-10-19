@@ -73,17 +73,17 @@ public class VendorLibraryTest {
     resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
     context.create().resource("/etc/vendor-libraries/vendor-library/templates");
 
-    context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-1",
+    context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-1.html",
         fileProperties);
     context.create().resource(
-        "/etc/vendor-libraries/vendor-library/templates/template-file-1/jcr:content",
+        "/etc/vendor-libraries/vendor-library/templates/template-file-1.html/jcr:content",
         fileJcrContentProperties);
 
     fileJcrContentProperties.put("jcr:data", templateFileInputStream2);
-    context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-2",
+    context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-2.html",
         fileProperties);
     context.create().resource(
-        "/etc/vendor-libraries/vendor-library/templates/template-file-2/jcr:content",
+        "/etc/vendor-libraries/vendor-library/templates/template-file-2.html/jcr:content",
         fileJcrContentProperties);
 
     vendorLibrary = resource.adaptTo(VendorLibrary.class);
@@ -122,15 +122,15 @@ public class VendorLibraryTest {
     resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
     context.create().resource("/etc/vendor-libraries/vendor-library/templates");
 
-    context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-1",
+    context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-1.html",
         fileProperties);
     context.create().resource(
-        "/etc/vendor-libraries/vendor-library/templates/template-file-1/jcr:content",
+        "/etc/vendor-libraries/vendor-library/templates/template-file-1.html/jcr:content",
         fileJcrContentProperties);
-    context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-2",
+    context.create().resource("/etc/vendor-libraries/vendor-library/templates/template-file-2.html",
         fileProperties);
     context.create().resource(
-        "/etc/vendor-libraries/vendor-library/templates/template-file-2/jcr:content",
+        "/etc/vendor-libraries/vendor-library/templates/template-file-2.html/jcr:content",
         fileJcrContentProperties);
 
     vendorLibrary = resource.adaptTo(VendorLibrary.class);

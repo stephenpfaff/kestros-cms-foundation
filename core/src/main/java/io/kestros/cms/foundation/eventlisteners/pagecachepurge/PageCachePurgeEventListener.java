@@ -21,7 +21,6 @@ package io.kestros.cms.foundation.eventlisteners.pagecachepurge;
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.kestros.cms.foundation.services.cache.validation.ValidationCacheService;
 import io.kestros.cms.foundation.services.componenttypecache.ComponentTypeCache;
 import io.kestros.cms.foundation.services.pagecacheservice.PageCacheService;
 import io.kestros.cms.foundation.services.scriptprovider.ComponentViewScriptResolutionCacheService;

@@ -19,7 +19,6 @@
 package io.kestros.cms.foundation.content;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
@@ -243,14 +242,9 @@ public class BaseContentPageTest {
 
     baseContentPage = resource.adaptTo(BaseContentPage.class);
 
-    baseContentPage.doDetailedValidation();
-
     assertNotNull(baseContentPage.getTheme());
     assertEquals("/etc/themes/theme", baseContentPage.getTheme().getPath());
     assertEquals("theme", baseContentPage.getTheme().getName());
-
-    assertFalse(baseContentPage.getErrorMessages().contains("Must have an assigned Theme."));
-
   }
 
   @Test
@@ -262,8 +256,6 @@ public class BaseContentPageTest {
     context.create().resource("/etc/themes/theme");
 
     baseContentPage = resource.adaptTo(BaseContentPage.class);
-
-    baseContentPage.doDetailedValidation();
 
     try {
       baseContentPage.getTheme();
@@ -284,8 +276,6 @@ public class BaseContentPageTest {
     resource = context.create().resource("/content/page/jcr:content", jcrContentProperties);
 
     baseContentPage = resource.adaptTo(BaseContentPage.class);
-
-    baseContentPage.doDetailedValidation();
 
     try {
       assertNull(baseContentPage.getTheme());
@@ -344,8 +334,6 @@ public class BaseContentPageTest {
 
     baseContentPage = resource.adaptTo(BaseContentPage.class);
 
-    baseContentPage.doDetailedValidation();
-
     assertEquals("/site", baseContentPage.getSite().getPath());
   }
 
@@ -355,8 +343,6 @@ public class BaseContentPageTest {
     resource = context.create().resource("/site/content/page/child-1", pageProperties);
 
     baseContentPage = resource.adaptTo(BaseContentPage.class);
-
-    baseContentPage.doDetailedValidation();
 
     assertNull(baseContentPage.getSite());
   }
@@ -397,8 +383,6 @@ public class BaseContentPageTest {
     context.create().resource("/content/page/child-2", pageProperties);
     context.create().resource("/content/page/child-3", pageProperties);
 
-    baseContentPage.doDetailedValidation();
-
     assertEquals(3, baseContentPage.getChildPages().size());
     assertEquals("child-1", baseContentPage.getChildPages().get(0).getName());
     assertEquals("child-2", baseContentPage.getChildPages().get(1).getName());
@@ -416,8 +400,6 @@ public class BaseContentPageTest {
     context.create().resource("/content/page/child-1", pageProperties);
     context.create().resource("/content/page/child-2", pageProperties);
     context.create().resource("/content/page/child-3", pageProperties);
-
-    baseContentPage.doDetailedValidation();
 
     assertEquals(3, baseContentPage.getChildPages().size());
     assertEquals("child-1", baseContentPage.getChildPages().get(0).getName());
@@ -499,8 +481,7 @@ public class BaseContentPageTest {
     }
     assertEquals(
         "Unable to adapt 'invalid-component-type' to ComponentType for resource /page. Invalid or"
-        + " missing ComponentType resource.",
-        exception.getMessage());
+        + " missing ComponentType resource.", exception.getMessage());
   }
 
   @Test
@@ -522,8 +503,7 @@ public class BaseContentPageTest {
 
     assertEquals(
         "Unable to adapt 'kes:Page' to ComponentType for resource /page. Invalid or missing "
-        + "ComponentType resource.",
-        exception.getMessage());
+        + "ComponentType resource.", exception.getMessage());
   }
 
   @Test

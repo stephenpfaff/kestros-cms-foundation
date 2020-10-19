@@ -19,7 +19,6 @@
 package io.kestros.cms.foundation.content;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import io.kestros.cms.foundation.content.sites.BaseSite;
 import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
@@ -116,11 +115,7 @@ public class BaseSiteTest {
 
     baseSite = resource.adaptTo(BaseSite.class);
 
-    baseSite.doDetailedValidation();
-
     assertEquals(19, baseSite.getAllPages().size());
-
-    assertFalse(baseSite.getErrorMessages().contains("Site has no pages."));
 
     assertEquals(2, baseSite.getChildPages().size());
   }

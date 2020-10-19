@@ -35,7 +35,6 @@ import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
 import io.kestros.commons.uilibraries.UiLibrary;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,11 +52,10 @@ import org.slf4j.LoggerFactory;
  * Modular UI Libraries containing CSS, JS, assets and HTL templates, which can be compiled into any
  * number of UiFrameworks.
  */
-@KestrosModel(validationService = VendorLibraryValidationService.class,
-              docPaths = {"/content/guide-articles/kestros/ui-frameworks/vendor-libraries",
-                  "/content/guide-articles/kestros/ui-frameworks/assigning-htl-templates",
-                  "/content/guide-articles/kestros/ui-frameworks/ui-frameworks",
-                  "/content/guide-articles/kestros/ui-frameworks/themes"})
+@KestrosModel(docPaths = {"/content/guide-articles/kestros/ui-frameworks/vendor-libraries",
+    "/content/guide-articles/kestros/ui-frameworks/assigning-htl-templates",
+    "/content/guide-articles/kestros/ui-frameworks/ui-frameworks",
+    "/content/guide-articles/kestros/ui-frameworks/themes"})
 @Model(adaptables = Resource.class,
        resourceType = {"kes:VendorLibrary"})
 @Exporter(name = "jackson",
@@ -190,8 +188,8 @@ public class VendorLibrary extends UiLibrary {
    */
   @Nonnull
   public List<BaseResource> getExternalizedFiles() {
-    return getResourcesAsType(getExternalizedFilesProperty(),
-        getResourceResolver(), BaseResource.class);
+    return getResourcesAsType(getExternalizedFilesProperty(), getResourceResolver(),
+        BaseResource.class);
   }
 
   private List<String> getExternalizedFilesProperty() {

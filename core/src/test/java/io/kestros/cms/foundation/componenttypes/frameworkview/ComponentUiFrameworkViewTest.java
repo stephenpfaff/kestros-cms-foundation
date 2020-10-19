@@ -111,7 +111,7 @@ public class ComponentUiFrameworkViewTest {
     context.create().resource("/component/framework-view/css/my-css.css", fileProperties);
 
     fileJcrContentProperties.put("jcr:data", importerInputStream);
-    fileJcrContentProperties.put("jcr:mimeType", "text/less");
+    fileJcrContentProperties.put("jcr:mimeType", "text/css");
     context.create().resource("/component/framework-view/css/my-css.css/jcr:content",
         fileJcrContentProperties);
 
@@ -119,7 +119,7 @@ public class ComponentUiFrameworkViewTest {
 
     assertNotNull(componentUiFrameworkView.getOutput(CSS, false));
 
-    assertEquals("body{ color:red;}", componentUiFrameworkView.getOutput(CSS, false));
+    assertEquals("body{ color:red;}\n", componentUiFrameworkView.getOutput(CSS, false));
   }
 
   @Test
@@ -134,7 +134,7 @@ public class ComponentUiFrameworkViewTest {
     InputStream variation3CssInputStream = new ByteArrayInputStream(
         "body{ color:variation-3;}".getBytes());
 
-    fileJcrContentProperties.put("jcr:mimeType", "text/less");
+    fileJcrContentProperties.put("jcr:mimeType", "text/css");
 
     resource = context.create().resource("/component/framework-view");
 
@@ -198,8 +198,8 @@ public class ComponentUiFrameworkViewTest {
 
     assertNotNull(componentUiFrameworkView.getOutput(CSS, false));
 
-    assertEquals("body{ color:red;}body{ color:variation-1;}body{ color:variation-2;}body{ "
-                 + "color:variation-3;}", componentUiFrameworkView.getOutput(CSS, false));
+    assertEquals("body{ color:red;}\n" + "body{ color:variation-1;}\n"
+                 + "body{ color:variation-2;}\n" + "body{ color:variation-3;}\n", componentUiFrameworkView.getOutput(CSS, false));
   }
 
   @Test

@@ -49,7 +49,6 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.commons.structuredslingmodels.filetypes.BaseFile;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.UiLibrary;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
@@ -80,11 +79,10 @@ import org.slf4j.LoggerFactory;
  * itself.
  * </p>
  */
-@KestrosModel(validationService = UiFrameworkValidationService.class,
-              docPaths = {"/content/guide-articles/kestros/ui-frameworks/ui-frameworks",
-                  "/content/guide-articles/kestros/ui-frameworks/themes",
-                  "/content/guide-articles/kestros/ui-frameworks/assigning-htl-templates",
-                  "/content/guide-articles/kestros/ui-frameworks/vendor-libraries"})
+@KestrosModel(docPaths = {"/content/guide-articles/kestros/ui-frameworks/ui-frameworks",
+    "/content/guide-articles/kestros/ui-frameworks/themes",
+    "/content/guide-articles/kestros/ui-frameworks/assigning-htl-templates",
+    "/content/guide-articles/kestros/ui-frameworks/vendor-libraries"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:UiFramework")
 @Exporter(name = "jackson",
@@ -415,8 +413,9 @@ public class UiFramework extends UiLibrary {
       externalizedFiles.addAll(vendorLibrary.getExternalizedFiles());
     }
 
-    externalizedFiles.addAll(getResourcesAsType(getExternalizedFilesProperty(),
-        getResourceResolver(), BaseResource.class));
+    externalizedFiles.addAll(
+        getResourcesAsType(getExternalizedFilesProperty(), getResourceResolver(),
+            BaseResource.class));
 
     return externalizedFiles;
   }

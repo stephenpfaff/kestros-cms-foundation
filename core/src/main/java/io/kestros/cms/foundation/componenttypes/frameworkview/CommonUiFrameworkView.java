@@ -26,13 +26,10 @@ import org.apache.sling.models.annotations.Model;
  * Component view that is specific to a single UiFramework.  Created as a child resource to
  * ComponentTypes.
  */
-@KestrosModel(validationService = ComponentUiFrameworkViewValidationService.class,
-              docPaths = {
-                  "/content/guide-articles/kestros-cms/site-building/implementing-ui-framework"
-                  + "-views",
-                  "/content/guide-articles/kestros-cms/site-building/creating-new-component"
-                  + "-types",
-                  "/content/guide-articles/kestros-cms/site-building/creating-ui-frameworks"})
+@KestrosModel(docPaths = {
+    "/content/guide-articles/kestros-cms/site-building/implementing-ui-framework" + "-views",
+    "/content/guide-articles/kestros-cms/site-building/creating-new-component" + "-types",
+    "/content/guide-articles/kestros-cms/site-building/creating-ui-frameworks"})
 @Model(adaptables = Resource.class)
 public class CommonUiFrameworkView extends ComponentUiFrameworkView {
 

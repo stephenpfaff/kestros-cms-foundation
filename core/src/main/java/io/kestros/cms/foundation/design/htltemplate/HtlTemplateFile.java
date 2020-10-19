@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * HTML File that contains HTL Templates.
  */
-@KestrosModel(validationService = HtlTemplateFileValidationService.class)
+@KestrosModel()
 @Model(adaptables = Resource.class,
        resourceType = JcrConstants.NT_FILE)
 public class HtlTemplateFile extends HtmlFile {

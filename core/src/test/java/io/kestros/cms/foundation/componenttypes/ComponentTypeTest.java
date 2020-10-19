@@ -82,10 +82,7 @@ public class ComponentTypeTest {
 
     componentType = resource.adaptTo(ComponentType.class);
 
-    componentType.doDetailedValidation();
-
     assertEquals("My Group", componentType.getComponentGroup());
-
   }
 
   @Test
@@ -95,8 +92,6 @@ public class ComponentTypeTest {
     context.create().resource("/apps/components/super-type", componentProperties);
 
     componentType = resource.adaptTo(ComponentType.class);
-
-    componentType.doDetailedValidation();
 
     assertEquals("components/super-type", componentType.getResourceSuperType());
     assertEquals("/apps/components/super-type", componentType.getComponentSuperType().getPath());
@@ -109,8 +104,6 @@ public class ComponentTypeTest {
     context.create().resource("/libs/components/super-type", componentProperties);
 
     componentType = resource.adaptTo(ComponentType.class);
-
-    componentType.doDetailedValidation();
 
     assertEquals("components/super-type", componentType.getResourceSuperType());
     assertEquals("/libs/components/super-type", componentType.getComponentSuperType().getPath());
@@ -285,8 +278,6 @@ public class ComponentTypeTest {
         frameworkProperties).adaptTo(UiFramework.class);
 
     componentType = resource.adaptTo(ComponentType.class);
-
-    componentType.doDetailedValidation();
 
     assertEquals("/apps/component/framework-1",
         componentType.getComponentUiFrameworkView(framework).getPath());

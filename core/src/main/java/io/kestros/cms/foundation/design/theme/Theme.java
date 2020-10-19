@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * Structured UiLibrary which is built off of a specific UiFramework and can have any number of
  * defined variations.
  */
-@KestrosModel(validationService = ThemeValidationService.class)
+@KestrosModel()
 @Model(adaptables = Resource.class,
        resourceType = "kes:Theme")
 @Exporter(name = "jackson",

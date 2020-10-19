@@ -32,8 +32,7 @@ import org.apache.sling.models.annotations.Model;
     "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",
     "/content/guide-articles/kestros-cms/foundation/defining-content-areas",
     "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
-    "/content/guide-articles/kestros-cms/foundation/grouping-components"},
-              validationService = ComponentVariationValidationService.class)
+    "/content/guide-articles/kestros-cms/foundation/grouping-components"})
 @Model(adaptables = Resource.class,
        resourceType = "kes:ComponentVariation")
 public class ComponentVariation extends UiLibrary {

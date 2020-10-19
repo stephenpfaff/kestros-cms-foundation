@@ -36,7 +36,7 @@
         "code": {
           "jcr:primaryType": "nt:unstructured",
           "sling:resourceType": "kestros/commons/components/content/code",
-          "text": "docker run -p 8080:8080 --name kestros-platform-beta -v /tmp/sling/logs:/opt/sling/sling/logs kestros/kestros-platform-beta:latest"
+          "text": "docker run -p 8080:8080 --name kestros-alpha -v /tmp/sling/logs:/opt/sling/sling/logs kestros/kestros-alpha:latest"
         },
         "docker-command-sudo-info": {
           "jcr:primaryType": "nt:unstructured",
