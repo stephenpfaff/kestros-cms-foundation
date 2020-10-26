@@ -166,5 +166,14 @@ public class VendorLibraryTest {
     assertEquals(0, vendorLibrary.getTemplateFiles().size());
   }
 
+  @Test
+  public void testGetIncludedCdnJsScripts() {
+    properties.put("includedCdnJsScripts", new String[] {"test.js"});
+    resource = context.create().resource("/etc/vendor-libraries/vendor-library", properties);
+
+    vendorLibrary = resource.adaptTo(VendorLibrary.class);
+
+    assertEquals(1, vendorLibrary.getIncludedCdnJsScripts().size());
+  }
 
 }
