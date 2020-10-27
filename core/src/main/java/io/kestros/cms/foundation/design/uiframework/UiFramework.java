@@ -389,6 +389,37 @@ public class UiFramework extends UiLibrary {
   }
 
   /**
+   * List of CDN JavaScript script file URL that need to be included as their own script files.
+   *
+   * @return List of CDN JavaScript script file URL that need to be included as their own script
+   *     files.
+   */
+  public List<String> getIncludedCdnJsScripts() {
+    List<String> includedCdnJsScripts = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : getVendorLibraries()) {
+      includedCdnJsScripts.addAll(vendorLibrary.getIncludedCdnJsScripts());
+    }
+    includedCdnJsScripts.addAll(
+        Arrays.asList(getProperty("getIncludedCdnJsScripts", new String[]{})));
+    return includedCdnJsScripts;
+  }
+
+  /**
+   * List of CDN CSS script file URL that need to be included as their own script files.
+   *
+   * @return List of CDN CSS script file URL that need to be included as their own script files.
+   */
+  public List<String> getIncludedCdnCssScripts() {
+    List<String> includedCdnCssScripts = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : getVendorLibraries()) {
+      includedCdnCssScripts.addAll(vendorLibrary.getIncludedCdnCssScripts());
+    }
+    includedCdnCssScripts.addAll(
+        Arrays.asList(getProperty("getIncludedCdnCssScripts", new String[]{})));
+    return includedCdnCssScripts;
+  }
+
+  /**
    * Sorts HtlTemplates by Title (alphabetically).
    */
   private static class HtlTemplateFileSorter implements Comparator<HtlTemplateFile>, Serializable {

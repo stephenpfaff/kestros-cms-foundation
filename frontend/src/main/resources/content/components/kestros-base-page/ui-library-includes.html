@@ -21,11 +21,20 @@
 
 
   <sly data-sly-test="${parentComponentEditContext.editMode}">
+
+    <sly data-sly-list.script="${page.theme.uiFramework.includedCdnCssScripts}">
+      <link rel="stylesheet" type="text/css"
+            href="${script}">
+    </sly>
     <sly data-sly-use.lib="/libs/kestros/commons/ui-libraries.html">
       <sly data-sly-call="${lib.includeCss @ uiLibrary=page.theme}"/>
     </sly>
   </sly>
   <sly data-sly-test="${!parentComponentEditContext.editMode}">
+    <sly data-sly-list.script="${page.theme.uiFramework.includedCdnCssScripts}">
+      <link rel="stylesheet" type="text/css"
+            href="${script}">
+    </sly>
     <link rel="stylesheet" type="text/css"
           href="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.css">
   </sly>
@@ -35,11 +44,17 @@
   <sly
       data-sly-use.parentComponentEditContext="${'io.kestros.cms.foundation.content.components.parentcomponent.ParentComponentEditContext'}"/>
   <sly data-sly-test="${parentComponentEditContext.editMode}">
+    <sly data-sly-list.script="${page.theme.uiFramework.includedCdnJsScripts}">
+      <script src="${script}"></script>
+    </sly>
     <sly data-sly-use.lib="/libs/kestros/commons/ui-libraries.html">
       <sly data-sly-call="${lib.includeJs @ uiLibrary=page.theme}"/>
     </sly>
   </sly>
   <sly data-sly-test="${!parentComponentEditContext.editMode}">
+    <sly data-sly-list.script="${page.theme.uiFramework.includedCdnJsScripts}">
+      <script src="${script}"></script>
+    </sly>
     <script
         src="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.js"></script>
   </sly>

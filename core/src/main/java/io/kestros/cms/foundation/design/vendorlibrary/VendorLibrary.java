@@ -38,6 +38,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundExcep
 import io.kestros.commons.uilibraries.UiLibrary;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -179,6 +180,25 @@ public class VendorLibrary extends UiLibrary {
     }
     htlTemplateFiles.sort(Comparator.comparing(HtlTemplateFile::getTitle));
     return htlTemplateFiles;
+  }
+
+  /**
+   * List of CDN JavaScript script file URL that need to be included as their own script files.
+   *
+   * @return List of CDN JavaScript script file URL that need to be included as their own script
+   *     files.
+   */
+  public List<String> getIncludedCdnJsScripts() {
+    return Arrays.asList(getProperty("includedCdnJsScripts", new String[]{}));
+  }
+
+  /**
+   * List of CDN CSS script file URL that need to be included as their own script files.
+   *
+   * @return List of CDN CSS script file URL that need to be included as their own script files.
+   */
+  public List<String> getIncludedCdnCssScripts() {
+    return Arrays.asList(getProperty("includedCdnCssScripts", new String[]{}));
   }
 
   /**
