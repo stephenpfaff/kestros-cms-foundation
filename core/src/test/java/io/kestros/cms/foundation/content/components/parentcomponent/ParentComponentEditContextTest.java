@@ -243,6 +243,33 @@ public class ParentComponentEditContextTest {
   }
 
   @Test
+  public void testGetScriptPathWhenUsingCommonFramework() throws Exception {
+
+    pageContentProperties.put("kes:theme", "common");
+
+    context.create().resource("/content/page-with-framework", pageProperties);
+    context.create().resource("/content/page-with-framework/jcr:content", pageContentProperties);
+    resource = context.create().resource("/content/page-with-framework/jcr:content/component",
+        properties);
+
+    context.create().resource("/apps/my-app/common", uiFrameworkViewProperties);
+    context.create().resource("/apps/my-app/common/content.html", fileProperties);
+    context.create().resource("/apps/my-app/common/content.html/jcr:content",
+        fileJcrContentProperties);
+
+    context.create().resource("/apps/my-app/my-framework", uiFrameworkViewProperties);
+    context.create().resource("/apps/my-app/my-framework/content.html", fileProperties);
+    context.create().resource("/apps/my-app/my-framework/content.html/jcr:content",
+        fileJcrContentProperties);
+
+    context.request().setResource(resource);
+    parentComponentEditContext = context.request().adaptTo(ParentComponentEditContext.class);
+
+    assertEquals("/apps/my-app/common/content.html",
+        parentComponentEditContext.getContentScriptPath());
+  }
+
+  @Test
   public void testGetScriptPathWhenUsingFrameworkWhenCached() throws Exception {
 
     pageContentProperties.put("kes:theme", "/etc/ui-frameworks/my-framework/themes/my-theme");

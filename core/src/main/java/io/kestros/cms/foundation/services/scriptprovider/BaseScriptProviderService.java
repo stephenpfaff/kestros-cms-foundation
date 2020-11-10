@@ -100,12 +100,18 @@ public class BaseScriptProviderService extends BaseServiceResolverService
     ComponentType componentType = parentComponent.getComponentType();
     UiFramework uiFramework = getUiFrameworkForComponentRequest(parentComponent, request);
     if (componentViewScriptResolutionCacheService != null) {
-      try {
-        LOG.trace("Finished retrieving Script Path {}", scriptName);
-        return componentViewScriptResolutionCacheService.getCachedScriptPath(scriptName,
-            componentType, uiFramework, request);
-      } catch (CacheRetrievalException e) {
-        LOG.debug("Failed to retrieve cached script resolution. {}.", e.getMessage());
+      if (uiFramework != null) {
+
+        try {
+          LOG.trace("Finished retrieving Script Path {}", scriptName);
+          return componentViewScriptResolutionCacheService.getCachedScriptPath(scriptName,
+              componentType, uiFramework, request);
+        } catch (CacheRetrievalException e) {
+          LOG.debug("Failed to retrieve cached script resolution. {}.", e.getMessage());
+        }
+      } else {
+        LOG.warn(
+            "Unable to attempt component view script resolution via cache. UiFramework was null.");
       }
     } else {
       LOG.warn(
@@ -115,8 +121,10 @@ public class BaseScriptProviderService extends BaseServiceResolverService
     try {
       String resolvedScriptPath = componentType.getScript(scriptName, uiFramework).getPath();
       if (componentViewScriptResolutionCacheService != null) {
-        componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
-            componentType, uiFramework, resolvedScriptPath, request);
+        if (uiFramework != null) {
+          componentViewScriptResolutionCacheService.cacheComponentViewScriptPath(scriptName,
+              componentType, uiFramework, resolvedScriptPath, request);
+        }
       }
       LOG.trace("Finished retrieving Script Path {}", scriptName);
       return resolvedScriptPath;
