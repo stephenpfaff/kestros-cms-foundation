@@ -78,14 +78,18 @@ public class ComponentRequestContext extends BaseRequestContext {
   @KestrosProperty(description = "The requested page.")
   public BaseContentPage getCurrentPage() {
     String pagePath = getRequest().getRequestURI().split(".html")[0];
-    pagePath = pagePath.split("/jcr:content")[0];
+    if (pagePath.contains("/jcr:content")) {
+      pagePath = pagePath.split("/jcr:content")[0];
+    } else if (pagePath.contains("/_jcr_content")) {
+      pagePath = pagePath.split("/_jcr_content")[0];
+    }
     try {
       return getResourceAsType(pagePath, getResourceResolver(), BaseContentPage.class);
     } catch (InvalidResourceTypeException e) {
       try {
         return getResourceAsType(pagePath, getResourceResolver(), BaseSite.class);
       } catch (InvalidResourceTypeException invalidResourceTypeException) {
-        LOG.warn("Unable to adapt current page resource to BaseContentPage or BaseSite for "
+        LOG.debug("Unable to adapt current page resource to BaseContentPage or BaseSite for "
                  + "ComponentRequestContext.");
       } catch (ResourceNotFoundException resourceNotFoundException) {
         LOG.warn("Unable to find current page resource for ComponentRequestContext.");
