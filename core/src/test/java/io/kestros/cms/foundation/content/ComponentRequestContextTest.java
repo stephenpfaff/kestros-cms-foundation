@@ -20,8 +20,8 @@ package io.kestros.cms.foundation.content;
 
 import static org.junit.Assert.assertEquals;
 
-import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
-import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
+import io.kestros.cms.foundation.services.impl.BaseThemeProviderService;
+import io.kestros.cms.foundation.services.ThemeProviderService;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.sling.api.resource.Resource;

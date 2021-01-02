@@ -24,7 +24,7 @@
   <parent>
     <groupId>io.kestros.commons</groupId>
     <artifactId>kestros-parent-strict</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -56,29 +56,12 @@
   <modules>
     <module>startup</module>
     <module>core</module>
-    <module>frontend</module>
     <module>docs</module>
 <!--    <module>beta-start-page</module>-->
   </modules>
 
   <dependencyManagement>
     <dependencies>
-      <!-- Kestros Dependencies -->
-      <dependency>
-        <groupId>io.kestros.commons</groupId>
-        <artifactId>kestros-structured-sling-models</artifactId>
-        <version>0.1.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.kestros.commons</groupId>
-        <artifactId>kestros-sling-ui-libraries-core</artifactId>
-        <version>0.1.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.kestros.cms</groupId>
-        <artifactId>kestros-user-foundation-core</artifactId>
-        <version>0.1.2-SNAPSHOT</version>
-      </dependency>
       <dependency>
         <groupId>de.inetsoftware</groupId>
         <artifactId>jlessc</artifactId>

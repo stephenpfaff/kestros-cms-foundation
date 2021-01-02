@@ -19,7 +19,7 @@
 package io.kestros.cms.foundation.servlets;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.kestros.cms.foundation.services.headlessrender.HeadlessRenderService;
+import io.kestros.cms.foundation.services.HeadlessRenderService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import java.io.IOException;
 import javax.annotation.Nonnull;

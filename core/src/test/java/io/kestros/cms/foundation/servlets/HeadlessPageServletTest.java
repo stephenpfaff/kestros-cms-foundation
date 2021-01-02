@@ -27,7 +27,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import io.kestros.cms.foundation.services.headlessrender.HeadlessRenderService;
+import io.kestros.cms.foundation.services.HeadlessRenderService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import java.io.IOException;
 import javax.servlet.ServletException;

@@ -22,7 +22,7 @@ import io.kestros.cms.foundation.content.BaseComponent;
 import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
+import io.kestros.cms.foundation.services.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;

@@ -21,8 +21,8 @@ package io.kestros.cms.foundation.content;
 import static org.junit.Assert.assertEquals;
 
 import io.kestros.cms.foundation.content.sites.BaseSite;
-import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
-import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
+import io.kestros.cms.foundation.services.impl.BaseThemeProviderService;
+import io.kestros.cms.foundation.services.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import java.util.Date;

@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.services.themeprovider.BaseThemeProviderService;
-import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
+import io.kestros.cms.foundation.services.impl.BaseThemeProviderService;
+import io.kestros.cms.foundation.services.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
