@@ -18,6 +18,7 @@
 
 package io.kestros.cms.foundation.healthchecks;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.services.ModifiedResourceTimestamperService;
 import io.kestros.commons.osgiserviceutils.healthchecks.BaseManagedServiceHealthCheck;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
@@ -35,6 +36,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * Health Check for {@link ModifiedResourceTimestamperService}.
  */
+@SuppressFBWarnings("RI_REDUNDANT_INTERFACES")
 @Component
 @HealthCheckService(name = "Modified Resource Timestamper Service Check",
                     tags = {"kestros", "cms-foundation"})

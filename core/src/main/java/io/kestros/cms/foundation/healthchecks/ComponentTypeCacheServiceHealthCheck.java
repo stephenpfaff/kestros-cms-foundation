@@ -18,6 +18,7 @@
 
 package io.kestros.cms.foundation.healthchecks;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.services.ComponentTypeCacheService;
 import io.kestros.cms.foundation.services.ContentRenderService;
 import io.kestros.commons.osgiserviceutils.healthchecks.BaseManagedServiceHealthCheck;
@@ -36,6 +37,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * Health Check for {@link ContentRenderService}.
  */
+@SuppressFBWarnings("RI_REDUNDANT_INTERFACES")
 @Component
 @HealthCheckService(name = "Component Type Cache Service Check",
                     tags = {"kestros", "cms-foundation"})
