@@ -18,6 +18,7 @@
 
 package io.kestros.cms.foundation.healthchecks;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.services.HtlTemplateCacheService;
 import io.kestros.commons.osgiserviceutils.healthchecks.BaseManagedServiceHealthCheck;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
@@ -35,6 +36,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * Health check which checks whether the HtlTemplateCacheService is active and running properly.
  */
+@SuppressFBWarnings("RI_REDUNDANT_INTERFACES")
 @Component
 @HealthCheckService(name = "HTL Template Cache Service Health Check",
                     tags = {"kestros", "cms-foundation"})

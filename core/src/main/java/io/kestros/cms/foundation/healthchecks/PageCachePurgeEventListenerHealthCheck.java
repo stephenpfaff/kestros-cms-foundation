@@ -18,6 +18,7 @@
 
 package io.kestros.cms.foundation.healthchecks;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.foundation.eventlisteners.PageCachePurgeEventListener;
 import io.kestros.cms.foundation.services.ScriptProviderService;
 import io.kestros.commons.osgiserviceutils.healthchecks.BaseManagedServiceHealthCheck;
@@ -36,6 +37,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * Health Check for {@link ScriptProviderService}.
  */
+@SuppressFBWarnings("RI_REDUNDANT_INTERFACES")
 @Component
 @HealthCheckService(name = "Page Cache Purge Event Listener Service Check",
                     tags = {"kestros", "cms-foundation"})
