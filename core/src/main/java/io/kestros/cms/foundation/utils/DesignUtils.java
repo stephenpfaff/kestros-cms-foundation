@@ -163,7 +163,7 @@ public class DesignUtils {
    * @return All UiFrameworks.
    */
   @Nonnull
-  public static List<UiFramework> getAllUiFrameworks(final ResourceResolver resolver,
+  public static List<UiFramework> getAllUiFrameworks(@Nonnull final ResourceResolver resolver,
       final Boolean includeEtc, final Boolean includeLibs) {
     final List<UiFramework> uiFrameworks = new ArrayList<>();
     if (includeEtc) {

@@ -38,8 +38,8 @@ import io.kestros.cms.foundation.design.htltemplate.HtlTemplateFile;
 import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.design.vendorlibrary.VendorLibrary;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.services.cache.htltemplate.HtlTemplateCacheService;
-import io.kestros.cms.foundation.services.componenttypecache.ComponentTypeCache;
+import io.kestros.cms.foundation.services.ComponentTypeCacheService;
+import io.kestros.cms.foundation.services.HtlTemplateCacheService;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
@@ -68,7 +68,6 @@ import org.apache.sling.models.annotations.Optional;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * <p>
@@ -101,7 +100,7 @@ public class UiFramework extends UiLibrary {
 
   @OSGiService
   @Optional
-  private ComponentTypeCache componentTypeCache;
+  private ComponentTypeCacheService componentTypeCache;
 
   /**
    * Unique code associated with the current UiFramework. ComponentTypes use this to render the

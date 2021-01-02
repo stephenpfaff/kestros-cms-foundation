@@ -18,7 +18,7 @@
 
 package io.kestros.cms.foundation.servlets;
 
-import io.kestros.cms.foundation.services.pagerenderservice.PageRenderService;
+import io.kestros.cms.foundation.services.PageRenderService;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.servlet.Servlet;

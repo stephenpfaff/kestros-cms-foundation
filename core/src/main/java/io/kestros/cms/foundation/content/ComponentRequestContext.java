@@ -32,7 +32,7 @@ import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
-import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
+import io.kestros.cms.foundation.services.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.BaseRequestContext;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;

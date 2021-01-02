@@ -25,7 +25,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import io.kestros.cms.foundation.services.pagerenderservice.PageRenderService;
+import io.kestros.cms.foundation.services.PageRenderService;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;

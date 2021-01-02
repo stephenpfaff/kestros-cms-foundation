@@ -44,7 +44,7 @@ import io.kestros.cms.foundation.design.theme.Theme;
 import io.kestros.cms.foundation.design.uiframework.UiFramework;
 import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.services.themeprovider.ThemeProviderService;
+import io.kestros.cms.foundation.services.ThemeProviderService;
 import io.kestros.cms.foundation.utils.RelativeDate;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;

@@ -23,8 +23,8 @@ import static io.kestros.commons.uilibraries.filetypes.ScriptType.JAVASCRIPT;
 import static org.junit.Assert.assertEquals;
 
 import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.services.cache.htltemplate.HtlTemplateCacheService;
-import io.kestros.cms.foundation.services.cache.htltemplate.impl.BaseHtlTemplateCacheService;
+import io.kestros.cms.foundation.services.HtlTemplateCacheService;
+import io.kestros.cms.foundation.services.impl.BaseHtlTemplateCacheService;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
