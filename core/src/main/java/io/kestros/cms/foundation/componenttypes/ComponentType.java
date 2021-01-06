@@ -403,6 +403,20 @@ public class ComponentType extends BaseResource {
     return fontAwesomeIcon;
   }
 
+  /**
+   * Whether the component type will show actions in it's edit bar.
+   *
+   * @return Whether the component type will show actions in it's editbar
+   */
+  @KestrosProperty(description = "Whether the component type will show actions in it's editbar.",
+                   jcrPropertyName = "editable",
+                   defaultValue = "true",
+                   configurable = true,
+                   sampleValue = "true")
+  public boolean isEditable() {
+    return getProperty("editable", Boolean.TRUE);
+  }
+
   protected String getImplementingComponentResourceType() {
     return getPath().replaceFirst("/apps/", "").replaceFirst("/libs/", "");
   }
