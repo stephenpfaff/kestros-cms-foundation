@@ -18,15 +18,15 @@
 
 package io.kestros.cms.foundation.services.impl;
 
-import static io.kestros.cms.foundation.design.DesignConstants.PN_THEME_PATH;
+import static io.kestros.cms.uiframeworks.api.DesignConstants.PN_THEME_PATH;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getFirstAncestorOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
 import io.kestros.cms.foundation.content.BaseComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
-import io.kestros.cms.foundation.design.theme.Theme;
-import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.ThemeProviderService;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;

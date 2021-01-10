@@ -30,6 +30,8 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,8 @@ public class BaseModifiedResourceTimestamperService implements ModifiedResourceT
   private static final Logger LOG = LoggerFactory.getLogger(
       BaseModifiedResourceTimestamperService.class);
 
-  @Reference
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
   private ContentPublicationService contentPublicationService;
 
   @Override

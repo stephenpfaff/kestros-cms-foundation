@@ -18,13 +18,25 @@
 
 package io.kestros.cms.foundation.services;
 
-import io.kestros.cms.foundation.services.ContentRenderService;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
+import java.io.IOException;
+import javax.annotation.Nonnull;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingHttpServletResponse;
 
 /**
  * Renders responses for {@link io.kestros.cms.foundation.content.sites.BaseSite} and {@link
  * io.kestros.cms.foundation.content.pages.BaseContentPage} requests.
  */
-public interface PageRenderService extends ContentRenderService, ManagedService {
+public interface PageRenderService extends ManagedService {
 
+  /**
+   * Renders a response for the requested content.
+   *
+   * @param request Request.
+   * @param response Response.
+   * @throws IOException Failed to write to the response.
+   */
+  void render(@Nonnull SlingHttpServletRequest request, @Nonnull SlingHttpServletResponse response)
+      throws IOException;
 }

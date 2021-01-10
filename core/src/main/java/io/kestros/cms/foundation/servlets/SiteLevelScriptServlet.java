@@ -18,9 +18,9 @@
 
 package io.kestros.cms.foundation.servlets;
 
-import static io.kestros.cms.foundation.utils.DesignUtils.getUiFrameworkByFrameworkCode;
+import static io.kestros.cms.uiframeworks.api.utils.DesignUtils.getUiFrameworkByFrameworkCode;
 
-import io.kestros.cms.foundation.design.uiframework.UiFramework;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;

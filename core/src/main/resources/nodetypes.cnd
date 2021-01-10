@@ -28,12 +28,6 @@
   + * (nt:base) = sling:Folder version
 
 
-[kes:ComponentType] > sling:Folder
-
-[kes:ComponentUiFrameworkView] > sling:Folder
-
-[kes:ComponentVariation] > sling:Folder
-
 [kes:Template] > sling:Folder
 
 [kes:Page] > nt:hierarchyNode
@@ -49,11 +43,5 @@
 [kes:DialogFieldType] > sling:Folder
 
 [kes:Dialog] > sling:Folder
-
-[kes:Theme] > sling:Folder
-
-[kes:VendorLibrary] > sling:Folder
-
-[kes:UiFramework] > sling:Folder
 
 [kes:GuideArticle] > kes:Page

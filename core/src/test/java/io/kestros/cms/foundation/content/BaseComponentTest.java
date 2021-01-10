@@ -28,7 +28,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import io.kestros.cms.foundation.content.components.contentarea.ContentArea;
-import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.services.ThemeProviderService;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;

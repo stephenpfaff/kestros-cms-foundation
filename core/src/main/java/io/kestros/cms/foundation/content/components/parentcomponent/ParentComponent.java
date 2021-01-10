@@ -19,10 +19,10 @@
 package io.kestros.cms.foundation.content.components.parentcomponent;
 
 import io.kestros.cms.foundation.content.BaseComponent;
-import io.kestros.cms.foundation.design.theme.Theme;
-import io.kestros.cms.foundation.design.uiframework.UiFramework;
-import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.ThemeProviderService;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.models.Theme;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;

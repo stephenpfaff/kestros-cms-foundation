@@ -20,18 +20,19 @@ package io.kestros.cms.foundation.services.impl;
 
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
-import io.kestros.cms.foundation.componenttypes.ComponentType;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidScriptException;
+import io.kestros.cms.componenttypes.api.models.ComponentType;
+import io.kestros.cms.componenttypes.api.models.ComponentUiFrameworkView;
+import io.kestros.cms.componenttypes.api.services.ComponentViewScriptResolutionCacheService;
 import io.kestros.cms.foundation.content.ComponentRequestContext;
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
-import io.kestros.cms.foundation.design.uiframework.UiFramework;
-import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
-import io.kestros.cms.foundation.exceptions.InvalidScriptException;
-import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.services.ComponentViewScriptResolutionCacheService;
 import io.kestros.cms.foundation.services.ScriptProviderService;
-import io.kestros.cms.foundation.utils.DesignUtils;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.utils.DesignUtils;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
@@ -50,7 +51,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Provides script paths for {@link ParentComponent}.  Looks up the {@link
- * io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView} for the current
+ * ComponentUiFrameworkView} for the current
  * page checks if a matching script is found. Falls back to the `common` ComponentUiFrameworkView.
  */
 @Component(immediate = true,

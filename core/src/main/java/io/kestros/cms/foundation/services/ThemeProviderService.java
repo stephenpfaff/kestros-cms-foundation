@@ -20,8 +20,8 @@ package io.kestros.cms.foundation.services;
 
 import io.kestros.cms.foundation.content.BaseComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
-import io.kestros.cms.foundation.design.theme.Theme;
-import io.kestros.cms.foundation.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 

@@ -55,9 +55,14 @@
 
   <modules>
     <module>startup</module>
+    <module>modeltypes</module>
+    <module>filetypes</module>
+    <module>ui-frameworks</module>
+    <module>component-types</module>
     <module>core</module>
-    <module>docs</module>
-<!--    <module>beta-start-page</module>-->
+<!--    <module>temp</module>-->
+    <!--    <module>docs</module>-->
+    <!--    <module>beta-start-page</module>-->
   </modules>
 
   <dependencyManagement>

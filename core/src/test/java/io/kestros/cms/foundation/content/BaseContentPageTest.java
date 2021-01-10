@@ -25,10 +25,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
-import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
-import io.kestros.cms.foundation.exceptions.InvalidThemeException;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.services.impl.BaseThemeProviderService;
 import io.kestros.cms.foundation.services.ThemeProviderService;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.services.KestrosUserService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;

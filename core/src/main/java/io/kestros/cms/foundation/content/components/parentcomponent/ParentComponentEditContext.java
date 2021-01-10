@@ -20,13 +20,13 @@ package io.kestros.cms.foundation.content.components.parentcomponent;
 
 import static java.lang.Boolean.parseBoolean;
 
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidScriptException;
 import io.kestros.cms.foundation.content.ComponentRequestContext;
-import io.kestros.cms.foundation.design.theme.Theme;
-import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
-import io.kestros.cms.foundation.exceptions.InvalidScriptException;
-import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.EditModeService;
 import io.kestros.cms.foundation.services.ScriptProviderService;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.models.Theme;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.sling.api.SlingHttpServletRequest;

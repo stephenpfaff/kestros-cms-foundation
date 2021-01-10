@@ -18,8 +18,8 @@
 
 package io.kestros.cms.foundation.services;
 
-import io.kestros.cms.foundation.design.theme.Theme;
-import io.kestros.cms.foundation.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import org.apache.sling.api.SlingHttpServletRequest;
 

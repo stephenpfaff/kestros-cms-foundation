@@ -19,7 +19,7 @@
 package io.kestros.cms.foundation.services.impl;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.kestros.cms.foundation.componenttypes.HtmlFileType;
+import io.kestros.cms.filetypes.HtmlFileType;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.services.GeneralPageCacheService;
 import io.kestros.cms.foundation.services.PageCacheService;
@@ -30,6 +30,8 @@ import io.kestros.commons.osgiserviceutils.services.cache.impl.JcrFileCacheServi
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -76,6 +78,13 @@ public class JcrFilePageCacheService extends JcrFileCacheService
   @Override
   protected ResourceResolverFactory getResourceResolverFactory() {
     return resourceResolverFactory;
+  }
+
+  @Override
+  protected List<String> getRequiredResourcePaths() {
+    List<String> requiredPaths = new ArrayList<>();
+    requiredPaths.add(getServiceCacheRootPath());
+    return requiredPaths;
   }
 
   @Override

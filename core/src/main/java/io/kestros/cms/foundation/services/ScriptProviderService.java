@@ -18,9 +18,10 @@
 
 package io.kestros.cms.foundation.services;
 
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidScriptException;
+import io.kestros.cms.filetypes.HtmlFile;
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
-import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
-import io.kestros.cms.foundation.exceptions.InvalidScriptException;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import org.apache.sling.api.SlingHttpServletRequest;
 
@@ -38,7 +39,7 @@ public interface ScriptProviderService extends ManagedService {
    *     components.
    * @return An absolute path for the matching scriptName for the passed {@link ParentComponent}.
    * @throws InvalidScriptException Expected HTL script was not not found, or was an invalid
-   *     {@link io.kestros.cms.foundation.componenttypes.HtmlFile}
+   *     {@link HtmlFile}
    * @throws InvalidComponentTypeException expected componentType for the request component was
    *     missing or invalid.
    */

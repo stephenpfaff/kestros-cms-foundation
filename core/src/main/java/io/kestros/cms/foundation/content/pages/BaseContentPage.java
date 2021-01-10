@@ -18,8 +18,8 @@
 
 package io.kestros.cms.foundation.content.pages;
 
-import static io.kestros.cms.foundation.utils.DesignUtils.getAllUiFrameworks;
 import static io.kestros.cms.foundation.utils.JcrPropertyUtils.getRelativeDate;
+import static io.kestros.cms.uiframeworks.api.utils.DesignUtils.getAllUiFrameworks;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.adaptTo;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getAllDescendantsOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsBaseResource;
@@ -36,16 +36,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.kestros.cms.foundation.componenttypes.ComponentType;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
+import io.kestros.cms.componenttypes.api.models.ComponentType;
 import io.kestros.cms.foundation.content.BaseComponent;
 import io.kestros.cms.foundation.content.ComponentRequestContext;
 import io.kestros.cms.foundation.content.sites.BaseSite;
-import io.kestros.cms.foundation.design.theme.Theme;
-import io.kestros.cms.foundation.design.uiframework.UiFramework;
-import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
-import io.kestros.cms.foundation.exceptions.InvalidThemeException;
 import io.kestros.cms.foundation.services.ThemeProviderService;
 import io.kestros.cms.foundation.utils.RelativeDate;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.models.Theme;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;

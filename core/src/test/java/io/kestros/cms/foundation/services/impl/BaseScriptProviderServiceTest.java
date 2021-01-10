@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 import io.kestros.cms.foundation.services.impl.BaseScriptProviderService;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

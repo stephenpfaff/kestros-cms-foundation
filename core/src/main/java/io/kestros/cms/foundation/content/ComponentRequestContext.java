@@ -18,21 +18,21 @@
 
 package io.kestros.cms.foundation.content;
 
-import static io.kestros.cms.foundation.design.DesignConstants.NN_VARIATIONS;
+import static io.kestros.cms.uiframeworks.api.DesignConstants.NN_VARIATIONS;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
-import io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView;
-import io.kestros.cms.foundation.componenttypes.variation.ComponentVariation;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentUiFrameworkViewException;
+import io.kestros.cms.componenttypes.api.models.ComponentUiFrameworkView;
+import io.kestros.cms.componenttypes.api.models.ComponentVariation;
 import io.kestros.cms.foundation.content.components.parentcomponent.ParentComponent;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
 import io.kestros.cms.foundation.content.sites.BaseSite;
-import io.kestros.cms.foundation.design.theme.Theme;
-import io.kestros.cms.foundation.design.uiframework.UiFramework;
-import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
-import io.kestros.cms.foundation.exceptions.InvalidComponentUiFrameworkViewException;
-import io.kestros.cms.foundation.exceptions.InvalidThemeException;
-import io.kestros.cms.foundation.exceptions.InvalidUiFrameworkException;
 import io.kestros.cms.foundation.services.ThemeProviderService;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidUiFrameworkException;
+import io.kestros.cms.uiframeworks.api.models.Theme;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.structuredslingmodels.BaseRequestContext;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
@@ -90,7 +90,7 @@ public class ComponentRequestContext extends BaseRequestContext {
         return getResourceAsType(pagePath, getResourceResolver(), BaseSite.class);
       } catch (InvalidResourceTypeException invalidResourceTypeException) {
         LOG.debug("Unable to adapt current page resource to BaseContentPage or BaseSite for "
-                 + "ComponentRequestContext.");
+                  + "ComponentRequestContext.");
       } catch (ResourceNotFoundException resourceNotFoundException) {
         LOG.warn("Unable to find current page resource for ComponentRequestContext.");
       }
@@ -243,7 +243,11 @@ public class ComponentRequestContext extends BaseRequestContext {
       throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
     LOG.trace("Retrieving UiFramework for {}", getComponent().getPath());
     if (uiFramework == null) {
-      uiFramework = getTheme().getUiFramework();
+      try {
+        uiFramework = getTheme().getUiFramework();
+      } catch (InvalidUiFrameworkException e) {
+        e.printStackTrace();
+      }
     }
     LOG.trace("Finished retrieving UiFramework for {}", getComponent().getPath());
     return uiFramework;

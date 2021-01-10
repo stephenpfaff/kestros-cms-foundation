@@ -21,8 +21,8 @@ package io.kestros.cms.foundation.eventlisteners;
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.kestros.cms.foundation.services.ComponentTypeCacheService;
-import io.kestros.cms.foundation.services.ComponentViewScriptResolutionCacheService;
+import io.kestros.cms.componenttypes.api.services.ComponentTypeCacheService;
+import io.kestros.cms.componenttypes.api.services.ComponentViewScriptResolutionCacheService;
 import io.kestros.cms.foundation.services.PageCacheService;
 import io.kestros.commons.osgiserviceutils.services.cache.CacheService;
 import io.kestros.commons.osgiserviceutils.services.eventlisteners.impl.BaseCachePurgeOnResourceChangeEventListener;

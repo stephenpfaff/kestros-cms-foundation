@@ -22,9 +22,9 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsClosestType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.foundation.content.ComponentRequestContext;
 import io.kestros.cms.foundation.content.pages.BaseContentPage;
-import io.kestros.cms.foundation.exceptions.InvalidComponentTypeException;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;

@@ -18,9 +18,10 @@
 
 package io.kestros.cms.foundation.services.impl;
 
-import io.kestros.cms.foundation.componenttypes.ComponentType;
-import io.kestros.cms.foundation.design.uiframework.UiFramework;
-import io.kestros.cms.foundation.services.ComponentViewScriptResolutionCacheService;
+import io.kestros.cms.componenttypes.api.models.ComponentType;
+import io.kestros.cms.componenttypes.api.models.ComponentUiFrameworkView;
+import io.kestros.cms.componenttypes.api.services.ComponentViewScriptResolutionCacheService;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.osgiserviceutils.exceptions.CachePurgeException;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.osgiserviceutils.services.cache.ManagedCacheService;
@@ -35,9 +36,7 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Uses a simple HashMap to provide resolved paths for
- * {@link io.kestros.cms.foundation.componenttypes.frameworkview.ComponentUiFrameworkView}
- * resolution.
+ * Uses a simple HashMap to provide resolved paths for {@link ComponentUiFrameworkView} resolution.
  */
 @Component(immediate = true,
            service = {ManagedCacheService.class, ComponentViewScriptResolutionCacheService.class},
