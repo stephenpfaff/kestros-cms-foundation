@@ -18,6 +18,8 @@
 
 package io.kestros.cms.sitebuilding.api.services;
 
+import io.kestros.cms.sitebuilding.api.models.BaseContentPage;
+import io.kestros.cms.sitebuilding.api.models.BaseSite;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import java.io.IOException;
 import javax.annotation.Nonnull;
@@ -25,8 +27,8 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 
 /**
- * Renders responses for {@link io.kestros.cms.foundation.content.sites.BaseSite} and {@link
- * io.kestros.cms.foundation.content.pages.BaseContentPage} requests.
+ * Renders responses for {@link BaseSite} and {@link
+ * BaseContentPage} requests.
  */
 public interface PageRenderService extends ManagedService {
 
