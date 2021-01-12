@@ -87,7 +87,7 @@
       "adding-sling-model-code": {
         "jcr:primaryType": "nt:unstructured",
         "sling:resourceType": "kestros/commons/components/content/code",
-        "text": "import io.kestros.cms.foundation.content.BaseComponent;\\nimport org.apache.commons.lang3.StringUtils;  \\nimport org.apache.sling.api.resource.Resource;\\nimport org.apache.sling.models.annotations.Model;\\n\\n@Model(adaptables = Resource.class,\\n       resourceType = &quot;${artifactId}/components/content/my-first-component&quot;)\\npublic class MyFirstComponent extends BaseComponent {\\n\\n    public String getText() {\\n        return getProperty(&quot;text&quot;, StringUtils.EMPTY);\\n    }\\n}",
+        "text": "import io.kestros.cms.sitebuilding.api.models.BaseComponent;\\nimport org.apache.commons.lang3.StringUtils;  \\nimport org.apache.sling.api.resource.Resource;\\nimport org.apache.sling.models.annotations.Model;\\n\\n@Model(adaptables = Resource.class,\\n       resourceType = &quot;${artifactId}/components/content/my-first-component&quot;)\\npublic class MyFirstComponent extends BaseComponent {\\n\\n    public String getText() {\\n        return getProperty(&quot;text&quot;, StringUtils.EMPTY);\\n    }\\n}",
         "language": "java"
       },
       "calling-sling-model-heading": {

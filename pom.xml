@@ -59,10 +59,8 @@
     <module>filetypes</module>
     <module>ui-frameworks</module>
     <module>component-types</module>
-    <module>core</module>
-<!--    <module>temp</module>-->
-    <!--    <module>docs</module>-->
-    <!--    <module>beta-start-page</module>-->
+    <module>sitebuilding</module>
+    <module>docs</module>
   </modules>
 
   <dependencyManagement>
