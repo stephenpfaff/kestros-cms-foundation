@@ -22,15 +22,15 @@ import io.kestros.cms.sitebuilding.api.models.BaseContentPage;
 import io.kestros.cms.sitebuilding.api.models.BaseSite;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import java.io.IOException;
+import java.io.Serializable;
 import javax.annotation.Nonnull;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 
 /**
- * Renders responses for {@link BaseSite} and {@link
- * BaseContentPage} requests.
+ * Renders responses for {@link BaseSite} and {@link BaseContentPage} requests.
  */
-public interface PageRenderService extends ManagedService {
+public interface PageRenderService extends ManagedService, Serializable {
 
   /**
    * Renders a response for the requested content.
