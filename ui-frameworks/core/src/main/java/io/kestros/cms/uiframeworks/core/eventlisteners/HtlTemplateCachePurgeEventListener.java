@@ -20,6 +20,7 @@ package io.kestros.cms.uiframeworks.core.eventlisteners;
 
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateCacheService;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import io.kestros.commons.osgiserviceutils.services.eventlisteners.impl.BaseCachePurgeOnResourceChangeEventListener;
@@ -34,6 +35,7 @@ import org.osgi.service.component.annotations.Reference;
  * Listens for changes to /etc and /libs and purges, then rebuilds the compiled HTL Template cache
  * for all UiFrameworks.
  */
+@SuppressFBWarnings("RI_REDUNDANT_INTERFACES")
 @Component(service = {ResourceChangeListener.class, HtlTemplateCachePurgeEventListener.class},
            property = {ResourceChangeListener.CHANGES + "=ADDED",
                ResourceChangeListener.CHANGES + "=CHANGED",
