@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
- * Health Check for {@link io.kestros.cms.foundation.services.ThemeProviderService}.
+ * Health Check for {@link ThemeProviderService}.
  */
 @SuppressFBWarnings("RI_REDUNDANT_INTERFACES")
 @Component
