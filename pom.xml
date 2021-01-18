@@ -57,6 +57,7 @@
     <module>startup</module>
     <module>modeltypes</module>
     <module>filetypes</module>
+    <module>user-foundation</module>
     <module>ui-frameworks</module>
     <module>component-types</module>
     <module>sitebuilding</module>
