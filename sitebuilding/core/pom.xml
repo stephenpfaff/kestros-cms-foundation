@@ -25,12 +25,12 @@
   <parent>
     <groupId>io.kestros.cms</groupId>
     <artifactId>kestros-site-building-foundation</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
   </parent>
 
   <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-site-building-core</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 
   <packaging>bundle</packaging>
 
@@ -57,19 +57,19 @@
     <dependency>
       <groupId>io.kestros.cms</groupId>
       <artifactId>kestros-ui-frameworks-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
 
     <dependency>
       <groupId>io.kestros.cms</groupId>
       <artifactId>kestros-component-types-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
 
     <dependency>
       <groupId>io.kestros.cms</groupId>
       <artifactId>kestros-site-building-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
 
     <!-- Sling -->
@@ -108,7 +108,7 @@
     <dependency>
       <groupId>io.kestros.cms</groupId>
       <artifactId>kestros-site-building-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
