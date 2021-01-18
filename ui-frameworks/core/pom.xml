@@ -25,12 +25,12 @@
   <parent>
     <groupId>io.kestros.cms</groupId>
     <artifactId>kestros-ui-frameworks-foundation</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
   </parent>
 
   <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-ui-frameworks-core</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 
   <packaging>bundle</packaging>
 
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>io.kestros.cms</groupId>
       <artifactId>kestros-ui-frameworks-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
 
     <!-- Sling -->
