@@ -32,10 +32,7 @@
 
 <sly data-sly-test="${!parentComponentEditContext.editMode}">
   <div id="${parentComponent.id}"
-       data-sly-test="${parentComponentEditContext.wrapperVariations || parentComponent.id || parentComponent.cssClass}"
        class="component-${parentComponent.componentType.name}${parentComponent.cssClass ? ' ' : ''}${parentComponent.cssClass}${parentComponentEditContext.wrapperVariations ? ' ' : ''}${parentComponentEditContext.wrapperVariations}">
     <sly data-sly-include="${parentComponentEditContext.contentScriptPath}"/>
   </div>
-  <sly data-sly-test="${!parentComponentEditContext.wrapperVariations && !parentComponent.id && !parentComponent.cssClass}"
-       data-sly-include="${parentComponentEditContext.contentScriptPath}"/>
 </sly>
