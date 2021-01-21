@@ -61,6 +61,13 @@
       <version>0.0.1</version>
     </dependency>
 
+    <dependency>
+      <groupId>io.kestros.cms</groupId>
+      <artifactId>kestros-managed-versions-api</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+
     <!-- Sling -->
     <dependency>
       <groupId>org.apache.sling</groupId>

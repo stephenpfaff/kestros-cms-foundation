@@ -1,11 +1,16 @@
 package io.kestros.cms.versioning.api.models;
 
 import java.util.List;
+import org.apache.sling.api.resource.Resource;
 
-public interface VersionableResource {
+public interface VersionableResource<T extends VersionResource> {
 
-  List<VersionResource> getVersions();
+  Resource getResource();
 
-  VersionResource getCurrentVersion();
+  Class<T> getVersionResourceType();
+
+  List<T> getVersions();
+
+  T getCurrentVersion();
 
 }
