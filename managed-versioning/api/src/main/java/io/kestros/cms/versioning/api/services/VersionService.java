@@ -8,13 +8,11 @@ import java.util.List;
 
 public interface VersionService {
 
-  <T extends BaseResource> T getCurrentVersion(VersionableResource resource,
-      Class<T> type);
+  <T extends BaseResource> T getCurrentVersion(VersionableResource resource);
 
-  <T extends BaseResource> T getVersionResource(VersionableResource resource,
-      String versionNumber, Class<T> type) throws VersionRetrievalException;
+  <T extends BaseResource> T getVersionResource(VersionableResource resource, String versionNumber)
+      throws VersionRetrievalException;
 
-  <T extends BaseResource> List<T> getVersionHistory(VersionableResource resource,
-      Class<T> type);
+  <T extends BaseResource> List<T> getVersionHistory(VersionableResource resource);
 
 }

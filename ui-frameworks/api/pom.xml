@@ -30,7 +30,7 @@
 
   <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-ui-frameworks-api</artifactId>
-  <version>0.0.1</version>
+  <version>0000000.0.2-SNAPSHOT</version>
 
   <packaging>bundle</packaging>
 
@@ -64,6 +64,12 @@
       <groupId>io.kestros.cms</groupId>
       <artifactId>kestros-filetypes</artifactId>
       <version>0.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.kestros.cms</groupId>
+      <artifactId>kestros-managed-versions-api</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
     <!-- Sling -->
