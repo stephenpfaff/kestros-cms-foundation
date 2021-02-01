@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.healthchecks;
+package io.kestros.cms.uiframeworks.core.healthchecks;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkOutputCacheService;

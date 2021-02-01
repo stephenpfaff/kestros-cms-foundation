@@ -29,7 +29,7 @@
   </parent>
 
   <groupId>io.kestros.cms</groupId>
-  <artifactId>kestros-ui-frameworks-refactored</artifactId>
+  <artifactId>kestros-ui-frameworks-core</artifactId>
   <version>0.0.2-SNAPSHOT</version>
 
   <packaging>bundle</packaging>
@@ -37,7 +37,7 @@
   <name>Kestros UI Frameworks Foundation - Core</name>
 
   <properties>
-    <rootPackage>io.kestros.cms.uiframeworks.refactored</rootPackage>
+    <rootPackage>io.kestros.cms.uiframeworks.core</rootPackage>
     <bundleCategory>kestros</bundleCategory>
   </properties>
 
@@ -154,8 +154,8 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>io.kestros.cms.uiframeworks.refactored.*</Export-Package>
-            <Sling-Model-Packages>io.kestros.cms.uiframeworks.refactored</Sling-Model-Packages>
+            <Export-Package>io.kestros.cms.uiframeworks.core.*</Export-Package>
+            <Sling-Model-Packages>io.kestros.cms.uiframeworks.core</Sling-Model-Packages>
             <Import-Package>
               org.apache.jackrabbit.vault.*;version="[2.4.0,4)",
               org.apache.sling.event.jobs.consumer.*;version="[1.1,3)",

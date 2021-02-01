@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

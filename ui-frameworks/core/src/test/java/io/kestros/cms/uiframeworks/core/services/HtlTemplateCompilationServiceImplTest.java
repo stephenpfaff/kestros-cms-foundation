@@ -16,14 +16,14 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
-import io.kestros.cms.uiframeworks.refactored.models.HtlTemplateFileResource;
+import io.kestros.cms.uiframeworks.core.models.HtlTemplateFileResource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

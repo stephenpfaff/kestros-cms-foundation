@@ -16,9 +16,9 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
-import static io.kestros.cms.uiframeworks.refactored.models.HtlTemplateFileResource.EXTENSION_HTML;
+import static io.kestros.cms.uiframeworks.core.models.HtlTemplateFileResource.EXTENSION_HTML;
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getOpenServiceResourceResolverOrNullAndLogExceptions;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getAllDescendantsOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsBaseResource;

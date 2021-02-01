@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.servlets;
+package io.kestros.cms.uiframeworks.core.servlets;
 
 import io.kestros.cms.uiframeworks.api.services.ThemeOutputCompilationService;
 import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;

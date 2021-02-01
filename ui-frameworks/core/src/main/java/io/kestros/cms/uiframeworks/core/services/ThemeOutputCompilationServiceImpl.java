@@ -16,14 +16,14 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.services.ThemeOutputCompilationService;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkOutputCompilationService;
-import io.kestros.cms.uiframeworks.refactored.models.ThemeResource;
+import io.kestros.cms.uiframeworks.core.models.ThemeResource;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.uilibraries.api.exceptions.NoMatchingCompilerException;
 import io.kestros.commons.uilibraries.api.models.FrontendLibrary;

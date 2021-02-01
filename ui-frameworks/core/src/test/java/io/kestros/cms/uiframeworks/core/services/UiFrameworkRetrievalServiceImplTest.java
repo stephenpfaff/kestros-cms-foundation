@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import io.kestros.cms.uiframeworks.api.exceptions.UiFrameworkRetrievalException;
-import io.kestros.cms.uiframeworks.refactored.models.ThemeResource;
+import io.kestros.cms.uiframeworks.core.models.ThemeResource;
 import io.kestros.cms.versioning.api.services.VersionService;
 import io.kestros.cms.versioning.core.services.VersionServiceImpl;
 import java.util.HashMap;

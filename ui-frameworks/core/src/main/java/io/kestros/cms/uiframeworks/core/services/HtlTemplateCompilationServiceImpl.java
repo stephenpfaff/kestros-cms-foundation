@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;

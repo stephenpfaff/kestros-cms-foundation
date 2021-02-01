@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getFirstAncestorOfType;
@@ -28,9 +28,9 @@ import io.kestros.cms.uiframeworks.api.models.ManagedUiFramework;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkRetrievalService;
-import io.kestros.cms.uiframeworks.refactored.models.ManagedUiFrameworkResource;
-import io.kestros.cms.uiframeworks.refactored.models.ThemeResource;
-import io.kestros.cms.uiframeworks.refactored.models.UiFrameworkResource;
+import io.kestros.cms.uiframeworks.core.models.ManagedUiFrameworkResource;
+import io.kestros.cms.uiframeworks.core.models.ThemeResource;
+import io.kestros.cms.uiframeworks.core.models.UiFrameworkResource;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;

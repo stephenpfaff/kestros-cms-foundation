@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.models;
+package io.kestros.cms.uiframeworks.core.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.uiframeworks.api.models.VendorLibrary;

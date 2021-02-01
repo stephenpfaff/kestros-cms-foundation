@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getChildrenOfFileType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsBaseResource;
@@ -24,7 +24,7 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateFileRetrievalService;
-import io.kestros.cms.uiframeworks.refactored.models.HtlTemplateFileResource;
+import io.kestros.cms.uiframeworks.core.models.HtlTemplateFileResource;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.uilibraries.api.models.FrontendLibrary;

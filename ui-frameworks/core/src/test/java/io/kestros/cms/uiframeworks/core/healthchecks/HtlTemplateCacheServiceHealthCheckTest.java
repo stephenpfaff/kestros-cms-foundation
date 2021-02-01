@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.healthchecks;
+package io.kestros.cms.uiframeworks.core.healthchecks;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;

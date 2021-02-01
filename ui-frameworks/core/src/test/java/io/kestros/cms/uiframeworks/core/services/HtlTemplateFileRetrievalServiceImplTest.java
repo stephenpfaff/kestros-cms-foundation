@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
-import io.kestros.cms.uiframeworks.refactored.models.VendorLibraryResource;
+import io.kestros.cms.uiframeworks.core.models.VendorLibraryResource;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.felix.hc.api.FormattingResultLog;

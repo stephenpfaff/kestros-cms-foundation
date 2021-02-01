@@ -16,10 +16,10 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.healthchecks;
+package io.kestros.cms.uiframeworks.core.healthchecks;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.kestros.cms.uiframeworks.refactored.eventlisteners.HtlTemplateCachePurgeEventListener;
+import io.kestros.cms.uiframeworks.core.eventlisteners.HtlTemplateCachePurgeEventListener;
 import io.kestros.commons.osgiserviceutils.healthchecks.BaseManagedServiceHealthCheck;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import org.apache.felix.hc.annotation.Async;

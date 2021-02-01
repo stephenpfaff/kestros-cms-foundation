@@ -16,11 +16,11 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.healthchecks;
+package io.kestros.cms.uiframeworks.core.healthchecks;
 
 import static org.junit.Assert.assertEquals;
 
-import io.kestros.cms.uiframeworks.refactored.eventlisteners.HtlTemplateCachePurgeEventListener;
+import io.kestros.cms.uiframeworks.core.eventlisteners.HtlTemplateCachePurgeEventListener;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;

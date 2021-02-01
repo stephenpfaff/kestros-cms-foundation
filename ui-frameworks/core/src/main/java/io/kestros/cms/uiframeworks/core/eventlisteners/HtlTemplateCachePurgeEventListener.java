@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.eventlisteners;
+package io.kestros.cms.uiframeworks.core.eventlisteners;
 
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 

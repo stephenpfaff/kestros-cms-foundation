@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.eventlisteners;
+package io.kestros.cms.uiframeworks.core.eventlisteners;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

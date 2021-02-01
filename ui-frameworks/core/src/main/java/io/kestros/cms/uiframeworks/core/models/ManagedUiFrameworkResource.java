@@ -16,9 +16,9 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.models;
+package io.kestros.cms.uiframeworks.core.models;
 
-import static io.kestros.cms.uiframeworks.refactored.DesignConstants.PN_UI_FRAMEWORK_CODE;
+import static io.kestros.cms.uiframeworks.core.DesignConstants.PN_UI_FRAMEWORK_CODE;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.uiframeworks.api.models.ManagedUiFramework;

@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored;
+package io.kestros.cms.uiframeworks.core;
 
 /**
  * Constants for Design level Kestros values.

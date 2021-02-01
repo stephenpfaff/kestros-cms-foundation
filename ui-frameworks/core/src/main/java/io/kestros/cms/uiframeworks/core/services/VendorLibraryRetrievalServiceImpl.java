@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
@@ -26,8 +26,8 @@ import io.kestros.cms.uiframeworks.api.exceptions.VendorLibraryRetrievalExceptio
 import io.kestros.cms.uiframeworks.api.models.ManagedVendorLibrary;
 import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
 import io.kestros.cms.uiframeworks.api.services.VendorLibraryRetrievalService;
-import io.kestros.cms.uiframeworks.refactored.models.ManagedVendorLibraryResource;
-import io.kestros.cms.uiframeworks.refactored.models.VendorLibraryResource;
+import io.kestros.cms.uiframeworks.core.models.ManagedVendorLibraryResource;
+import io.kestros.cms.uiframeworks.core.models.VendorLibraryResource;
 import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
 import io.kestros.cms.versioning.api.services.VersionService;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;

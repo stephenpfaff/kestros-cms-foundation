@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.servletfilters;
+package io.kestros.cms.uiframeworks.core.servletfilters;
 
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
 import io.kestros.cms.uiframeworks.api.exceptions.ThemeRetrievalException;

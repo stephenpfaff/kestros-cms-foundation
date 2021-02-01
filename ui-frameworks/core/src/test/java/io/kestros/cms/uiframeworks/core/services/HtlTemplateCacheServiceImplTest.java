@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
-import io.kestros.cms.uiframeworks.refactored.models.UiFrameworkResource;
+import io.kestros.cms.uiframeworks.core.models.UiFrameworkResource;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.osgiserviceutils.exceptions.CachePurgeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;

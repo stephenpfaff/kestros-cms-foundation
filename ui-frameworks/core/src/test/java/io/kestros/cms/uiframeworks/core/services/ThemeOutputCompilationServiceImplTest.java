@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkOutputCompilationService;
-import io.kestros.cms.uiframeworks.refactored.models.ThemeResource;
+import io.kestros.cms.uiframeworks.core.models.ThemeResource;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.uilibraries.api.exceptions.NoMatchingCompilerException;
 import io.kestros.commons.uilibraries.api.services.UiLibraryCompilationService;

@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored.services;
+package io.kestros.cms.uiframeworks.core.services;
 
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsType;
@@ -28,9 +28,9 @@ import io.kestros.cms.uiframeworks.api.exceptions.ThemeRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
-import io.kestros.cms.uiframeworks.refactored.models.ThemeResource;
-import io.kestros.cms.uiframeworks.refactored.models.UiFrameworkResource;
-import io.kestros.cms.uiframeworks.refactored.models.VirtualTheme;
+import io.kestros.cms.uiframeworks.core.models.ThemeResource;
+import io.kestros.cms.uiframeworks.core.models.UiFrameworkResource;
+import io.kestros.cms.uiframeworks.core.models.VirtualTheme;
 import io.kestros.cms.versioning.api.services.VersionService;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
 import io.kestros.commons.structuredslingmodels.BaseResource;

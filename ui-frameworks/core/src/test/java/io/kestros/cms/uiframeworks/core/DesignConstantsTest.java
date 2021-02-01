@@ -16,7 +16,7 @@
  *
  */
 
-package io.kestros.cms.uiframeworks.refactored;
+package io.kestros.cms.uiframeworks.core;
 
 import static org.junit.Assert.assertEquals;
 
