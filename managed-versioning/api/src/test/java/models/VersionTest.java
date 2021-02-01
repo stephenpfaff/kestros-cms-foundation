@@ -1,6 +1,6 @@
 package models;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import io.kestros.cms.versioning.api.models.Version;
 import org.junit.Before;
@@ -33,5 +33,18 @@ public class VersionTest {
   @Test
   public void getPatchVersion() {
     assertEquals(3, version.getPatchVersion().intValue());
+  }
+
+  @Test
+  public void testCompareTo() {
+    assertEquals(1, version.compareTo(new Version(0, 0, 1)));
+    assertEquals(1, version.compareTo(new Version(0, 1, 1)));
+    assertEquals(1, version.compareTo(new Version(1, 1, 1)));
+    assertEquals(1, version.compareTo(new Version(1, 2, 1)));
+    assertEquals(1, version.compareTo(new Version(1, 2, 2)));
+    assertEquals(0, version.compareTo(new Version(1, 2, 3)));
+    assertEquals(-1, version.compareTo(new Version(1, 2, 4)));
+    assertEquals(-1, version.compareTo(new Version(1, 3, 0)));
+    assertEquals(-1, version.compareTo(new Version(2, 0, 0)));
   }
 }

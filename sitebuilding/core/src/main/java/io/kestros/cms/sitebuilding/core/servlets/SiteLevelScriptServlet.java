@@ -20,12 +20,20 @@ package io.kestros.cms.sitebuilding.core.servlets;
 
 import static io.kestros.cms.uiframeworks.api.utils.DesignUtils.getUiFrameworkByFrameworkCode;
 
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.models.ManagedUiFramework;
+import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
+import io.kestros.cms.uiframeworks.api.utils.DesignUtils;
+import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
+import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
 import io.kestros.commons.uilibraries.services.cache.UiLibraryCacheService;
 import java.io.IOException;
@@ -68,13 +76,14 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
    */
   public abstract ScriptType getScriptType();
 
+  public abstract ThemeRetrievalService getVirtualThemeProviderService();
+
   @Override
   public void doGet(@Nonnull final SlingHttpServletRequest request,
       @Nonnull final SlingHttpServletResponse response) {
     final String[] selectors = request.getRequestPathInfo().getSelectors();
     if (selectors.length == 2) {
       try {
-
         boolean performCache = false;
         String output = null;
 
@@ -109,12 +118,64 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
             }
           }
         }
-      } catch (final ResourceNotFoundException | IOException | ChildResourceNotFoundException
-                                   | InvalidResourceTypeException exception) {
+      } catch (final ResourceNotFoundException | IOException | ChildResourceNotFoundException | InvalidResourceTypeException exception) {
         LOG.error("Unable to render site level {} response for {}. {}", getScriptType().getName(),
             request.getResource().getPath(), exception.getMessage());
         response.setStatus(400);
       }
+    } else if (selectors.length == 5) {
+      UiFramework uiFramework = null;
+      Theme theme = null;
+      String uiFrameworkCode = selectors[0];
+      Integer majorVersion = Integer.parseInt(selectors[1]);
+      Integer minorVersion = Integer.parseInt(selectors[2]);
+      Integer patchVersion = Integer.parseInt(selectors[3]);
+      String themeName = selectors[4];
+
+      // todo do this in a service
+      try {
+        // todo clean this up.
+        BaseResource uiFrameworksRoot = DesignUtils.getUiFrameworksEtcRootResource(
+            request.getResourceResolver());
+        for (ManagedUiFramework managedUiFramework : SlingModelUtils.getChildrenOfType(
+            uiFrameworksRoot, ManagedUiFramework.class)) {
+          for (Object version : managedUiFramework.getVersions()) {
+            if (version instanceof BaseResource) {
+              try {
+                UiFramework adaptedFramework = SlingModelUtils.adaptTo((BaseResource) version,
+                    UiFramework.class);
+                if (adaptedFramework.getFrameworkCode().equals(uiFrameworkCode)) {
+                  if (majorVersion.equals(adaptedFramework.getVersion().getMajorVersion())
+                      && minorVersion.equals(adaptedFramework.getVersion().getMinorVersion())
+                      && patchVersion.equals(adaptedFramework.getVersion().getPatchVersion())) {
+                    uiFramework = adaptedFramework;
+                  }
+                }
+              } catch (InvalidResourceTypeException e) {
+                e.printStackTrace();
+              } catch (VersionFormatException e) {
+                e.printStackTrace();
+              }
+            }
+          }
+        }
+        if (uiFramework != null && getVirtualThemeProviderService() != null) {
+          theme = getVirtualThemeProviderService().getVirtualTheme(
+              uiFramework.getPath() + "/themes/" + themeName, request.getResourceResolver());
+
+          String output = "";
+          if (StringUtils.isEmpty(output)) {
+            output = theme.getOutput(getScriptType(), isMinified(request));
+          }
+
+          response.setContentType(getScriptType().getOutputContentType());
+          response.setStatus(200);
+          response.getWriter().write(output);
+        }
+      } catch (ResourceNotFoundException | InvalidThemeException | InvalidResourceTypeException | IOException e) {
+        response.setStatus(400);
+      }
+
     } else {
       LOG.debug(
           "Unable to render site level css response for request {}. Does not contain exactly two "

@@ -28,4 +28,29 @@ public class Version {
     return patchRelease;
   }
 
+  public int compareTo(Version version) {
+    if (getMajorVersion().equals(version.getMajorVersion())) {
+      if (getMinorVersion().equals(version.getMinorVersion())) {
+        if (getPatchVersion().equals(version.getPatchVersion())) {
+          return 0;
+        }
+        if (getPatchVersion() > version.getPatchVersion()) {
+          return 1;
+        } else {
+          return -1;
+        }
+      }
+      if (getMinorVersion() > version.getMinorVersion()) {
+        return 1;
+      } else {
+        return -1;
+      }
+    }
+    if (getMajorVersion() > version.getMajorVersion()) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
+
 }

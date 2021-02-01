@@ -33,6 +33,7 @@ import io.kestros.cms.componenttypes.api.exceptions.InvalidScriptException;
 import io.kestros.cms.componenttypes.api.utils.ComponentTypeUtils;
 import io.kestros.cms.filetypes.HtmlFile;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
@@ -40,6 +41,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFound
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -315,6 +317,35 @@ public class ComponentType extends BaseResource {
   @Nonnull
   public ComponentUiFrameworkView getComponentUiFrameworkView(
       @Nonnull final UiFramework uiFramework) throws InvalidComponentUiFrameworkViewException {
+
+    try {
+      if (uiFramework.getVersion() != null) {
+        BaseResource managedComponentViewRootResource = getChildAsBaseResource(
+            uiFramework.getFrameworkCode(), this);
+        return SlingModelUtils.getChildAsBaseResource(uiFramework.getVersion().getFormatted(),
+            managedComponentViewRootResource).getResource().adaptTo(ComponentUiFrameworkView.class);
+      }
+    } catch (VersionFormatException e) {
+      // todo log.
+    } catch (ChildResourceNotFoundException e) {
+      try {
+        String appsPath = getPath().replaceFirst("/libs/", "/apps/");
+        BaseResource appResource = null;
+        appResource = SlingModelUtils.getResourceAsBaseResource(appsPath, getResourceResolver());
+        BaseResource managedComponentViewRootResource = null;
+        managedComponentViewRootResource = getChildAsBaseResource(uiFramework.getFrameworkCode(),
+            appResource);
+        return SlingModelUtils.getChildAsBaseResource(uiFramework.getVersion().getFormatted(),
+            managedComponentViewRootResource).getResource().adaptTo(ComponentUiFrameworkView.class);
+      } catch (ResourceNotFoundException resourceNotFoundException) {
+//        resourceNotFoundException.printStackTrace();
+      } catch (ChildResourceNotFoundException childResourceNotFoundException) {
+//        childResourceNotFoundException.printStackTrace();
+      } catch (VersionFormatException versionFormatException) {
+//        versionFormatException.printStackTrace();
+      }
+
+    }
 
     try {
       return ComponentTypeUtils.getComponentUiFrameworkView(uiFramework.getFrameworkCode(), this);

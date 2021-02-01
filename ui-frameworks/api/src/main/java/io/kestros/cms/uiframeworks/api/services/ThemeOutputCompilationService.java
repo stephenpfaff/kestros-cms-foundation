@@ -21,23 +21,35 @@ package io.kestros.cms.uiframeworks.api.services;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.uilibraries.filetypes.ScriptType;
+import io.kestros.commons.uilibraries.api.exceptions.NoMatchingCompilerException;
+import io.kestros.commons.uilibraries.api.models.ScriptType;
+import io.kestros.commons.uilibraries.api.services.UiLibraryCompilationService;
+import java.util.List;
 
 /**
  * Compiles CSS and JS for {@link Theme}.
  */
-public interface ThemeOutputCompilationService extends ManagedService {
+public interface ThemeOutputCompilationService extends UiLibraryCompilationService, ManagedService {
 
   /**
-   * Compiled CSS or JS for a given {@link Theme}.
+   * Retrieves all ScriptTypes that a Theme will need to compile.
    *
-   * @param theme Theme to get script for.
-   * @param scriptType Script type.
-   * @param minify Whether to minify the output.
-   * @return Compiled CSS or JS for a given {@link Theme}.
-   * @throws InvalidResourceTypeException Theme or parent UiFramework was invalid.
+   * @param theme UiFramework.
+   * @param scriptType Baseline ScriptType (css/js).
+   * @return all ScriptTypes that a UiFramework will need to compile.
    */
-  String getThemeOutput(Theme theme, ScriptType scriptType, Boolean minify)
-      throws InvalidResourceTypeException;
+  List<ScriptType> getThemeScriptTypes(Theme theme, ScriptType scriptType);
 
+  /**
+   * Css or Javascript output prior to being compiled or minified.
+   *
+   * @param theme Theme.
+   * @param scriptType ScriptType to retrieve.
+   * @return Css or Javascript output prior to being compiled or minified.
+   * @throws InvalidResourceTypeException Thrown when a referenced dependency could not be
+   *     adapted to UiLibrary.
+   * @throws NoMatchingCompilerException No matching compiler for the scriptType was found.
+   */
+  String getThemeSource(Theme theme, ScriptType scriptType)
+      throws NoMatchingCompilerException, InvalidResourceTypeException;
 }

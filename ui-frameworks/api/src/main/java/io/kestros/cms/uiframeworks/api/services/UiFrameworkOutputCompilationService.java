@@ -20,7 +20,8 @@ package io.kestros.cms.uiframeworks.api.services;
 
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
-import io.kestros.commons.uilibraries.filetypes.ScriptType;
+import io.kestros.commons.uilibraries.api.exceptions.NoMatchingCompilerException;
+import io.kestros.commons.uilibraries.api.models.ScriptType;
 import java.util.List;
 
 /**
@@ -29,13 +30,24 @@ import java.util.List;
 public interface UiFrameworkOutputCompilationService extends ManagedService {
 
   /**
+   * Retrieves all ScriptTypes that a UiFramework will need to compile.
+   *
+   * @param uiFramework UiFramework.
+   * @param scriptType Baseline ScriptType (css/js).
+   * @return all ScriptTypes that a UiFramework will need to compile.
+   */
+  List<ScriptType> getUiFrameworkScriptTypes(UiFramework uiFramework, ScriptType scriptType);
+
+  /**
    * Compiled CSS or JS for a given {@link UiFramework}.
    *
    * @param uiFramework UiFramework to get script for.
    * @param scriptType Script type.
    * @return Compiled CSS or JS for a given {@link UiFramework}.
+   * @throws NoMatchingCompilerException No matching compiler could be found.
    */
-  String getUiFrameworkOutput(UiFramework uiFramework, ScriptType scriptType);
+  String getUiFrameworkSource(UiFramework uiFramework, ScriptType scriptType)
+      throws NoMatchingCompilerException;
 
   /**
    * List of services which can add on CSS or JS to compiled output.

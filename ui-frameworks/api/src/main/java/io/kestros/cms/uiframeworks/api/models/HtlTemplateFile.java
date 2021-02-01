@@ -18,27 +18,15 @@
 
 package io.kestros.cms.uiframeworks.api.models;
 
-import io.kestros.cms.filetypes.HtmlFile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.modeltypes.IconResource;
-import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
+import java.io.IOException;
 import javax.annotation.Nonnull;
-import org.apache.commons.lang3.text.WordUtils;
-import org.apache.jackrabbit.JcrConstants;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.models.annotations.Model;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * HTML File that contains HTL Templates.
  */
-@KestrosModel()
-@Model(adaptables = Resource.class,
-       resourceType = JcrConstants.NT_FILE)
-public class HtlTemplateFile extends HtmlFile implements IconResource {
-
-  private static final Logger LOG = LoggerFactory.getLogger(HtlTemplateFile.class);
-  public static final String EXTENSION_HTML = ".html";
+public interface HtlTemplateFile extends IconResource {
 
   /**
    * Title of the current HTL Template file.  Derived from the file name by replacing `-` with ` `,
@@ -47,33 +35,22 @@ public class HtlTemplateFile extends HtmlFile implements IconResource {
    * @return Title of the current HTL Template file.
    */
   @Nonnull
-  @Override
-  public String getTitle() {
-    String title = getName();
+  String getTitle();
 
-    title = title.replaceAll("-", " ");
-    title = title.replaceAll(EXTENSION_HTML, "");
-
-    return WordUtils.capitalize(title);
-  }
+  /**
+   * Content of the current File, as a String.
+   *
+   * @return Content of the current File, as a String.
+   * @throws IOException Thrown when there is an error reading contents of the File.
+   */
+  @JsonIgnore
+  String getFileContent() throws IOException;
 
   /**
    * File path without the .html extension.
    *
    * @return File path without the .html extension.
    */
-  public String getPathWithoutExtension() {
-    return getPath().replace(".html", "");
-  }
-
-  /**
-   * Font Awesome Icon class.
-   *
-   * @return Font Awesome Icon class.
-   */
-  @Override
-  public String getFontAwesomeIcon() {
-    return getProperty("fontAwesomeIcon", "fa fa-file");
-  }
-
+  @Nonnull
+  String getPathWithoutExtension();
 }

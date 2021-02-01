@@ -35,8 +35,14 @@
       <link rel="stylesheet" type="text/css"
             href="${script}">
     </sly>
-    <link rel="stylesheet" type="text/css"
-          href="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.css">
+    <sly data-sly-test="${!page.theme.uiFramework.version}">
+      <link rel="stylesheet" type="text/css"
+            href="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.name}.css">
+    </sly>
+    <sly data-sly-test="${page.theme.uiFramework.version}">
+      <link rel="stylesheet" type="text/css"
+            href="${page.site.path}.${page.theme.uiFramework.frameworkCode}.${page.theme.uiFramework.version.formatted}.${page.theme.name}.css">
+    </sly>
   </sly>
 </template>
 

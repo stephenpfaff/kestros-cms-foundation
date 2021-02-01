@@ -27,6 +27,7 @@ import io.kestros.cms.sitebuilding.api.models.BaseContentPage;
 import io.kestros.cms.sitebuilding.api.services.ThemeProviderService;
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
 import io.kestros.cms.uiframeworks.api.models.Theme;
+import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
@@ -37,6 +38,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.hc.api.FormattingResultLog;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +49,18 @@ import org.slf4j.LoggerFactory;
  * base on the 'kes:Theme' property on the closest ancestor page with the property set.
  */
 @Component(immediate = true,
-           service = ThemeProviderService.class,
-           property = "service.ranking:Integer=1")
+           service = ThemeProviderService.class)
 public class BaseThemeProviderService implements ThemeProviderService {
 
   private static final Logger LOG = LoggerFactory.getLogger(BaseThemeProviderService.class);
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  public ThemeRetrievalService virtualThemeProviderService;
+
+  public ThemeRetrievalService getVirtualThemeProviderService() {
+    return this.virtualThemeProviderService;
+  }
 
   @Override
   public Theme getThemeForPage(final BaseContentPage page)
@@ -76,6 +87,14 @@ public class BaseThemeProviderService implements ThemeProviderService {
       throw new InvalidThemeException(themePath,
           "Could not adapt to Theme. Resource must have jcr:primaryType 'kes:Theme'.");
     }
+
+    if (getVirtualThemeProviderService() != null) {
+      return getVirtualThemeProviderService().getVirtualTheme(themePath,
+          page.getResourceResolver());
+    } else {
+      LOG.error("Virtual theme provider service was null.");
+    }
+
     throw new ResourceNotFoundException(themePath, "Theme reference resource missing or invalid.");
   }
 
@@ -131,6 +150,8 @@ public class BaseThemeProviderService implements ThemeProviderService {
 
   @Override
   public void runAdditionalHealthChecks(FormattingResultLog log) {
-
+    if (getVirtualThemeProviderService() == null) {
+      log.warn("VirtualThemeProviderService was null.");
+    }
   }
 }

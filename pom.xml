@@ -30,7 +30,7 @@
 
   <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-cms-foundation</artifactId>
-  <version>0.2.0</version>
+  <version>0.2.1-SNAPSHOT</version>
 
   <name>Kestros Content Management System Foundation - Reactor</name>
   <description>Foundational logic for the Kestros CMS. Contains all the models, scripts, and
@@ -54,15 +54,15 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>startup</module>
-    <module>modeltypes</module>
-    <module>filetypes</module>
-    <module>managed-versioning</module>
-    <module>user-foundation</module>
+    <!--    <module>startup</module>-->
+    <!--    <module>modeltypes</module>-->
+    <!--    <module>filetypes</module>-->
+    <!--    <module>managed-versioning</module>-->
+    <!--    <module>user-foundation</module>-->
     <module>ui-frameworks</module>
-    <module>component-types</module>
-    <module>sitebuilding</module>
-    <module>docs</module>
+    <!--    <module>component-types</module>-->
+    <!--    <module>sitebuilding</module>-->
+    <!--    <module>docs</module>-->
   </modules>
 
   <dependencyManagement>

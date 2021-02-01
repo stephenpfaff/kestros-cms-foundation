@@ -19,6 +19,8 @@
 package io.kestros.cms.uiframeworks.api.exceptions;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
@@ -36,7 +38,7 @@ public class InvalidUiFrameworkExceptionTest {
 
   @Before
   public void setUp() throws Exception {
-    theme = context.create().resource("/theme").adaptTo(Theme.class);
+    theme = mock(Theme.class);
   }
 
   @Test
@@ -48,13 +50,14 @@ public class InvalidUiFrameworkExceptionTest {
   @Test
   public void testWhenPathAndMessage() {
     exception = new InvalidUiFrameworkException("/path", "message");
-    assertEquals("Unable to retrieve UiFramework '/path'. message",
-        exception.getMessage());
+    assertEquals("Unable to retrieve UiFramework '/path'. message", exception.getMessage());
   }
 
   @Test
   public void testWhenThemeAndMessage() {
+    when(theme.getPath()).thenReturn("/theme");
     exception = new InvalidUiFrameworkException(theme, "message");
-    assertEquals("Unable to retrieve parent UiFramework for theme '/theme'. message", exception.getMessage());
+    assertEquals("Unable to retrieve parent UiFramework for theme '/theme'. message",
+        exception.getMessage());
   }
 }

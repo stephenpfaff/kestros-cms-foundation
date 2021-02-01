@@ -24,12 +24,12 @@
   <parent>
     <groupId>io.kestros.cms</groupId>
     <artifactId>kestros-cms-foundation</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
   </parent>
 
   <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-ui-frameworks-foundation</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
 
   <name>Kestros UI Frameworks Foundation - Reactor</name>
   <description>
@@ -39,16 +39,11 @@
 
   <modules>
     <module>api</module>
-    <module>core</module>
+    <module>refactored</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>de.inetsoftware</groupId>
-        <artifactId>jlessc</artifactId>
-        <version>1.10</version>
-      </dependency>
       <dependency>
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>

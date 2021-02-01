@@ -22,6 +22,7 @@ import io.kestros.cms.sitebuilding.api.models.BaseComponent;
 import io.kestros.cms.sitebuilding.api.models.BaseContentPage;
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
 import io.kestros.cms.uiframeworks.api.models.Theme;
+import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 
@@ -51,4 +52,6 @@ public interface ThemeProviderService extends ManagedService {
    */
   Theme getThemeForComponent(BaseComponent component)
       throws ResourceNotFoundException, InvalidThemeException;
+
+  ThemeRetrievalService getVirtualThemeProviderService();
 }

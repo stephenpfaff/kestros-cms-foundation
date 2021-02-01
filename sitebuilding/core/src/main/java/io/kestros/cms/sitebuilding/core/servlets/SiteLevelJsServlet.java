@@ -21,6 +21,7 @@ package io.kestros.cms.sitebuilding.core.servlets;
 import static io.kestros.commons.uilibraries.filetypes.ScriptType.JAVASCRIPT;
 
 import io.kestros.cms.uiframeworks.api.models.Theme;
+import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
 import io.kestros.commons.uilibraries.filetypes.ScriptType;
 import io.kestros.commons.uilibraries.services.cache.UiLibraryCacheService;
 import javax.servlet.Servlet;
@@ -50,9 +51,18 @@ public class SiteLevelJsServlet extends SiteLevelScriptServlet {
              policyOption = ReferencePolicyOption.GREEDY)
   private UiLibraryCacheService uiLibraryCacheService;
 
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private ThemeRetrievalService virtualThemeProviderService;
+
   @Override
   public UiLibraryCacheService getUiLibraryCacheService() {
     return uiLibraryCacheService;
+  }
+
+  @Override
+  public ThemeRetrievalService getVirtualThemeProviderService() {
+    return virtualThemeProviderService;
   }
 
   @Override

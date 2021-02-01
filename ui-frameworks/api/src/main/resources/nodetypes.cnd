@@ -27,9 +27,12 @@
   - * (undefined)
   + * (nt:base) = sling:Folder version
 
+[kes:ManagedVendorLibrary] > sling:Folder
 
 [kes:VendorLibrary] > sling:Folder
 
 [kes:UiFramework] > sling:Folder
+
+[kes:ManagedUiFramework] > sling:Folder
 
 [kes:Theme] > sling:Folder

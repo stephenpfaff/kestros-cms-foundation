@@ -12,7 +12,7 @@ import org.apache.sling.models.annotations.Model;
        resourceType = "version")
 public class SampleVersion extends BaseResource implements VersionResource {
 
-  public Class getRootResourceType() {
+  public Class getManagingResourceType() {
     return SampleVersionable.class;
   }
 
