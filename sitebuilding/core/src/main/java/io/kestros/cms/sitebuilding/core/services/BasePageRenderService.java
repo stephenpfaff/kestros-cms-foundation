@@ -21,6 +21,8 @@ package io.kestros.cms.sitebuilding.core.services;
 import static io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils.getAllOsgiServicesOfType;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.sitebuilding.api.services.PageRenderMethod;
 import io.kestros.cms.sitebuilding.api.services.PageRenderService;
 import java.io.IOException;
@@ -32,6 +34,9 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,11 +47,15 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true,
            service = PageRenderService.class,
            property = "service.ranking:Integer=200")
-public class BasePageRenderService implements PageRenderService {
+public class BasePageRenderService implements PageRenderService, PerformanceService {
 
   private static final Logger LOG = LoggerFactory.getLogger(BasePageRenderService.class);
 
   private static final long serialVersionUID = 7897119235609576690L;
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private PerformanceTrackerService performanceTrackerService;
 
   @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   private transient ComponentContext componentContext;
@@ -96,5 +105,10 @@ public class BasePageRenderService implements PageRenderService {
    */
   public List<PageRenderMethod> getPageRenderMethods() {
     return getAllOsgiServicesOfType(componentContext, PageRenderMethod.class);
+  }
+
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
   }
 }

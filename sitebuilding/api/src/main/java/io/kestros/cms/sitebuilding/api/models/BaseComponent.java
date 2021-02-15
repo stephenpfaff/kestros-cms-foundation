@@ -32,8 +32,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.kestros.cms.componenttypes.api.exceptions.ComponentTypeRetrievalException;
 import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.componenttypes.api.models.ComponentType;
+import io.kestros.cms.componenttypes.api.services.ComponentTypeRetrievalService;
 import io.kestros.cms.sitebuilding.api.utils.JcrPropertyUtils;
 import io.kestros.cms.sitebuilding.api.utils.RelativeDate;
 import io.kestros.cms.user.KestrosUser;
@@ -46,7 +48,6 @@ import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeEx
 import io.kestros.commons.structuredslingmodels.exceptions.MatchingResourceTypeNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
-import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,6 +94,10 @@ public class BaseComponent extends BaseResource {
   @Optional
   private KestrosUserService userService;
 
+  @OSGiService
+  @Optional
+  private ComponentTypeRetrievalService componentTypeRetrievalService;
+
   private BaseContentPage containingPage = null;
   private ComponentType componentType = null;
 
@@ -129,28 +134,35 @@ public class BaseComponent extends BaseResource {
 
     final String resourceType = getResourceType();
     try {
-      this.componentType = getResourceAsType(resourceType, getResourceResolver(),
-          ComponentType.class);
-      LOG.trace("Finished retrieving ComponentType for {}", getPath());
-      return this.componentType;
-    } catch (final ResourceNotFoundException | InvalidResourceTypeException e) {
-      try {
+
+      if (componentTypeRetrievalService != null) {
+        this.componentType = componentTypeRetrievalService.getComponentType(resourceType);
         LOG.trace("Finished retrieving ComponentType for {}", getPath());
-        this.componentType = getResourceAsType("/apps/" + resourceType, getResourceResolver(),
-            ComponentType.class);
         return this.componentType;
-      } catch (final ModelAdaptionException exception1) {
-        try {
-          LOG.trace("Finished retrieving ComponentType for {}", getPath());
-          this.componentType = getResourceAsType("/libs/" + resourceType, getResourceResolver(),
-              ComponentType.class);
-          return this.componentType;
-        } catch (final ModelAdaptionException exception2) {
-          LOG.warn("Unable to retrieve ComponentType for {}: {}", getPath(),
-              exception2.getMessage());
-        }
       }
+    } catch (ComponentTypeRetrievalException e) {
+      LOG.warn("Failed to retrieve componentType for {}. {}", getPath(), e.getMessage());
     }
+    ////    catch (final ResourceNotFoundException | InvalidResourceTypeException e) {
+    ////      try {
+    ////        LOG.trace("Finished retrieving ComponentType for {}", getPath());
+    ////        this.componentType = getResourceAsType("/apps/" + resourceType,
+    // getResourceResolver(),
+    ////            ComponentTypeResource.class);
+    ////        return this.componentType;
+    ////      } catch (final ModelAdaptionException exception1) {
+    ////        try {
+    ////          LOG.trace("Finished retrieving ComponentType for {}", getPath());
+    ////          this.componentType = getResourceAsType("/libs/" + resourceType,
+    // getResourceResolver(),
+    ////              ComponentTypeResource.class);
+    ////          return this.componentType;
+    ////        } catch (final ModelAdaptionException exception2) {
+    ////          LOG.warn("Unable to retrieve ComponentType for {}: {}", getPath(),
+    ////              exception2.getMessage());
+    ////        }
+    ////      }
+    //    }
     LOG.trace("Finished ComponentType for {}, but threw InvalidComponentTypeException", getPath());
     throw new InvalidComponentTypeException(getPath(), getResourceType());
   }

@@ -73,7 +73,7 @@ public class HtlTemplateFileRetrievalServiceImplTest {
     vendorLibrary = resource.adaptTo(VendorLibraryResource.class);
     context.registerInjectActivateService(service);
 
-    assertEquals(2, service.getHtlTemplates(vendorLibrary).size());
+    assertEquals(2, service.getHtlTemplatesFromVendorLibrary(vendorLibrary).size());
   }
 
   @Test
@@ -85,14 +85,15 @@ public class HtlTemplateFileRetrievalServiceImplTest {
 
     Exception exception = null;
     try {
-      assertEquals(3, service.getHtlTemplates(vendorLibrary));
+      service.getHtlTemplatesFromVendorLibrary(vendorLibrary);
     } catch (HtlTemplateFileRetrievalException e) {
       exception = e;
     }
     assertNotNull(exception);
     assertEquals(HtlTemplateFileRetrievalException.class, exception.getClass());
-    assertEquals("Unable to adapt 'Failed to retrieve HTL Template for VendorLibraryResource "
-                 + "/vendor-library. Templates folder not found.': Resource not found.",
+    assertEquals(
+        "Unable to adapt 'Failed to retrieve HTL Template for VendorLibraryResource "
+        + "/vendor-library. Templates folder not found.': Resource not found.",
         exception.getMessage());
   }
 

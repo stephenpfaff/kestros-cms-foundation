@@ -18,6 +18,8 @@
 
 package io.kestros.cms.uiframeworks.core.services;
 
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkCompilationAddonService;
@@ -47,7 +49,7 @@ import org.slf4j.LoggerFactory;
            service = {UiFrameworkOutputCompilationService.class},
            property = "service.ranking:Integer=100")
 public class UiFrameworkOutputCompilationServiceImpl
-    implements UiFrameworkOutputCompilationService {
+    implements UiFrameworkOutputCompilationService, PerformanceService {
 
   private static final Logger LOG = LoggerFactory.getLogger(
       UiFrameworkOutputCompilationServiceImpl.class);
@@ -57,6 +59,10 @@ public class UiFrameworkOutputCompilationServiceImpl
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
   private UiLibraryCompilationService uiLibraryCompilationService;
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private PerformanceTrackerService performanceTrackerService;
 
   @Override
   public String getDisplayName() {
@@ -79,6 +85,7 @@ public class UiFrameworkOutputCompilationServiceImpl
   @Override
   public List<ScriptType> getUiFrameworkScriptTypes(UiFramework uiFramework,
       ScriptType scriptType) {
+    String tracker = startPerformanceTracking();
     List<ScriptType> scriptTypes = new ArrayList<>();
     if (uiLibraryCompilationService != null) {
       for (VendorLibrary vendorLibrary : uiFramework.getVendorLibraries()) {
@@ -112,7 +119,7 @@ public class UiFrameworkOutputCompilationServiceImpl
         }
       }
     }
-
+    endPerformanceTracking(tracker);
     return scriptTypes;
   }
 
@@ -120,6 +127,7 @@ public class UiFrameworkOutputCompilationServiceImpl
   public String getUiFrameworkSource(UiFramework uiFramework, ScriptType scriptType)
       throws NoMatchingCompilerException {
     final StringBuilder uiFrameworkSource = new StringBuilder();
+    final String tracker = startPerformanceTracking();
 
     for (VendorLibrary vendorLibrary : uiFramework.getVendorLibraries()) {
       try {
@@ -158,7 +166,7 @@ public class UiFrameworkOutputCompilationServiceImpl
                 addonService.getDisplayName()));
       }
     }
-
+    endPerformanceTracking(tracker);
     return uiFrameworkSource.toString();
   }
 
@@ -167,5 +175,10 @@ public class UiFrameworkOutputCompilationServiceImpl
   public List<UiFrameworkCompilationAddonService> getAddonServices() {
     return OsgiServiceUtils.getAllOsgiServicesOfType(componentContext,
         UiFrameworkCompilationAddonService.class);
+  }
+
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
   }
 }

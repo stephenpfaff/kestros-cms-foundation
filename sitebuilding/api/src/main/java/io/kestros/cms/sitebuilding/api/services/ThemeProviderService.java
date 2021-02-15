@@ -21,6 +21,7 @@ package io.kestros.cms.sitebuilding.api.services;
 import io.kestros.cms.sitebuilding.api.models.BaseComponent;
 import io.kestros.cms.sitebuilding.api.models.BaseContentPage;
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.exceptions.ThemeRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
@@ -38,9 +39,10 @@ public interface ThemeProviderService extends ManagedService {
    * @return The {@link Theme} for a page.
    * @throws ResourceNotFoundException Expected Theme Resource was not found.
    * @throws InvalidThemeException Theme Resource was found, but could not be adatped to Theme.
+   * @throws ThemeRetrievalException Failure while retrieving Theme.
    */
   Theme getThemeForPage(BaseContentPage page)
-      throws ResourceNotFoundException, InvalidThemeException;
+      throws ResourceNotFoundException, InvalidThemeException, ThemeRetrievalException;
 
   /**
    * Retrieves the {@link Theme} for a Component.
@@ -49,9 +51,15 @@ public interface ThemeProviderService extends ManagedService {
    * @return The {@link Theme} for a component.
    * @throws ResourceNotFoundException Expected Theme Resource was not found.
    * @throws InvalidThemeException Theme Resource was found, but could not be adatped to Theme.
+   * @throws ThemeRetrievalException Failure while retrieving Theme.
    */
   Theme getThemeForComponent(BaseComponent component)
-      throws ResourceNotFoundException, InvalidThemeException;
+      throws ResourceNotFoundException, InvalidThemeException, ThemeRetrievalException;
 
+  /**
+   * Theme Retrieval Service.
+   *
+   * @return Theme Retrieval Service.
+   */
   ThemeRetrievalService getVirtualThemeProviderService();
 }

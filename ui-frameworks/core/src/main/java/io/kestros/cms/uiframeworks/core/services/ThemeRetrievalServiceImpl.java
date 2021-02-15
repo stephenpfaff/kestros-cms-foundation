@@ -23,6 +23,8 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
 import io.kestros.cms.uiframeworks.api.exceptions.ThemeRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.Theme;
@@ -57,7 +59,7 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true,
            service = ThemeRetrievalService.class)
 public class ThemeRetrievalServiceImpl extends BaseServiceResolverService
-    implements ThemeRetrievalService {
+    implements ThemeRetrievalService, PerformanceService {
 
   private static Logger LOG = LoggerFactory.getLogger(ThemeRetrievalServiceImpl.class);
 
@@ -69,28 +71,39 @@ public class ThemeRetrievalServiceImpl extends BaseServiceResolverService
              policyOption = ReferencePolicyOption.GREEDY)
   private VersionService versionService;
 
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private PerformanceTrackerService performanceTrackerService;
+
   @Override
   public Theme getTheme(String themeName, UiFramework uiFramework) throws ThemeRetrievalException {
+    String tracker = startPerformanceTracking();
     try {
       BaseResource themesFolderResource = getChildAsBaseResource("themes",
           uiFramework.getResource());
+      endPerformanceTracking(tracker);
       return getChildAsType(themeName, themesFolderResource, ThemeResource.class);
     } catch (ModelAdaptionException e) {
+      endPerformanceTracking(tracker);
       throw new ThemeRetrievalException(themeName, uiFramework);
     }
   }
 
   @Override
   public Theme getTheme(String themePath) throws ThemeRetrievalException {
+    String tracker = startPerformanceTracking();
     try {
+      endPerformanceTracking(tracker);
       return getResourceAsType(themePath, getServiceResourceResolver(), ThemeResource.class);
     } catch (ModelAdaptionException e) {
+      endPerformanceTracking(tracker);
       throw new ThemeRetrievalException(themePath);
     }
   }
 
   @Override
   public List<Theme> getThemes(UiFramework uiFramework) {
+    String tracker = startPerformanceTracking();
     List<Theme> themeList = new ArrayList<>();
     try {
       BaseResource themesFolderResource = getChildAsBaseResource("themes",
@@ -100,12 +113,14 @@ public class ThemeRetrievalServiceImpl extends BaseServiceResolverService
     } catch (ChildResourceNotFoundException e) {
       themeList.addAll(getInheritedVirtualThemes(uiFramework));
     }
+    endPerformanceTracking(tracker);
     return themeList;
   }
 
   @Override
   public Theme getVirtualTheme(String virtualThemePath)
       throws InvalidThemeException, ThemeRetrievalException {
+    String tracker = startPerformanceTracking();
     String themeName = virtualThemePath.split("/themes/")[virtualThemePath.split("/themes/").length
                                                           - 1];
     String uiFrameworkPath = virtualThemePath.split("/themes/")[0];
@@ -115,13 +130,17 @@ public class ThemeRetrievalServiceImpl extends BaseServiceResolverService
           UiFrameworkResource.class);
       for (Theme theme : getThemes(uiFramework)) {
         if (theme.getPath().equals(virtualThemePath)) {
+          endPerformanceTracking(tracker);
           return theme;
         }
       }
+      endPerformanceTracking(tracker);
       throw new ThemeRetrievalException(uiFramework);
     } catch (InvalidResourceTypeException e) {
+      endPerformanceTracking(tracker);
       throw new InvalidThemeException(themeName, uiFrameworkPath);
     } catch (ResourceNotFoundException e) {
+      endPerformanceTracking(tracker);
       throw new InvalidThemeException(themeName, uiFrameworkPath);
     }
 
@@ -180,5 +199,10 @@ public class ThemeRetrievalServiceImpl extends BaseServiceResolverService
   @Override
   public void deactivate(ComponentContext componentContext) {
     LOG.info("Deactivating {}.", getClass().getSimpleName());
+  }
+
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
   }
 }

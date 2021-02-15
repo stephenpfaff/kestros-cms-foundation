@@ -39,7 +39,7 @@
 
   <modules>
     <module>api</module>
-    <module>refactored</module>
+    <module>core</module>
   </modules>
 
   <dependencyManagement>

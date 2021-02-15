@@ -19,8 +19,13 @@
 package io.kestros.cms.sitebuilding.api.models;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import io.kestros.cms.componenttypes.api.exceptions.ComponentTypeRetrievalException;
+import io.kestros.cms.componenttypes.api.models.ComponentType;
+import io.kestros.cms.componenttypes.api.services.ComponentTypeRetrievalService;
 import io.kestros.cms.sitebuilding.api.services.ThemeProviderService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
@@ -37,6 +42,10 @@ public class BaseSiteTest {
 
   @Rule
   public SlingContext context = new SlingContext();
+
+  private ComponentTypeRetrievalService componentTypeRetrievalService;
+
+  private ComponentType componentType;
 
   private BaseSite baseSite;
 
@@ -61,6 +70,9 @@ public class BaseSiteTest {
   @Before
   public void setUp() throws Exception {
     context.addModelsForPackage("io.kestros");
+    componentTypeRetrievalService = mock(ComponentTypeRetrievalService.class);
+    componentType = mock(ComponentType.class);
+
     context.registerService(ThemeProviderService.class, themeProviderService);
 
     pageProperties.put("jcr:primaryType", "kes:Page");
@@ -147,7 +159,11 @@ public class BaseSiteTest {
   }
 
   @Test
-  public void testGetFontAwesomeIcon() {
+  public void testGetFontAwesomeIcon() throws ComponentTypeRetrievalException {
+    context.registerService(ComponentTypeRetrievalService.class, componentTypeRetrievalService);
+    when(componentTypeRetrievalService.getComponentType(anyString())).thenReturn(componentType);
+    when(componentType.getFontAwesomeIcon()).thenReturn("fa fa-cube");
+
     resource = context.create().resource("/site", siteProperties);
     siteJcrContentProperties.put("sling:resourceType", "/apps/component-type");
     context.create().resource("/site/jcr:content", siteJcrContentProperties);
@@ -157,8 +173,12 @@ public class BaseSiteTest {
   }
 
   @Test
-  public void testGetFontAwesomeIconWhenInheritedFromComponentType() {
-    componentTypeProperties.put("fontAwesomeIcon", "icon-class");
+  public void testGetFontAwesomeIconWhenInheritedFromComponentType()
+      throws ComponentTypeRetrievalException {
+    context.registerService(ComponentTypeRetrievalService.class, componentTypeRetrievalService);
+    when(componentTypeRetrievalService.getComponentType(anyString())).thenReturn(componentType);
+
+    when(componentType.getFontAwesomeIcon()).thenReturn("icon-class");
     context.create().resource("/apps/component-type", componentTypeProperties);
 
     resource = context.create().resource("/site", siteProperties);
@@ -170,8 +190,12 @@ public class BaseSiteTest {
   }
 
   @Test
-  public void testGetFontAwesomeIconWhenComponentTypeIconIsDefault() {
-    componentTypeProperties.put("fontAwesomeIcon", "fa fa-cube");
+  public void testGetFontAwesomeIconWhenComponentTypeIconIsDefault()
+      throws ComponentTypeRetrievalException {
+    context.registerService(ComponentTypeRetrievalService.class, componentTypeRetrievalService);
+    when(componentTypeRetrievalService.getComponentType(anyString())).thenReturn(componentType);
+
+    when(componentType.getFontAwesomeIcon()).thenReturn("fa fa-cube");
     context.create().resource("/apps/component-type", componentTypeProperties);
 
     resource = context.create().resource("/site", siteProperties);

@@ -260,9 +260,13 @@ public class UiFrameworkResourceTest {
     context.registerService(HtlTemplateFileRetrievalService.class, htlTemplateFileRetrievalService);
 
     HtlTemplateFile htlTemplateFile1 = mock(HtlTemplateFile.class);
+    when(htlTemplateFile1.getTitle()).thenReturn("B");
     HtlTemplateFile htlTemplateFile2 = mock(HtlTemplateFile.class);
+    when(htlTemplateFile2.getTitle()).thenReturn("D");
     HtlTemplateFile htlTemplateFile3 = mock(HtlTemplateFile.class);
+    when(htlTemplateFile3.getTitle()).thenReturn("C");
     HtlTemplateFile htlTemplateFile4 = mock(HtlTemplateFile.class);
+    when(htlTemplateFile4.getTitle()).thenReturn("A");
 
     VendorLibrary vendorLibrary1 = mock(VendorLibrary.class);
     VendorLibrary vendorLibrary2 = mock(VendorLibrary.class);
@@ -278,16 +282,20 @@ public class UiFrameworkResourceTest {
         Arrays.asList(htlTemplateFile2, htlTemplateFile3));
     when(vendorLibrary2.getTemplateFiles()).thenReturn(Arrays.asList(htlTemplateFile4));
 
-    when(
-        htlTemplateFileRetrievalService.getHtlTemplates(any(UiFrameworkResource.class))).thenReturn(
-        Arrays.asList(htlTemplateFile1));
+    when(htlTemplateFileRetrievalService.getHtlTemplatesFromUiFramework(
+        any(UiFrameworkResource.class))).thenReturn(Arrays.asList(htlTemplateFile1));
 
     properties.put("kes:vendorLibraries", new String[]{"vendor-library-1", "vendor-library-2"});
 
     resource = context.create().resource("/ui-library", properties);
     uiFramework = resource.adaptTo(UiFrameworkResource.class);
 
+    assertEquals(2, uiFramework.getVendorLibraries().size());
     assertEquals(4, uiFramework.getTemplateFiles().size());
+    assertEquals("A", uiFramework.getTemplateFiles().get(0).getTitle());
+    assertEquals("B", uiFramework.getTemplateFiles().get(1).getTitle());
+    assertEquals("C", uiFramework.getTemplateFiles().get(2).getTitle());
+    assertEquals("D", uiFramework.getTemplateFiles().get(3).getTitle());
   }
 
   @Test

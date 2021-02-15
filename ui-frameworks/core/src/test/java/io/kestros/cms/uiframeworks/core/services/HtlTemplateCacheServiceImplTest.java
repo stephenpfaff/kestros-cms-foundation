@@ -108,6 +108,7 @@ public class HtlTemplateCacheServiceImplTest {
 
   @Test
   public void testGetResourceResolverFactory() {
+    context.registerService(ResourceResolverFactory.class, resourceResolverFactory);
     context.registerInjectActivateService(cacheService);
 
     assertNotNull(cacheService.getResourceResolverFactory());
@@ -332,10 +333,10 @@ public class HtlTemplateCacheServiceImplTest {
     Resource resource = context.create().resource("/etc/ui-frameworks/ui-framework-1", uiFrameworkProperties);
     context.create().resource("/etc/ui-frameworks/ui-framework-1/templates",
         templatesFolderProperties);
-    context.create().resource("/etc/ui-frameworks/ui-framework-1/templates/template-file",
+    context.create().resource("/etc/ui-frameworks/ui-framework-1/templates/template-file.html",
         templateFileProperties);
     context.create().resource(
-        "/etc/ui-frameworks/ui-framework-1/templates/template-file/jcr:content",
+        "/etc/ui-frameworks/ui-framework-1/templates/template-file.html/jcr:content",
         templateFileJcrContentProperties);
 
     UiFrameworkResource uiFramework = resource.adaptTo(UiFrameworkResource.class);

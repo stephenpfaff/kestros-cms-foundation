@@ -25,12 +25,12 @@
   <parent>
     <groupId>io.kestros.cms</groupId>
     <artifactId>kestros-site-building-foundation</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
   </parent>
 
   <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-site-building-api</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
 
   <packaging>bundle</packaging>
 
@@ -42,7 +42,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Kestros Commons Dependencies -->
     <dependency>
       <groupId>io.kestros.commons</groupId>
@@ -51,7 +50,7 @@
 
     <dependency>
       <groupId>io.kestros.commons</groupId>
-      <artifactId>kestros-sling-ui-libraries</artifactId>
+      <artifactId>kestros-sling-ui-libraries-api</artifactId>
     </dependency>
 
     <dependency>
@@ -75,7 +74,14 @@
     <dependency>
       <groupId>io.kestros.cms</groupId>
       <artifactId>kestros-component-types-api</artifactId>
-      <version>0.0.1</version>
+      <version>0.0.2-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.kestros.cms</groupId>
+      <artifactId>kestros-component-types-core</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

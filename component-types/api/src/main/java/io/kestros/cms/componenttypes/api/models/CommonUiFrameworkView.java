@@ -18,28 +18,24 @@
 
 package io.kestros.cms.componenttypes.api.models;
 
-import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.models.annotations.Model;
-
 /**
  * Component view that is specific to a single UiFramework.  Created as a child resource to
  * ComponentTypes.
  */
-@KestrosModel(docPaths = {
-    "/content/guide-articles/kestros-cms/site-building/implementing-ui-framework" + "-views",
-    "/content/guide-articles/kestros-cms/site-building/creating-new-component" + "-types",
-    "/content/guide-articles/kestros-cms/site-building/creating-ui-frameworks"})
-@Model(adaptables = Resource.class)
-public class CommonUiFrameworkView extends ComponentUiFrameworkView {
+public interface CommonUiFrameworkView extends ComponentUiFrameworkView {
 
-  @Override
-  public String getTitle() {
-    return "Common";
-  }
+  /**
+   * View path.
+   *
+   * @return View path.
+   */
+  String getPath();
 
-  @Override
-  public String getFontAwesomeIcon() {
-    return "fas fa-palette";
-  }
+  /**
+   * View name.
+   *
+   * @return View name.
+   */
+  String getName();
+
 }

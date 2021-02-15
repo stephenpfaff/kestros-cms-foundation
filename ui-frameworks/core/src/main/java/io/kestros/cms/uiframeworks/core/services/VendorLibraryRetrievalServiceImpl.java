@@ -22,6 +22,8 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsBaseResource;
 
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.uiframeworks.api.exceptions.VendorLibraryRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.ManagedVendorLibrary;
 import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
@@ -53,7 +55,7 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true,
            service = VendorLibraryRetrievalService.class)
 public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverService
-    implements VendorLibraryRetrievalService {
+    implements VendorLibraryRetrievalService, PerformanceService {
 
   private static final Logger LOG = LoggerFactory.getLogger(
       VendorLibraryRetrievalServiceImpl.class);
@@ -66,23 +68,32 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
              policyOption = ReferencePolicyOption.GREEDY)
   private VersionService versionService;
 
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private PerformanceTrackerService performanceTrackerService;
+
   @Override
   public ManagedVendorLibrary getManagedVendorLibrary(String name, boolean includeEtc,
       boolean includeLibs) throws VendorLibraryRetrievalException {
+    String tracker = startPerformanceTracking();
     try {
       if (includeEtc) {
+        endPerformanceTracking(tracker);
         return getChildAsType(name, getEtcVendorLibrariesRootResources(),
             ManagedVendorLibraryResource.class);
       }
       if (includeLibs) {
+        endPerformanceTracking(tracker);
         return getChildAsType(name, getLibsVendorLibrariesRootResources(),
             ManagedVendorLibraryResource.class);
       } else {
+        endPerformanceTracking(tracker);
         throw new VendorLibraryRetrievalException(name,
             "Neither /etc nor /libs/kestros were included in ManagedVendorLibrary lookup, no "
             + "search attempted.");
       }
     } catch (ModelAdaptionException e) {
+      endPerformanceTracking(tracker);
       throw new VendorLibraryRetrievalException(name, e.getMessage());
     }
   }
@@ -90,6 +101,7 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
   @Override
   public VendorLibrary getVendorLibrary(String name, boolean includeEtc, boolean includeLibs)
       throws VendorLibraryRetrievalException, VersionRetrievalException {
+    String tracker = startPerformanceTracking();
     boolean isManaged = name.contains("/");
 
     if (isManaged) {
@@ -98,8 +110,10 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
       ManagedVendorLibrary managedVendorLibrary = getManagedVendorLibrary(libraryName, includeEtc,
           includeLibs);
       if (versionService != null) {
+        endPerformanceTracking(tracker);
         return versionService.getVersionResource(managedVendorLibrary, version);
       } else {
+        endPerformanceTracking(tracker);
         throw new VersionRetrievalException(String.format(
             "Failed to find version %s for ManagedVendorLibrary %s. Version Service was null.",
             version, managedVendorLibrary.getPath()));
@@ -107,6 +121,7 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
     }
     if (includeEtc) {
       try {
+        endPerformanceTracking(tracker);
         return getChildAsType(name, getEtcVendorLibrariesRootResources(),
             VendorLibraryResource.class);
       } catch (ChildResourceNotFoundException e) {
@@ -118,6 +133,7 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
     }
     if (includeLibs) {
       try {
+        endPerformanceTracking(tracker);
         return getChildAsType(name, getLibsVendorLibrariesRootResources(),
             VendorLibraryResource.class);
       } catch (ChildResourceNotFoundException e) {
@@ -128,16 +144,19 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
       }
     }
     if (!includeEtc && !includeLibs) {
+      endPerformanceTracking(tracker);
       throw new VendorLibraryRetrievalException(name,
           "Neither /etc nor /libs/kestros were included in VendorLibrary lookup, no search "
           + "attempted.");
     }
+    endPerformanceTracking(tracker);
     throw new VendorLibraryRetrievalException(name);
   }
 
   @Override
   public List<ManagedVendorLibrary> getAllManagedVendorLibraries(boolean includeEtc,
       boolean includeLibs) {
+    String tracker = startPerformanceTracking();
     List<ManagedVendorLibrary> managedVendorLibraryList = new ArrayList<>();
     if (includeEtc) {
       try {
@@ -157,12 +176,14 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
             "/libs/kestros/vendor-libraries");
       }
     }
+    endPerformanceTracking(tracker);
     return managedVendorLibraryList;
   }
 
   @Override
   public List<VendorLibrary> getAllUnmanagedVendorLibraries(boolean includeEtc,
       boolean includeLibs) {
+    String tracker = startPerformanceTracking();
     List<VendorLibrary> vendorLibraryList = new ArrayList<>();
     if (includeEtc) {
       try {
@@ -182,6 +203,7 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
             "/libs/kestros/vendor-libraries");
       }
     }
+    endPerformanceTracking(tracker);
     return vendorLibraryList;
   }
 
@@ -216,5 +238,10 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
   private BaseResource getLibsVendorLibrariesRootResources() throws ResourceNotFoundException {
     return getResourceAsBaseResource("/libs/kestros/vendor-libraries",
         getServiceResourceResolver());
+  }
+
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
   }
 }

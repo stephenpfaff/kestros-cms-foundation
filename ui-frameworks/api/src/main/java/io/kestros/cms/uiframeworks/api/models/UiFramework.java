@@ -64,4 +64,19 @@ public interface UiFramework extends FrontendLibrary, IconResource, VersionResou
    */
   Boolean isIncludeLibsVendorLibraries();
 
+  /**
+   * Path to compiled HTL Templates file.
+   *
+   * @return Path to compiled HTL Templates file.
+   */
+  String getTemplatesPath();
+
+  /**
+   * HTL Template Files associated to the current UiFramework.
+   *
+   * @return HTL Template Files associated to the current UiFramework.
+   */
+  List<HtlTemplateFile> getTemplateFiles();
+
 }
+

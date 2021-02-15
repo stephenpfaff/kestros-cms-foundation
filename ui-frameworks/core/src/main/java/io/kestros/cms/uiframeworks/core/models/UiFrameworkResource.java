@@ -22,19 +22,23 @@ import static io.kestros.cms.uiframeworks.core.DesignConstants.PN_UI_FRAMEWORK_C
 import static io.kestros.cms.uiframeworks.core.DesignConstants.PN_VENDOR_LIBRARIES;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
+import io.kestros.cms.uiframeworks.api.services.HtlTemplateCacheService;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateFileRetrievalService;
 import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
 import io.kestros.cms.uiframeworks.api.services.VendorLibraryRetrievalService;
 import io.kestros.cms.versioning.api.models.VersionableResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
+import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
@@ -65,6 +69,10 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
   @OSGiService
   @Optional
   private ThemeRetrievalService themeRetrievalService;
+
+  @OSGiService
+  @Optional
+  private HtlTemplateCacheService htlTemplateCacheService;
 
   @Override
   public String getFrameworkCode() {
@@ -117,6 +125,16 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
   }
 
   @Override
+  public String getTemplatesPath() {
+    try {
+      return htlTemplateCacheService.getCompiledTemplateFilePath(this);
+    } catch (ResourceNotFoundException e) {
+      LOG.error(e.getMessage());
+    }
+    return StringUtils.EMPTY;
+  }
+
+  @Override
   @JsonIgnore
   @KestrosProperty(description = "Font awesome icon class, used in the Kestros Site Admin UI",
                    jcrPropertyName = "fontAwesomeIcon",
@@ -143,12 +161,18 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
 
   @Override
   public List<HtlTemplateFile> getTemplateFiles() {
-    List<HtlTemplateFile> templateFiles = new ArrayList<>();
-    for (VendorLibrary vendorLibraryInterface : getVendorLibraries()) {
-      templateFiles.addAll(vendorLibraryInterface.getTemplateFiles());
+    final List<HtlTemplateFile> htlTemplateFiles = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : getVendorLibraries()) {
+      htlTemplateFiles.addAll(vendorLibrary.getTemplateFiles());
     }
-    templateFiles.addAll(super.getTemplateFiles());
-    return templateFiles;
+    try {
+      htlTemplateFiles.addAll(
+          getHtlTemplateFileRetrievalService().getHtlTemplatesFromUiFramework(this));
+      htlTemplateFiles.sort(Comparator.comparing(HtlTemplateFile::getTitle));
+    } catch (HtlTemplateFileRetrievalException e) {
+      LOG.warn(e.getMessage());
+    }
+    return htlTemplateFiles;
   }
 
   @Override

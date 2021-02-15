@@ -54,15 +54,16 @@
   <packaging>pom</packaging>
 
   <modules>
-    <!--    <module>startup</module>-->
-    <!--    <module>modeltypes</module>-->
-    <!--    <module>filetypes</module>-->
-    <!--    <module>managed-versioning</module>-->
-    <!--    <module>user-foundation</module>-->
+    <module>startup</module>
+    <module>modeltypes</module>
+    <module>filetypes</module>
+    <module>performance-services</module>
+    <module>managed-versioning</module>
+    <module>user-foundation</module>
     <module>ui-frameworks</module>
-    <!--    <module>component-types</module>-->
-    <!--    <module>sitebuilding</module>-->
-    <!--    <module>docs</module>-->
+    <module>component-types</module>
+    <module>sitebuilding</module>
+    <module>docs</module>
   </modules>
 
   <dependencyManagement>

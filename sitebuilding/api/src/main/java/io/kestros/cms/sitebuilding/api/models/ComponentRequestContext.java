@@ -18,7 +18,6 @@
 
 package io.kestros.cms.sitebuilding.api.models;
 
-import static io.kestros.cms.uiframeworks.api.DesignConstants.NN_VARIATIONS;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.adaptTo;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
@@ -26,9 +25,12 @@ import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeExceptio
 import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentUiFrameworkViewException;
 import io.kestros.cms.componenttypes.api.models.ComponentUiFrameworkView;
 import io.kestros.cms.componenttypes.api.models.ComponentVariation;
+import io.kestros.cms.componenttypes.api.services.ComponentUiFrameworkViewRetrievalService;
+import io.kestros.cms.componenttypes.api.services.ComponentVariationRetrievalService;
 import io.kestros.cms.sitebuilding.api.services.ThemeProviderService;
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidUiFrameworkException;
+import io.kestros.cms.uiframeworks.api.exceptions.ThemeRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.structuredslingmodels.BaseRequestContext;
@@ -59,6 +61,14 @@ public class ComponentRequestContext extends BaseRequestContext {
   @OSGiService
   @Optional
   private ThemeProviderService themeProviderService;
+
+  @OSGiService
+  @Optional
+  private ComponentVariationRetrievalService componentVariationRetrievalService;
+
+  @OSGiService
+  @Optional
+  private ComponentUiFrameworkViewRetrievalService componentUiFrameworkViewRetrievalService;
 
   private Theme theme;
 
@@ -174,12 +184,14 @@ public class ComponentRequestContext extends BaseRequestContext {
 
     final List<ComponentVariation> appliedVariations = new ArrayList<>();
     final List<String> appliedVariationNames = Arrays.asList(
-        getComponent().getProperties().get(NN_VARIATIONS, new String[]{}));
+        getComponent().getProperties().get("variations", new String[]{}));
     try {
       final ComponentUiFrameworkView uiFrameworkView = getComponentUiFrameworkView();
       if (!appliedVariationNames.isEmpty()) {
         for (final String appliedVariation : appliedVariationNames) {
-          for (final ComponentVariation variation : uiFrameworkView.getVariations()) {
+          for (final ComponentVariation variation :
+              componentVariationRetrievalService.getComponentVariations(
+              uiFrameworkView)) {
             if (variation.getPath().equals(appliedVariation) || variation.getName().equals(
                 appliedVariation)) {
               appliedVariations.add(variation);
@@ -190,7 +202,9 @@ public class ComponentRequestContext extends BaseRequestContext {
 
       if (appliedVariationNames.isEmpty()
           && !getComponent().getResource().getValueMap().containsKey("variations")) {
-        for (ComponentVariation variation : componentUiFrameworkView.getVariations()) {
+        for (ComponentVariation variation :
+            componentVariationRetrievalService.getComponentVariations(
+            uiFrameworkView)) {
           if (variation.isDefault()) {
             appliedVariations.add(variation);
           }
@@ -212,10 +226,12 @@ public class ComponentRequestContext extends BaseRequestContext {
    * @return The current Theme.
    * @throws InvalidThemeException Theme could not be adapted to Theme.
    * @throws ResourceNotFoundException Component's expected Theme resource was missing.
+   * @throws ThemeRetrievalException Failure while retrieving Theme.
    */
   @Nullable
   @KestrosProperty(description = "The current page's theme.")
-  public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
+  public Theme getTheme()
+      throws ResourceNotFoundException, InvalidThemeException, ThemeRetrievalException {
     LOG.trace("Retrieving theme for {}.", getBaseResource().getPath());
     if (theme == null && getCurrentPage() != null) {
       setTheme(getCurrentPage().getTheme());
@@ -237,10 +253,12 @@ public class ComponentRequestContext extends BaseRequestContext {
    *     adaptation.
    * @throws ResourceNotFoundException UiFramework for the current component could not be
    *     found.
+   * @throws ThemeRetrievalException Failure while retrieving Theme.
    */
   public ComponentUiFrameworkView getComponentUiFrameworkView()
       throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException,
-             InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
+             InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException,
+             ThemeRetrievalException {
 
     LOG.trace("Retrieving Component UiFrameworkView.");
 
@@ -250,7 +268,8 @@ public class ComponentRequestContext extends BaseRequestContext {
     }
 
     final ComponentUiFrameworkView componentUiFrameworkView
-        = getComponent().getComponentType().getComponentUiFrameworkView(getUiFramework());
+        = componentUiFrameworkViewRetrievalService.getComponentUiFrameworkView(
+        getComponent().getComponentType(), getUiFramework());
     this.componentUiFrameworkView = componentUiFrameworkView;
     LOG.trace("Finished retrieving Component UI FrameworkView.");
     return this.componentUiFrameworkView;
@@ -265,15 +284,11 @@ public class ComponentRequestContext extends BaseRequestContext {
   }
 
   UiFramework getUiFramework()
-      throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException {
+      throws InvalidThemeException, ResourceNotFoundException, InvalidUiFrameworkException,
+             ThemeRetrievalException {
     LOG.trace("Retrieving UiFramework for {}", getComponent().getPath());
     if (uiFramework == null) {
-      try {
-        uiFramework = getTheme().getUiFramework();
-      } catch (InvalidUiFrameworkException e) {
-        LOG.error("Unable to retrieve UiFramework for component request {}. {}",
-            getComponent().getPath(), e.getMessage());
-      }
+      uiFramework = getTheme().getUiFramework();
     }
     LOG.trace("Finished retrieving UiFramework for {}", getComponent().getPath());
     return uiFramework;

@@ -46,22 +46,6 @@ public abstract class BaseUiFrameworkLibraryResource extends UiLibraryResource
 
   protected abstract HtlTemplateFileRetrievalService getHtlTemplateFileRetrievalService();
 
-  /**
-   * HTL Template Files associated to the current Vendor Library.
-   *
-   * @return HTL Template Files associated to the current Vendor Library.
-   */
-  @Nonnull
-  public List<HtlTemplateFile> getTemplateFiles() {
-    final List<HtlTemplateFile> htlTemplateFiles = new ArrayList<>();
-    try {
-      htlTemplateFiles.addAll(getHtlTemplateFileRetrievalService().getHtlTemplates(this));
-      htlTemplateFiles.sort(Comparator.comparing(HtlTemplateFile::getTitle));
-    } catch (HtlTemplateFileRetrievalException e) {
-      LOG.warn(e.getMessage());
-    }
-    return htlTemplateFiles;
-  }
 
   /**
    * List of CDN JavaScript script file URL that need to be included as their own script files.

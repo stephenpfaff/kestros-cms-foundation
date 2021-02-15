@@ -18,12 +18,14 @@
 
 package io.kestros.cms.sitebuilding.core.servlets;
 
-import static io.kestros.commons.uilibraries.filetypes.ScriptType.CSS;
-
 import io.kestros.cms.uiframeworks.api.models.Theme;
+import io.kestros.cms.uiframeworks.api.services.ThemeOutputCompilationService;
 import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
-import io.kestros.commons.uilibraries.filetypes.ScriptType;
-import io.kestros.commons.uilibraries.services.cache.UiLibraryCacheService;
+import io.kestros.cms.uiframeworks.api.services.UiFrameworkRetrievalService;
+import io.kestros.commons.uilibraries.api.models.ScriptType;
+import io.kestros.commons.uilibraries.api.services.UiLibraryCacheService;
+import io.kestros.commons.uilibraries.api.services.UiLibraryMinificationService;
+import io.kestros.commons.uilibraries.basecompilers.filetypes.ScriptTypes;
 import javax.servlet.Servlet;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Component;
@@ -55,9 +57,42 @@ public class SiteLevelCssServlet extends SiteLevelScriptServlet {
              policyOption = ReferencePolicyOption.GREEDY)
   private ThemeRetrievalService virtualThemeProviderService;
 
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private UiFrameworkRetrievalService uiFrameworkRetrievalService;
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private ThemeOutputCompilationService themeOutputCompilationService;
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+
+             policyOption = ReferencePolicyOption.GREEDY)
+  private UiLibraryMinificationService uiLibraryMinificationService;
+
   @Override
   public UiLibraryCacheService getUiLibraryCacheService() {
     return uiLibraryCacheService;
+  }
+
+  @Override
+  public UiFrameworkRetrievalService getUiFrameworkRetrievalService() {
+    return uiFrameworkRetrievalService;
+  }
+
+  @Override
+  public ThemeRetrievalService getThemeRetrievalService() {
+    return virtualThemeProviderService;
+  }
+
+  @Override
+  public ThemeOutputCompilationService getThemeOutputCompilationService() {
+    return themeOutputCompilationService;
+  }
+
+  @Override
+  public UiLibraryMinificationService getUiLibraryMinificationService() {
+    return uiLibraryMinificationService;
   }
 
   @Override
@@ -67,6 +102,6 @@ public class SiteLevelCssServlet extends SiteLevelScriptServlet {
 
   @Override
   public ScriptType getScriptType() {
-    return CSS;
+    return ScriptTypes.CSS;
   }
 }

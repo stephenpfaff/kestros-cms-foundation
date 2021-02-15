@@ -30,7 +30,7 @@
 
   <groupId>io.kestros.cms</groupId>
   <artifactId>kestros-component-types-core</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
 
   <packaging>bundle</packaging>
 
@@ -51,7 +51,13 @@
 
     <dependency>
       <groupId>io.kestros.commons</groupId>
-      <artifactId>kestros-sling-ui-libraries</artifactId>
+      <artifactId>kestros-sling-ui-libraries-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.kestros.commons</groupId>
+      <artifactId>kestros-sling-ui-libraries-core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -68,8 +74,21 @@
 
     <dependency>
       <groupId>io.kestros.cms</groupId>
+      <artifactId>kestros-ui-frameworks-core</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.kestros.cms</groupId>
       <artifactId>kestros-component-types-api</artifactId>
-      <version>0.0.1</version>
+      <version>0.0.2-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.kestros.cms</groupId>
+      <artifactId>kestros-managed-versions-core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- Sling -->

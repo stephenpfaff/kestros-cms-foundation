@@ -1,27 +1,46 @@
+/*
+ *      Copyright (C) 2020  Kestros, Inc.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package io.kestros.cms.versioning.core.services;
 
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenAsBaseResource;
 
-import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
 import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
-import io.kestros.cms.versioning.api.models.Version;
 import io.kestros.cms.versioning.api.models.VersionResource;
 import io.kestros.cms.versioning.api.models.VersionableResource;
 import io.kestros.cms.versioning.api.services.VersionService;
+import io.kestros.cms.versioning.core.utils.VersionResourceSorter;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Performs version lookups.
+ */
 @Component(immediate = true,
            service = VersionService.class)
 public class VersionServiceImpl implements VersionService {
@@ -67,7 +86,8 @@ public class VersionServiceImpl implements VersionService {
       }
     } catch (ChildResourceNotFoundException e) {
       LOG.warn("Unable to retrieve version history for {}. {}", resource.getPath(), e.getMessage());
-    } Collections.sort(versions, new VersionResourceSorter());
+    }
+    Collections.sort(versions, new VersionResourceSorter());
     return versions;
   }
 
@@ -101,33 +121,15 @@ public class VersionServiceImpl implements VersionService {
     return null;
   }
 
+  @Override
+  public <T extends BaseResource> T getClosestVersion(VersionableResource resource,
+      String versionNumber) {
+    return null;
+  }
+
   BaseResource getVersionsFolderResource(VersionableResource versionableResource)
       throws ChildResourceNotFoundException {
     return getChildAsBaseResource("versions", versionableResource.getResource());
   }
 
-
 }
-
-class VersionResourceSorter implements Comparator<BaseResource> {
-
-  @Override
-  public int compare(BaseResource resource1, BaseResource resource2) {
-    VersionResource versionResource1 = (VersionResource) resource1;
-    VersionResource versionResource2 = (VersionResource) resource2;
-    Version version1;
-    Version version2;
-    try {
-      version1 = versionResource1.getVersion();
-    } catch (VersionFormatException e) {
-      return -1;
-    }
-    try {
-      version2 = versionResource2.getVersion();
-    } catch (VersionFormatException e) {
-      return 1;
-    }
-    return version1.compareTo(version2);
-  }
-}
-

@@ -18,6 +18,8 @@
 
 package io.kestros.cms.uiframeworks.core.services;
 
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateCompilationService;
@@ -26,6 +28,9 @@ import java.util.List;
 import org.apache.felix.hc.api.FormattingResultLog;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +39,14 @@ import org.slf4j.LoggerFactory;
  */
 @Component(immediate = true,
            service = HtlTemplateCompilationService.class)
-public class HtlTemplateCompilationServiceImpl implements HtlTemplateCompilationService {
+public class HtlTemplateCompilationServiceImpl
+    implements HtlTemplateCompilationService, PerformanceService {
 
   private static Logger LOG = LoggerFactory.getLogger(HtlTemplateCompilationServiceImpl.class);
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private PerformanceTrackerService performanceTrackerService;
 
   @Override
   public String getDisplayName() {
@@ -61,6 +71,7 @@ public class HtlTemplateCompilationServiceImpl implements HtlTemplateCompilation
   @Override
   public String getCompiledHtlTemplateFileOutput(List<HtlTemplateFile> htlTemplateFileList)
       throws IOException {
+    String tracker = startPerformanceTracking();
     StringBuilder compilationOutput = new StringBuilder();
     for (HtlTemplateFile htlTemplateFile : htlTemplateFileList) {
       if (htlTemplateFile != null) {
@@ -68,6 +79,12 @@ public class HtlTemplateCompilationServiceImpl implements HtlTemplateCompilation
         compilationOutput.append("\n");
       }
     }
+    endPerformanceTracking(tracker);
     return compilationOutput.toString();
+  }
+
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
   }
 }

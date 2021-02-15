@@ -19,6 +19,8 @@
 package io.kestros.cms.uiframeworks.core.services;
 
 
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.services.ThemeOutputCompilationService;
@@ -48,10 +50,14 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true,
            service = ThemeOutputCompilationService.class)
 public class ThemeOutputCompilationServiceImpl extends UiLibraryCompilationServiceImpl
-    implements ThemeOutputCompilationService {
+    implements ThemeOutputCompilationService, PerformanceService {
 
   private static final Logger LOG = LoggerFactory.getLogger(
       ThemeOutputCompilationServiceImpl.class);
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private PerformanceTrackerService performanceTrackerService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
@@ -63,6 +69,7 @@ public class ThemeOutputCompilationServiceImpl extends UiLibraryCompilationServi
 
   @Override
   public List<ScriptType> getThemeScriptTypes(Theme theme, ScriptType scriptType) {
+    String tracker = startPerformanceTracking();
     List<ScriptType> scriptTypes = new ArrayList<>();
     scriptTypes.addAll(
         uiFrameworkOutputCompilationService.getUiFrameworkScriptTypes(theme.getUiFramework(),
@@ -75,18 +82,22 @@ public class ThemeOutputCompilationServiceImpl extends UiLibraryCompilationServi
       }
     }
 
+    endPerformanceTracking(tracker);
     return scriptTypes;
   }
 
   @Override
   public String getUiLibraryOutput(FrontendLibrary library, ScriptType scriptType)
       throws InvalidResourceTypeException, NoMatchingCompilerException {
+    String tracker = startPerformanceTracking();
     if (library instanceof Theme) {
       Theme theme = (Theme) library;
       String themeSource = getThemeSource(theme, scriptType);
+      endPerformanceTracking(tracker);
       return uiLibraryCompilationService.getCompiler(getThemeScriptTypes(theme, scriptType),
           uiLibraryCompilationService.getCompilers()).getOutput(themeSource);
     }
+    endPerformanceTracking(tracker);
     throw new InvalidResourceTypeException(library.getPath(), ThemeResource.class,
         "Failed to compile Theme output. Resource was not a valid Resource Theme resourceType");
   }
@@ -123,6 +134,7 @@ public class ThemeOutputCompilationServiceImpl extends UiLibraryCompilationServi
   @Override
   public String getThemeSource(Theme theme, ScriptType scriptType)
       throws NoMatchingCompilerException, InvalidResourceTypeException {
+    String tracker = startPerformanceTracking();
     final StringBuilder source = new StringBuilder();
     if (uiLibraryCompilationService != null && uiFrameworkOutputCompilationService != null) {
       UiFramework uiFramework = theme.getUiFramework();
@@ -138,8 +150,12 @@ public class ThemeOutputCompilationServiceImpl extends UiLibraryCompilationServi
       }
       source.append(themeSource);
     }
-
+    endPerformanceTracking(tracker);
     return source.toString();
   }
 
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
+  }
 }

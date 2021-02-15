@@ -78,7 +78,7 @@ public class BaseUiFrameworkLibraryResourceTest {
 
     vendorLibrary = resource.adaptTo(VendorLibraryResource.class);
 
-    when(htlTemplateFileRetrievalService.getHtlTemplates(vendorLibrary)).thenReturn(
+    when(htlTemplateFileRetrievalService.getHtlTemplatesFromVendorLibrary(vendorLibrary)).thenReturn(
         htlTemplateFileList);
 
     assertEquals(2, vendorLibrary.getTemplateFiles().size());
@@ -92,7 +92,7 @@ public class BaseUiFrameworkLibraryResourceTest {
 
     vendorLibrary = resource.adaptTo(VendorLibraryResource.class);
 
-    when(htlTemplateFileRetrievalService.getHtlTemplates(vendorLibrary)).thenThrow(
+    when(htlTemplateFileRetrievalService.getHtlTemplatesFromVendorLibrary(vendorLibrary)).thenThrow(
         new HtlTemplateFileRetrievalException(""));
 
     assertEquals(0, vendorLibrary.getTemplateFiles().size());

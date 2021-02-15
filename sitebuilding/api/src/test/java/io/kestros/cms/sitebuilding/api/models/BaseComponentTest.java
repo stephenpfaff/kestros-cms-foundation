@@ -26,9 +26,15 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.kestros.cms.componenttypes.api.exceptions.ComponentTypeRetrievalException;
 import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
+import io.kestros.cms.componenttypes.api.models.ComponentType;
+import io.kestros.cms.componenttypes.api.services.ComponentTypeRetrievalService;
+import io.kestros.cms.componenttypes.core.models.ComponentTypeResource;
 import io.kestros.cms.sitebuilding.api.services.ThemeProviderService;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
@@ -53,9 +59,13 @@ public class BaseComponentTest {
   @Rule
   public final SlingContext context = new SlingContext();
 
+  private ComponentTypeRetrievalService componentTypeRetrievalService;
+
   private Resource resource;
 
   private BaseComponent baseComponent;
+
+  private ComponentType componentType;
 
   private Map<String, Object> properties = new HashMap<>();
 
@@ -72,10 +82,12 @@ public class BaseComponentTest {
   @Before
   public void initialSetup() throws UserRetrievalException {
     context.addModelsForPackage("io.kestros");
+    componentTypeRetrievalService = mock(ComponentTypeRetrievalService.class);
     userService = mock(KestrosUserService.class);
     context.registerService(KestrosUserService.class, userService);
     context.registerService(ThemeProviderService.class, themeProviderService);
     kestrosUser = mock(KestrosUser.class);
+    componentType = mock(ComponentType.class);
 
     when(userService.getUser("user", context.resourceResolver())).thenReturn(kestrosUser);
     when(kestrosUser.getId()).thenReturn("user");
@@ -110,7 +122,9 @@ public class BaseComponentTest {
   }
 
   @Test
-  public void testGetComponentType() throws InvalidComponentTypeException {
+  public void testGetComponentType()
+      throws InvalidComponentTypeException, ComponentTypeRetrievalException {
+    context.registerService(ComponentTypeRetrievalService.class, componentTypeRetrievalService);
     Map<String, Object> componentTypeProperties = new HashMap<>();
     componentTypeProperties.put("jcr:primaryType", "kes:ComponentType");
 
@@ -119,121 +133,34 @@ public class BaseComponentTest {
     context.create().resource("/apps/component", componentTypeProperties);
     resource = context.create().resource("/resource", properties);
 
+    when(componentTypeRetrievalService.getComponentType("component")).thenReturn(componentType);
+
     baseComponent = resource.adaptTo(BaseComponent.class);
 
     assertNotNull(baseComponent.getComponentType());
-    assertEquals("/apps/component", baseComponent.getComponentType().getPath());
+    verify(componentTypeRetrievalService, times(1)).getComponentType("component");
   }
 
   @Test
-  public void testGetComponentTypeWhenAbsoluteLibsPathAndLibsResourceDoesNotExist()
-      throws InvalidComponentTypeException {
+  public void testGetComponentTypeWhenMultipleCalls()
+      throws InvalidComponentTypeException, ComponentTypeRetrievalException {
+    context.registerService(ComponentTypeRetrievalService.class, componentTypeRetrievalService);
     Map<String, Object> componentTypeProperties = new HashMap<>();
     componentTypeProperties.put("jcr:primaryType", "kes:ComponentType");
 
-    properties.put("sling:resourceType", "/libs/component");
+    properties.put("sling:resourceType", "component");
 
     context.create().resource("/apps/component", componentTypeProperties);
     resource = context.create().resource("/resource", properties);
 
-    baseComponent = resource.adaptTo(BaseComponent.class);
-
-    try {
-      baseComponent.getComponentType();
-    } catch (Exception e) {
-      exception = e;
-    }
-
-    assertEquals(InvalidComponentTypeException.class, exception.getClass());
-    assertEquals(
-        "Unable to adapt '/libs/component' to ComponentType for resource /resource. Invalid or "
-        + "missing ComponentType resource.", exception.getMessage());
-  }
-
-  @Test
-  public void testGetComponentTypeWhenFallsBackToLibs() throws InvalidComponentTypeException {
-    Map<String, Object> componentTypeProperties = new HashMap<>();
-    componentTypeProperties.put("jcr:primaryType", "kes:ComponentType");
-
-    properties.put("sling:resourceType", "component");
-
-    context.create().resource("/libs/component", componentTypeProperties);
-    resource = context.create().resource("/resource", properties);
+    when(componentTypeRetrievalService.getComponentType("component")).thenReturn(componentType);
 
     baseComponent = resource.adaptTo(BaseComponent.class);
 
     assertNotNull(baseComponent.getComponentType());
-    assertEquals("/libs/component", baseComponent.getComponentType().getPath());
-  }
-
-  @Test
-  public void testGetComponentTypeWhenFallsBackToLibsAndAppsResourceIsInvalid()
-      throws InvalidComponentTypeException {
-    Map<String, Object> componentTypeProperties = new HashMap<>();
-    componentTypeProperties.put("jcr:primaryType", "kes:ComponentType");
-
-    properties.put("sling:resourceType", "component");
-
-    context.create().resource("/apps/component");
-    context.create().resource("/libs/component", componentTypeProperties);
-    resource = context.create().resource("/resource", properties);
-
-    baseComponent = resource.adaptTo(BaseComponent.class);
-
     assertNotNull(baseComponent.getComponentType());
-    assertEquals("/libs/component", baseComponent.getComponentType().getPath());
-  }
-
-  @Test
-  public void testGetComponentTypeWhenResourceResolverDoesNotFindApps()
-      throws InvalidComponentTypeException {
-    Map<String, Object> componentTypeProperties = new HashMap<>();
-    componentTypeProperties.put("jcr:primaryType", "kes:ComponentType");
-
-    properties.put("sling:resourceType", "component");
-
-    Resource appsResource = context.create().resource("/apps/component", componentTypeProperties);
-    context.create().resource("/libs/component", componentTypeProperties);
-
-    Resource mockResource = mock(Resource.class);
-    ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    baseComponent = spy(new BaseComponent());
-
-    doReturn(mockResource).when(baseComponent).getResource();
-    ValueMap valueMap = mock(ValueMap.class);
-    when(valueMap.get("sling:resourceType")).thenReturn("component");
-    doReturn(valueMap).when(baseComponent).getProperties();
-    doReturn("component").when(baseComponent).getSlingResourceType();
-    doReturn("/mock-component").when(baseComponent).getPath();
-    when(mockResource.getPath()).thenReturn("/mock-component");
-    when(mockResource.getResourceResolver()).thenReturn(resourceResolver);
-
-    when(resourceResolver.getResource("component")).thenReturn(null);
-    when(resourceResolver.getResource("/apps/component")).thenReturn(appsResource);
-
     assertNotNull(baseComponent.getComponentType());
-    assertEquals("/apps/component", baseComponent.getComponentType().getPath());
-  }
-
-  @Test
-  public void testGetComponentTypeWhenComponentTypeIsInvalid() {
-    Map<String, Object> componentTypeProperties = new HashMap<>();
-
-    properties.put("sling:resourceType", "component");
-
-    context.create().resource("/libs/component", componentTypeProperties);
-    resource = context.create().resource("/resource", properties);
-
-    baseComponent = resource.adaptTo(BaseComponent.class);
-
-    try {
-      assertNotNull(baseComponent.getComponentType());
-    } catch (InvalidComponentTypeException e) {
-      exception = e;
-    }
-    assertEquals(
-        "Unable to adapt 'component' to ComponentType for resource /resource. Invalid or missing "
-        + "ComponentType resource.", exception.getMessage());
+    verify(componentTypeRetrievalService, times(1)).getComponentType("component");
   }
 
   @Test
@@ -326,9 +253,8 @@ public class BaseComponentTest {
       exception = e;
     }
     assertEquals(NoValidAncestorException.class, exception.getClass());
-    assertEquals(
-        "Unable to retrieve ancestor matching type BaseContentPage for "
-        + "/page/child/jcr:content/resource: No valid ancestor found.",
+    assertEquals("Unable to retrieve ancestor matching type BaseContentPage for "
+                 + "/page/child/jcr:content/resource: No valid ancestor found.",
         exception.getMessage());
   }
 

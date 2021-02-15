@@ -21,18 +21,24 @@ package io.kestros.cms.uiframeworks.core.services;
 import static io.kestros.commons.structuredslingmodels.utils.FileModelUtils.getChildrenOfFileType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsBaseResource;
 
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateFileRetrievalService;
 import io.kestros.cms.uiframeworks.core.models.HtlTemplateFileResource;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
-import io.kestros.commons.uilibraries.api.models.FrontendLibrary;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.felix.hc.api.FormattingResultLog;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,25 +47,57 @@ import org.slf4j.LoggerFactory;
  */
 @Component(immediate = true,
            service = HtlTemplateFileRetrievalService.class)
-public class HtlTemplateFileRetrievalServiceImpl implements HtlTemplateFileRetrievalService {
+public class HtlTemplateFileRetrievalServiceImpl
+    implements HtlTemplateFileRetrievalService, PerformanceService {
 
   private static Logger LOG = LoggerFactory.getLogger(HtlTemplateFileRetrievalServiceImpl.class);
 
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private PerformanceTrackerService performanceTrackerService;
+
   @Override
-  public List<HtlTemplateFile> getHtlTemplates(FrontendLibrary library)
+  public List<HtlTemplateFile> getHtlTemplatesFromUiFramework(UiFramework uiFramework)
       throws HtlTemplateFileRetrievalException {
+    String tracker = startPerformanceTracking();
+    List<HtlTemplateFile> htlTemplateFileList = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : uiFramework.getVendorLibraries()) {
+      htlTemplateFileList.addAll(getHtlTemplatesFromVendorLibrary(vendorLibrary));
+    }
+
+    try {
+      BaseResource templatesFolderResource = getChildAsBaseResource("templates",
+          uiFramework.getResource());
+      htlTemplateFileList.addAll(
+          getChildrenOfFileType(templatesFolderResource, HtlTemplateFileResource.class));
+    } catch (ChildResourceNotFoundException e) {
+      //      throw new HtlTemplateFileRetrievalException(
+      //          String.format("Failed to retrieve HTL Template for %s %s. Templates folder not 
+      //          found.",
+      //              library.getClass().getSimpleName(), library.getPath()));
+    }
+    endPerformanceTracking(tracker);
+    return htlTemplateFileList;
+  }
+
+  @Override
+  public List<HtlTemplateFile> getHtlTemplatesFromVendorLibrary(VendorLibrary vendorLibrary)
+      throws HtlTemplateFileRetrievalException {
+    String tracker = startPerformanceTracking();
     List<HtlTemplateFile> htlTemplateFileList = new ArrayList<>();
     try {
       BaseResource templatesFolderResource = getChildAsBaseResource("templates",
-          library.getResource());
+          vendorLibrary.getResource());
       htlTemplateFileList.addAll(
           getChildrenOfFileType(templatesFolderResource, HtlTemplateFileResource.class));
-      return htlTemplateFileList;
     } catch (ChildResourceNotFoundException e) {
+      endPerformanceTracking(tracker);
       throw new HtlTemplateFileRetrievalException(
           String.format("Failed to retrieve HTL Template for %s %s. Templates folder not found.",
-              library.getClass().getSimpleName(), library.getPath()));
+              vendorLibrary.getClass().getSimpleName(), vendorLibrary.getPath()));
     }
+    endPerformanceTracking(tracker);
+    return htlTemplateFileList;
   }
 
   @Override
@@ -80,5 +118,10 @@ public class HtlTemplateFileRetrievalServiceImpl implements HtlTemplateFileRetri
   @Override
   public void runAdditionalHealthChecks(FormattingResultLog log) {
 
+  }
+
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
   }
 }

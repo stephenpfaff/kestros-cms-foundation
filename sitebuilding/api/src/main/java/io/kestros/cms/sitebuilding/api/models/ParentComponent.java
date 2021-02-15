@@ -20,6 +20,7 @@ package io.kestros.cms.sitebuilding.api.models;
 
 import io.kestros.cms.sitebuilding.api.services.ThemeProviderService;
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.exceptions.ThemeRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
@@ -96,10 +97,12 @@ public class ParentComponent extends BaseComponent {
    * @return The current Theme.
    * @throws InvalidThemeException Theme could not be adapted to Theme.
    * @throws ResourceNotFoundException Component's expected Theme resource was missing.
+   * @throws ThemeRetrievalException Failure while retrieving Theme.
    */
   @Nullable
   @KestrosProperty(description = "The active theme for the current Page/Component.")
-  public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
+  public Theme getTheme()
+      throws ResourceNotFoundException, InvalidThemeException, ThemeRetrievalException {
     LOG.trace("Retrieving theme for {}.", getPath());
     if (theme == null) {
       setTheme(themeProviderService.getThemeForComponent(this));

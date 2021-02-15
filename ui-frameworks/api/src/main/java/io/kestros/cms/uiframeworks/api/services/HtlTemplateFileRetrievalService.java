@@ -20,6 +20,8 @@ package io.kestros.cms.uiframeworks.api.services;
 
 import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import io.kestros.commons.uilibraries.api.models.FrontendLibrary;
 import java.util.List;
@@ -32,10 +34,20 @@ public interface HtlTemplateFileRetrievalService extends ManagedService {
   /**
    * Retrieves HTL Template files for a given library.
    *
-   * @param library Library to retrieve HTL Templates for.
+   * @param uiFramework UiFramework to retrieve HTL Templates for.
    * @return Retrieves HTL Template files for a given library.
    * @throws HtlTemplateFileRetrievalException Failed to retrieve HTL Template files/
    */
-  List<HtlTemplateFile> getHtlTemplates(FrontendLibrary library)
+  List<HtlTemplateFile> getHtlTemplatesFromUiFramework(UiFramework uiFramework)
+      throws HtlTemplateFileRetrievalException;
+
+  /**
+   * Retrieves HTL Template files for a given library.
+   *
+   * @param vendorLibrary VendorLibrary to retrieve HTL Templates for.
+   * @return Retrieves HTL Template files for a given library.
+   * @throws HtlTemplateFileRetrievalException Failed to retrieve HTL Template files/
+   */
+  List<HtlTemplateFile> getHtlTemplatesFromVendorLibrary(VendorLibrary vendorLibrary)
       throws HtlTemplateFileRetrievalException;
 }

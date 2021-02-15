@@ -23,6 +23,8 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
 
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.uiframeworks.api.exceptions.UiFrameworkRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.ManagedUiFramework;
 import io.kestros.cms.uiframeworks.api.models.Theme;
@@ -31,6 +33,7 @@ import io.kestros.cms.uiframeworks.api.services.UiFrameworkRetrievalService;
 import io.kestros.cms.uiframeworks.core.models.ManagedUiFrameworkResource;
 import io.kestros.cms.uiframeworks.core.models.ThemeResource;
 import io.kestros.cms.uiframeworks.core.models.UiFrameworkResource;
+import io.kestros.cms.versioning.api.services.VersionService;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -39,6 +42,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundExcep
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nonnull;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.ComponentContext;
@@ -55,13 +59,21 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true,
            service = UiFrameworkRetrievalService.class)
 public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
-    implements UiFrameworkRetrievalService {
+    implements UiFrameworkRetrievalService, PerformanceService {
 
   private static final Logger LOG = LoggerFactory.getLogger(ThemeResource.class);
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
   private ResourceResolverFactory resourceResolverFactory;
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private VersionService versionService;
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private PerformanceTrackerService performanceTrackerService;
 
   @Override
   public List<ManagedUiFramework> getAllManagedUiFrameworks(Boolean includeEtc,
@@ -90,8 +102,7 @@ public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
   }
 
   @Override
-  public List<UiFramework> getAllUnmanagedUiFrameworks(Boolean includeEtc,
-      Boolean includeLibs) {
+  public List<UiFramework> getAllUnmanagedUiFrameworks(Boolean includeEtc, Boolean includeLibs) {
     List<UiFramework> uiFrameworkList = new ArrayList<>();
     if (includeEtc) {
       try {
@@ -125,8 +136,7 @@ public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
   }
 
   @Override
-  public UiFramework getUiFramework(Theme theme)
-      throws UiFrameworkRetrievalException {
+  public UiFramework getUiFramework(Theme theme) throws UiFrameworkRetrievalException {
     Resource themeResource = ((ThemeResource) theme).getResource();
     try {
       return getFirstAncestorOfType(themeResource, UiFrameworkResource.class);
@@ -142,6 +152,27 @@ public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
     } catch (ModelAdaptionException e) {
       throw new UiFrameworkRetrievalException(path, e.getMessage());
     }
+  }
+
+  @Override
+  @Nonnull
+  public UiFramework getUiFrameworkByCode(@Nonnull String code, @Nonnull Boolean includeEtc,
+      @Nonnull Boolean includeLibs, @Nonnull String version) throws UiFrameworkRetrievalException {
+    if (versionService != null) {
+      for (ManagedUiFramework managedUiFramework : this.getAllManagedUiFrameworks(includeEtc,
+          includeLibs)) {
+        if (code.equals(managedUiFramework.getFrameworkCode())) {
+          return versionService.getClosestVersion(managedUiFramework, version);
+        }
+      }
+    }
+
+    for (UiFramework uiFramework : getAllUnmanagedUiFrameworks(includeEtc, includeLibs)) {
+      if (code.equals(uiFramework.getFrameworkCode())) {
+        return uiFramework;
+      }
+    }
+    throw new UiFrameworkRetrievalException(code);
   }
 
   @Override
@@ -186,5 +217,10 @@ public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
 
   private BaseResource getLibsRootResource() throws ResourceNotFoundException {
     return getResourceAsBaseResource("/libs/kestros/ui-frameworks", getServiceResourceResolver());
+  }
+
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
   }
 }

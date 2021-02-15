@@ -30,6 +30,7 @@ import java.util.List;
  */
 public interface UiFrameworkRetrievalService extends ManagedService {
 
+
   /**
    * Retrieves all ManagedUiFrameworks.
    *
@@ -75,6 +76,19 @@ public interface UiFrameworkRetrievalService extends ManagedService {
    * @throws UiFrameworkRetrievalException Failed to retrieve a UiFramework.
    */
   UiFramework getUiFramework(String path) throws UiFrameworkRetrievalException;
+
+  /**
+   * Retrieves a specified UiFramework by the UiFramework code.
+   *
+   * @param code UiFramework code.
+   * @param includeEtc Whether to search in /etc.
+   * @param includeLibs Whether to search in /libs.
+   * @param version Closest matching version to find.
+   * @return All ManagedUiFrameworks.
+   * @throws UiFrameworkRetrievalException Failed to retrieve a UiFramework.
+   */
+  UiFramework getUiFrameworkByCode(String code, Boolean includeEtc, Boolean includeLibs,
+      String version) throws UiFrameworkRetrievalException;
 
   /**
    * Retrieves a given ManagedUiFramework.
