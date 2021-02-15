@@ -20,6 +20,7 @@ package io.kestros.cms.uiframeworks.api.models;
 
 import io.kestros.cms.modeltypes.IconResource;
 import io.kestros.cms.versioning.api.models.VersionResource;
+import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.uilibraries.api.models.FrontendLibrary;
 import java.util.List;
 
@@ -77,6 +78,13 @@ public interface UiFramework extends FrontendLibrary, IconResource, VersionResou
    * @return HTL Template Files associated to the current UiFramework.
    */
   List<HtlTemplateFile> getTemplateFiles();
+
+  /**
+   * List files to externalize. (assets, icons, fonts, etc).
+   *
+   * @return List files to externalize. (assets, icons, fonts, etc).
+   */
+  List<BaseResource> getExternalizedFiles();
 
 }
 

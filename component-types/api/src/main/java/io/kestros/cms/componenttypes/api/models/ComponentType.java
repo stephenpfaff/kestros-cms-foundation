@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.modeltypes.IconResource;
 import javax.annotation.Nonnull;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
 
 /**
@@ -42,6 +43,13 @@ public interface ComponentType extends IconResource {
    * @return ComponentType path.
    */
   String getPath();
+
+  /**
+   * Sling Resosource.
+   *
+   * @return Sling Resource.
+   */
+  Resource getResource();
 
   /**
    * ComponentType name.

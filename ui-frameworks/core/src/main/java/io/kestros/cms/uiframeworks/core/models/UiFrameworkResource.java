@@ -22,7 +22,6 @@ import static io.kestros.cms.uiframeworks.core.DesignConstants.PN_UI_FRAMEWORK_C
 import static io.kestros.cms.uiframeworks.core.DesignConstants.PN_VENDOR_LIBRARIES;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
@@ -165,13 +164,10 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
     for (VendorLibrary vendorLibrary : getVendorLibraries()) {
       htlTemplateFiles.addAll(vendorLibrary.getTemplateFiles());
     }
-    try {
-      htlTemplateFiles.addAll(
-          getHtlTemplateFileRetrievalService().getHtlTemplatesFromUiFramework(this));
-      htlTemplateFiles.sort(Comparator.comparing(HtlTemplateFile::getTitle));
-    } catch (HtlTemplateFileRetrievalException e) {
-      LOG.warn(e.getMessage());
-    }
+    htlTemplateFiles.addAll(
+        getHtlTemplateFileRetrievalService().getHtlTemplatesFromUiFramework(this));
+    htlTemplateFiles.sort(Comparator.comparing(HtlTemplateFile::getTitle));
+
     return htlTemplateFiles;
   }
 
