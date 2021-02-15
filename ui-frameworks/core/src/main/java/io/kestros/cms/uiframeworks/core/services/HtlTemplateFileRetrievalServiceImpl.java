@@ -57,12 +57,15 @@ public class HtlTemplateFileRetrievalServiceImpl
   private PerformanceTrackerService performanceTrackerService;
 
   @Override
-  public List<HtlTemplateFile> getHtlTemplatesFromUiFramework(UiFramework uiFramework)
-      throws HtlTemplateFileRetrievalException {
+  public List<HtlTemplateFile> getHtlTemplatesFromUiFramework(UiFramework uiFramework) {
     String tracker = startPerformanceTracking();
     List<HtlTemplateFile> htlTemplateFileList = new ArrayList<>();
     for (VendorLibrary vendorLibrary : uiFramework.getVendorLibraries()) {
-      htlTemplateFileList.addAll(getHtlTemplatesFromVendorLibrary(vendorLibrary));
+      try {
+        htlTemplateFileList.addAll(getHtlTemplatesFromVendorLibrary(vendorLibrary));
+      } catch (HtlTemplateFileRetrievalException e) {
+        LOG.debug(e.getMessage());
+      }
     }
 
     try {

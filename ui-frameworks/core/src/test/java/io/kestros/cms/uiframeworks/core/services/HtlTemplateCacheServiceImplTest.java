@@ -273,7 +273,7 @@ public class HtlTemplateCacheServiceImplTest {
 
     cacheService.runAdditionalHealthChecks(log);
 
-    verify(log, times(0)).critical(anyString());
+    verify(log, times(4)).critical(anyString());
     verify(log, times(1)).warn("HtlTemplateCacheService has no cached compilation files.");
     verify(log, never()).info(anyString());
     verify(log, never()).debug(anyString());
@@ -309,7 +309,7 @@ public class HtlTemplateCacheServiceImplTest {
 
     cacheService.runAdditionalHealthChecks(log);
 
-    verify(log, never()).critical(anyString());
+    verify(log, times(3)).critical(anyString());
     verify(log, never()).warn(anyString());
     verify(log, never()).info(anyString());
     verify(log, never()).debug(anyString());

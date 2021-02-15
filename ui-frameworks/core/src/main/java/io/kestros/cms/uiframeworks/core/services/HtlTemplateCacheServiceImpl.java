@@ -125,6 +125,10 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
   protected List<String> getRequiredResourcePaths() {
     List<String> resourcePaths = new ArrayList<>();
     resourcePaths.add(getServiceCacheRootPath());
+    resourcePaths.add("/etc/ui-frameworks");
+    resourcePaths.add("/etc/vendor-libraries");
+    resourcePaths.add("/libs/kestros/ui-frameworks");
+    resourcePaths.add("/libs/kestros/vendor-libraries");
     return resourcePaths;
   }
 
