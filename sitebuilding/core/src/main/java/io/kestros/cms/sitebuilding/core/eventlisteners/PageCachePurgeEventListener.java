@@ -27,6 +27,7 @@ import io.kestros.cms.sitebuilding.api.services.PageCacheService;
 import io.kestros.commons.osgiserviceutils.services.cache.CacheService;
 import io.kestros.commons.osgiserviceutils.services.eventlisteners.impl.BaseCachePurgeOnResourceChangeEventListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
@@ -57,6 +58,11 @@ public class PageCachePurgeEventListener extends BaseCachePurgeOnResourceChangeE
   @Override
   protected String getServiceUserName() {
     return KESTROS_PAGE_CACHE_PURGE_SERVICE_USER;
+  }
+
+  @Override
+  protected List<String> getRequiredResourcePaths() {
+    return Arrays.asList("/var/cache/pages");
   }
 
   @Override

@@ -40,10 +40,10 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 @Component
 @HealthCheckService(name = "Component Type Cache Service Check",
                     tags = {"kestros", "component-types"})
-@Async(intervalInSec = 60)
+@Async(intervalInSec = 300)
 @ResultTTL(resultCacheTtlInMs = 10000)
 @HealthCheckMBean(name = "ComponentTypeCacheServiceHealthCheck")
-@Sticky(keepNonOkResultsStickyForSec = 10)
+@Sticky(keepNonOkResultsStickyForSec = 300)
 public class ComponentTypeCacheServiceHealthCheck extends BaseManagedServiceHealthCheck
     implements HealthCheck {
 

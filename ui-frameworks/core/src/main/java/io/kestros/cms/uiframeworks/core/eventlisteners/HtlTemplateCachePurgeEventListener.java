@@ -24,6 +24,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateCacheService;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import io.kestros.commons.osgiserviceutils.services.eventlisteners.impl.BaseCachePurgeOnResourceChangeEventListener;
+import java.util.Collections;
 import java.util.List;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
@@ -44,8 +45,8 @@ import org.osgi.service.component.annotations.Reference;
                ResourceChangeListener.CHANGES + "=PROVIDER_REMOVED",
                ResourceChangeListener.PATHS + "=/etc", ResourceChangeListener.PATHS + "=/libs"},
            immediate = true)
-public class HtlTemplateCachePurgeEventListener
-    extends BaseCachePurgeOnResourceChangeEventListener implements ManagedService {
+public class HtlTemplateCachePurgeEventListener extends BaseCachePurgeOnResourceChangeEventListener
+    implements ManagedService {
 
   public static final String KESTROS_HTL_TEMPLATE_CACHE_PURGE_SERVICE_USER
       = "kestros-htl-template-cache-purge";
@@ -70,6 +71,11 @@ public class HtlTemplateCachePurgeEventListener
   }
 
   @Override
+  protected List<String> getRequiredResourcePaths() {
+    return Collections.emptyList();
+  }
+
+  @Override
   protected boolean purgeOnActivation() {
     return false;
   }
@@ -81,6 +87,5 @@ public class HtlTemplateCachePurgeEventListener
 
   @Override
   public void deactivate(ComponentContext componentContext) {
-
   }
 }

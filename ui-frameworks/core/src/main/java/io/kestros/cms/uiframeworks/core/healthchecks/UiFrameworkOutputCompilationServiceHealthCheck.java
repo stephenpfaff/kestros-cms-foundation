@@ -58,6 +58,6 @@ public class UiFrameworkOutputCompilationServiceHealthCheck extends BaseManagedS
 
   @Override
   public String getServiceName() {
-    return "UI Framework Output Compilation Service Health Check";
+    return "UI Framework Output Compilation Service";
   }
 }

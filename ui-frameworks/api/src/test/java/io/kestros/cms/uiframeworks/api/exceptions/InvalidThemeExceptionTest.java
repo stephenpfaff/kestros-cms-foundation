@@ -19,24 +19,22 @@
 package io.kestros.cms.uiframeworks.api.exceptions;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
-import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 public class InvalidThemeExceptionTest {
-
-  @Rule
-  public SlingContext context = new SlingContext();
 
   private InvalidThemeException exception;
   private UiFramework uiFramework;
 
   @Before
   public void setUp() throws Exception {
-    uiFramework = context.create().resource("/ui-framework").adaptTo(UiFramework.class);
+    uiFramework = mock(UiFramework.class);
+    when(uiFramework.getPath()).thenReturn("/ui-framework");
   }
 
   @Test

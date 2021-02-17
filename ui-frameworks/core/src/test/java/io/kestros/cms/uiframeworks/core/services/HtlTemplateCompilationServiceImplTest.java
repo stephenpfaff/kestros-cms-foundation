@@ -19,8 +19,11 @@
 package io.kestros.cms.uiframeworks.core.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
+import io.kestros.cms.uiframeworks.core.models.HtlTemplateFileResource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,10 +31,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.felix.hc.api.FormattingResultLog;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.osgi.service.component.ComponentContext;
 
 public class HtlTemplateCompilationServiceImplTest {
 
@@ -39,7 +44,6 @@ public class HtlTemplateCompilationServiceImplTest {
   public SlingContext context = new SlingContext();
 
   private HtlTemplateCompilationServiceImpl htlTemplateCompilationService;
-
 
   private List<HtlTemplateFile> templateFileList = new ArrayList<>();
   private HtlTemplateFile templateFile1;
@@ -54,6 +58,7 @@ public class HtlTemplateCompilationServiceImplTest {
 
   @Before
   public void setup() {
+    context.addModelsForPackage("io.kestros");
     htlTemplateCompilationService = new HtlTemplateCompilationServiceImpl();
     context.registerInjectActivateService(htlTemplateCompilationService);
 
@@ -77,9 +82,12 @@ public class HtlTemplateCompilationServiceImplTest {
 
   @Test
   public void testGetCompiledHtlTemplateFileOutput() throws IOException {
-    templateFile1 = context.create().resource("/file-1", properties).adaptTo(HtlTemplateFile.class);
-    templateFile2 = context.create().resource("/file-2", properties).adaptTo(HtlTemplateFile.class);
-    templateFile3 = context.create().resource("/file-3", properties).adaptTo(HtlTemplateFile.class);
+    templateFile1 = context.create().resource("/file-1", properties).adaptTo(
+        HtlTemplateFileResource.class);
+    templateFile2 = context.create().resource("/file-2", properties).adaptTo(
+        HtlTemplateFileResource.class);
+    templateFile3 = context.create().resource("/file-3", properties).adaptTo(
+        HtlTemplateFileResource.class);
     context.create().resource("/file-1/jcr:content", templateFileJcrContentProperties1);
     context.create().resource("/file-2/jcr:content", templateFileJcrContentProperties2);
     context.create().resource("/file-3/jcr:content", templateFileJcrContentProperties3);
@@ -93,4 +101,31 @@ public class HtlTemplateCompilationServiceImplTest {
                  + "<template data-sly-template.testTemplateThree=\"${ @ text}\"></template>\n",
         htlTemplateCompilationService.getCompiledHtlTemplateFileOutput(templateFileList));
   }
+
+  @Test
+  public void testGetDisplayName() {
+    assertEquals("HTL Template Compilation Service", htlTemplateCompilationService.getDisplayName());
+  }
+
+  @Test
+  public void testActivate() {
+    ComponentContext componentContext = mock(ComponentContext.class);
+    htlTemplateCompilationService.activate(componentContext);
+    verifyZeroInteractions(componentContext);
+  }
+
+  @Test
+  public void testDeactivate() {
+    ComponentContext componentContext = mock(ComponentContext.class);
+    htlTemplateCompilationService.deactivate(componentContext);
+    verifyZeroInteractions(componentContext);
+  }
+
+  @Test
+  public void testRunAdditionalHealthChecks() {
+    FormattingResultLog log = mock(FormattingResultLog.class);
+    htlTemplateCompilationService.runAdditionalHealthChecks(log);
+    verifyZeroInteractions(log);
+  }
+
 }

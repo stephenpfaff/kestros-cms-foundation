@@ -18,15 +18,12 @@
 
 package io.kestros.cms.sitebuilding.api.models;
 
-import static io.kestros.cms.uiframeworks.api.utils.DesignUtils.getAllUiFrameworks;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.adaptTo;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getAllDescendantsOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getFirstAncestorOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getParentResourceAsType;
-import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
-import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourcesAsType;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.jackrabbit.JcrConstants.JCR_CONTENT;
 
@@ -35,14 +32,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.kestros.cms.componenttypes.api.exceptions.ComponentTypeRetrievalException;
 import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.componenttypes.api.models.ComponentType;
+import io.kestros.cms.componenttypes.api.services.ComponentTypeRetrievalService;
+import io.kestros.cms.sitebuilding.api.services.AllowedUiFrameworkService;
 import io.kestros.cms.sitebuilding.api.services.ThemeProviderService;
 import io.kestros.cms.sitebuilding.api.utils.JcrPropertyUtils;
 import io.kestros.cms.sitebuilding.api.utils.RelativeDate;
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.exceptions.ThemeRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.services.UiFrameworkRetrievalService;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;
@@ -56,7 +58,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceExcep
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -101,6 +103,18 @@ public class BaseContentPage extends BasePage {
   @OSGiService
   @Optional
   private ThemeProviderService themeProviderService;
+
+  @OSGiService
+  @Optional
+  private ComponentTypeRetrievalService componentTypeRetrievalService;
+
+  @OSGiService
+  @Optional
+  private AllowedUiFrameworkService allowedUiFrameworkService;
+
+  @OSGiService
+  @Optional
+  private UiFrameworkRetrievalService uiFrameworkRetrievalService;
 
   /**
    * Display title of the current site.  Display title is generally used for frontend, whereas title
@@ -205,6 +219,7 @@ public class BaseContentPage extends BasePage {
    * @throws ResourceNotFoundException Theme could not be found.
    * @throws InvalidThemeException Theme was specified, and a matching Resource was found, but
    *     could not be adapted to Theme.
+   * @throws ThemeRetrievalException Failure while retrieving Theme.
    */
   @Nullable
   @JsonIgnore
@@ -212,8 +227,12 @@ public class BaseContentPage extends BasePage {
                    jcrPropertyName = "kes:theme",
                    defaultValue = "",
                    configurable = true)
-  public Theme getTheme() throws ResourceNotFoundException, InvalidThemeException {
-    return themeProviderService.getThemeForPage(this);
+  public Theme getTheme()
+      throws ResourceNotFoundException, InvalidThemeException, ThemeRetrievalException {
+    if (themeProviderService != null) {
+      return themeProviderService.getThemeForPage(this);
+    }
+    return null;
   }
 
   /**
@@ -286,20 +305,24 @@ public class BaseContentPage extends BasePage {
   @KestrosProperty(description = "The ComponentType the page will use to render.")
   public ComponentType getComponentType() throws InvalidComponentTypeException {
     try {
-      return getResourceAsType(getResourceType(), getResourceResolver(), ComponentType.class);
-    } catch (final Exception exception) {
-      try {
-        return getResourceAsType("/libs/" + getResourceType(), getResourceResolver(),
-            ComponentType.class);
-      } catch (final InvalidResourceTypeException exception1) {
-        LOG.warn(
-            "Unable to retrieve ComponentType for {}.  {} resourceType found, but could not be "
-            + "adapted to ComponentType.", getPath(), getResourceType());
-      } catch (final ResourceNotFoundException exception1) {
-        LOG.warn("Unable to retrieve ComponentType for {}.  resourceType {} not found.", getPath(),
-            getResourceType());
-
-      }
+      return componentTypeRetrievalService.getComponentType(getResourceType());
+      //      return getResourceAsType(getResourceType(), getResourceResolver(),
+      //      ComponentTypeResource.class);
+    } catch (final ComponentTypeRetrievalException exception) {
+      //      try {
+      //        return getResourceAsType("/libs/" + getResourceType(), getResourceResolver(),
+      //            ComponentTypeResource.class);
+      //      } catch (final InvalidResourceTypeException exception1) {
+      //        LOG.warn(
+      //            "Unable to retrieve ComponentType for {}.  {} resourceType found, but could
+      //            not be "
+      //            + "adapted to ComponentType.", getPath(), getResourceType());
+      //      } catch (final ResourceNotFoundException exception1) {
+      //        LOG.warn("Unable to retrieve ComponentType for {}.  resourceType {} not found.",
+      //        getPath(),
+      //            getResourceType());
+      //
+      //      }
       LOG.warn("Unable to retrieve ComponentType for {}: {}", getPath(), exception.getMessage());
     }
     throw new InvalidComponentTypeException(getPath(), getResourceType());
@@ -316,13 +339,16 @@ public class BaseContentPage extends BasePage {
                    jcrPropertyName = "allowedUiFrameworks",
                    defaultValue = "[all]")
   public List<UiFramework> getAllowedUiFrameworks() {
-    final List<String> allowedFrameworkPaths = Arrays.asList(getAllowedUiFrameworkPaths());
+    //    final List<String> allowedFrameworkPaths = Arrays.asList(getAllowedUiFrameworkPaths());
 
-    if (!allowedFrameworkPaths.isEmpty()) {
-      return getResourcesAsType(allowedFrameworkPaths, getResourceResolver(), UiFramework.class);
+    //    if (!allowedFrameworkPaths.isEmpty()) {
+    //      return getResourcesAsType(allowedFrameworkPaths, getResourceResolver(), UiFramework
+    //      .class);
+    //    }
+    if (allowedUiFrameworkService != null) {
+      return allowedUiFrameworkService.getAllowedUiFrameworks();
     }
-
-    return getAllUiFrameworks(getResourceResolver(), true, false);
+    return Collections.emptyList();
   }
 
   /**

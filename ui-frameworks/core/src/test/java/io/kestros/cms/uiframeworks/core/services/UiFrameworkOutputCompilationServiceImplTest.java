@@ -18,19 +18,34 @@
 
 package io.kestros.cms.uiframeworks.core.services;
 
-import static io.kestros.commons.uilibraries.filetypes.ScriptType.CSS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.exceptions.VendorLibraryRetrievalException;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkCompilationAddonService;
+import io.kestros.cms.uiframeworks.api.services.VendorLibraryRetrievalService;
+import io.kestros.cms.uiframeworks.core.models.UiFrameworkResource;
+import io.kestros.cms.uiframeworks.core.models.VendorLibraryResource;
+import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.uilibraries.services.compilation.UiLibraryCompilationService;
+import io.kestros.commons.uilibraries.api.exceptions.NoMatchingCompilerException;
+import io.kestros.commons.uilibraries.api.services.UiLibraryCompilationService;
+import io.kestros.commons.uilibraries.basecompilers.filetypes.ScriptTypes;
+import io.kestros.commons.uilibraries.basecompilers.filetypes.css.CssFile;
+import io.kestros.commons.uilibraries.basecompilers.services.CssCompilerService;
+import io.kestros.commons.uilibraries.core.services.impl.UiLibraryCompilationServiceImpl;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.felix.hc.api.FormattingResultLog;
@@ -39,254 +54,358 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.osgi.service.component.ComponentContext;
 
 public class UiFrameworkOutputCompilationServiceImplTest {
 
   @Rule
   public SlingContext context = new SlingContext();
 
-  private Resource resource;
-  private UiFramework uiFramework;
+  private UiFrameworkOutputCompilationServiceImpl compilationService;
   private UiLibraryCompilationService uiLibraryCompilationService;
-  private UiFrameworkOutputCompilationServiceImpl uiFrameworkOutputCompilationService;
-  private UiFrameworkCompilationAddonService uiFrameworkCompilationAddonService;
-  private Map<String, Object> properties = new HashMap<>();
+
+  private CssCompilerService cssCompilerService;
+
+  private VendorLibraryRetrievalService vendorLibraryRetrievalService;
+  private UiFrameworkCompilationAddonService addonService1;
+  private UiFrameworkCompilationAddonService addonService2;
+  private UiFrameworkCompilationAddonService addonService3;
+
+  private UiFrameworkResource uiFramework;
+  private VendorLibraryResource vendorLibrary1;
+  private VendorLibraryResource vendorLibrary2;
+
+  private Resource resource;
+
+  private Map<String, Object> uiFrameworkProperties = new HashMap<>();
   private Map<String, Object> vendorLibraryProperties = new HashMap<>();
 
-  private Map<String, Object> scriptTypeFolderProperties = new HashMap<>();
+  private Map<String, Object> cssFolderProperties = new HashMap<>();
 
   private Map<String, Object> fileProperties = new HashMap<>();
-  private Map<String, Object> fileJcrContentProperties = new HashMap<>();
+
+  private Map<String, Object> cssFileProperties = new HashMap<>();
+
+  InputStream file1InputStream;
+  InputStream file2InputStream;
+  InputStream file3InputStream;
+  InputStream file4InputStream;
 
   @Before
   public void setUp() throws Exception {
-    uiLibraryCompilationService = mock(UiLibraryCompilationService.class);
-    uiFrameworkCompilationAddonService = mock(UiFrameworkCompilationAddonService.class);
+    context.addModelsForPackage("io.kestros");
+    compilationService = spy(new UiFrameworkOutputCompilationServiceImpl());
+    uiLibraryCompilationService = spy(new UiLibraryCompilationServiceImpl());
+    cssCompilerService = spy(new CssCompilerService());
+    vendorLibraryRetrievalService = mock(VendorLibraryRetrievalService.class);
 
-    context.registerService(UiLibraryCompilationService.class, uiLibraryCompilationService);
+    addonService1 = mock(UiFrameworkCompilationAddonService.class);
+    addonService2 = mock(UiFrameworkCompilationAddonService.class);
+    addonService3 = mock(UiFrameworkCompilationAddonService.class);
 
-    uiFrameworkOutputCompilationService = new UiFrameworkOutputCompilationServiceImpl();
+    uiFrameworkProperties.put("jcr:primaryType", "kes:UiFramework");
     vendorLibraryProperties.put("jcr:primaryType", "kes:VendorLibrary");
+    fileProperties.put("jcr:primaryType", "nt:file");
+    cssFileProperties.put("jcr:mimeType", "text/css");
+
+    file1InputStream = new ByteArrayInputStream("file-1".getBytes());
+    file2InputStream = new ByteArrayInputStream("file-2".getBytes());
+    file3InputStream = new ByteArrayInputStream("file-3".getBytes());
+    file4InputStream = new ByteArrayInputStream("file-4".getBytes());
+
+    cssFolderProperties.put("include", "file.css");
+
+    vendorLibrary1 = context.create().resource("/etc/vendor-libraries/vendor-library-1",
+        vendorLibraryProperties).adaptTo(VendorLibraryResource.class);
+    context.create().resource("/etc/vendor-libraries/vendor-library-1/css", cssFolderProperties);
+    context.create().resource("/etc/vendor-libraries/vendor-library-1/css/file.css",
+        fileProperties);
+    cssFileProperties.put("jcr:data", file3InputStream);
+    context.create().resource("/etc/vendor-libraries/vendor-library-1/css/file.css/jcr:content",
+        cssFileProperties);
+
+    vendorLibrary2 = context.create().resource("/etc/vendor-libraries/vendor-library-2",
+        vendorLibraryProperties).adaptTo(VendorLibraryResource.class);
+    context.create().resource("/etc/vendor-libraries/vendor-library-2/css", cssFolderProperties);
+    context.create().resource("/etc/vendor-libraries/vendor-library-2/css/file.css",
+        fileProperties);
+    cssFileProperties.put("jcr:data", file4InputStream);
+    context.create().resource("/etc/vendor-libraries/vendor-library-2/css/file.css/jcr:content",
+        cssFileProperties);
   }
 
   @Test
   public void testGetDisplayName() {
-    assertEquals("UI Framework Output Compilation Service",
-        uiFrameworkOutputCompilationService.getDisplayName());
+    assertEquals("UI Framework Output Compilation Service", compilationService.getDisplayName());
+  }
+
+  @Test
+  public void testActivate() {
+    ComponentContext componentContext = mock(ComponentContext.class);
+    compilationService.activate(componentContext);
+    verifyZeroInteractions(componentContext);
+  }
+
+  @Test
+  public void testDeactivate() {
+    ComponentContext componentContext = mock(ComponentContext.class);
+    compilationService.deactivate(componentContext);
+    verifyZeroInteractions(componentContext);
   }
 
   @Test
   public void testRunAdditionalHealthChecks() {
     FormattingResultLog log = spy(new FormattingResultLog());
-    uiFrameworkOutputCompilationService.runAdditionalHealthChecks(log);
-
-    verify(log, never()).debug(any());
-    verify(log, never()).info(any());
-    verify(log, never()).warn(any());
-    verify(log, never()).critical(any());
-    verify(log, never()).healthCheckError(any());
+    compilationService.runAdditionalHealthChecks(log);
+    verifyZeroInteractions(log);
   }
 
   @Test
-  public void testGetOutputWhenStandAloneAndCss() throws InvalidResourceTypeException {
-    context.registerInjectActivateService(uiFrameworkOutputCompilationService);
+  public void testGetUiFrameworkSource()
+      throws NoMatchingCompilerException, InvalidResourceTypeException {
+    cssFolderProperties.put("include", new String[]{"file-1.css", "file-2.css"});
 
-    when(uiLibraryCompilationService.getUiLibraryOutput(any(), any(), any())).thenReturn(
-        ".test-output{}");
+    resource = context.create().resource("/ui-framework", uiFrameworkProperties);
+    context.create().resource("/ui-framework/css", cssFolderProperties);
+    context.create().resource("/ui-framework/css/file-1.css", fileProperties);
+    cssFileProperties.put("jcr:data", file1InputStream);
+    context.create().resource("/ui-framework/css/file-1.css/jcr:content", cssFileProperties);
+    context.create().resource("/ui-framework/css/file-2.css", fileProperties);
+    cssFileProperties.put("jcr:data", file2InputStream);
+    context.create().resource("/ui-framework/css/file-2.css/jcr:content", cssFileProperties);
 
-    resource = context.create().resource("/ui-framework", properties);
+    uiFramework = resource.adaptTo(UiFrameworkResource.class);
 
-    scriptTypeFolderProperties.put("include", "file.css");
-    context.create().resource("/ui-framework/css", scriptTypeFolderProperties);
+    context.registerInjectActivateService(cssCompilerService);
+    context.registerInjectActivateService(uiLibraryCompilationService);
+    context.registerInjectActivateService(compilationService);
 
-    fileProperties.put("jcr:primaryType", "nt:file");
-    context.create().resource("/ui-framework/css/file.css", fileProperties);
-
-    context.create().resource("/ui-framework/css/file.css/jcr:content", fileJcrContentProperties);
-
-    uiFramework = resource.adaptTo(UiFramework.class);
-
-    assertEquals(".test-output{}", uiFramework.getOutput(CSS));
+    assertEquals("file-1\nfile-2",
+        compilationService.getUiFrameworkSource(uiFramework, ScriptTypes.CSS));
+    verify(uiLibraryCompilationService, never()).getUiLibraryOutput( any(), any());
+    verify(uiLibraryCompilationService, times(1)).getLibraryScriptTypes(any(), any());
+    verify(uiLibraryCompilationService, times(1)).getUiLibrarySource(any(), any());
   }
 
   @Test
-  public void testGetCssOutputWhenHasVendorLibrary() throws Exception {
-    context.registerInjectActivateService(uiFrameworkOutputCompilationService);
+  public void testGetUiFrameworkSourceWhenHasVendorLibraries()
+      throws NoMatchingCompilerException, InvalidResourceTypeException,
+             VendorLibraryRetrievalException, VersionRetrievalException {
+    uiFrameworkProperties.put("kes:vendorLibraries",
+        new String[]{"vendor-library-1", "vendor-library-1"});
+    cssFolderProperties.put("include", new String[]{"file-1.css", "file-2.css"});
 
-    when(uiLibraryCompilationService.getUiLibraryOutput(any(), any(), any())).thenReturn(
-        ".test-output{}").thenReturn(".test-output{}").thenReturn("");
+    resource = context.create().resource("/ui-framework", uiFrameworkProperties);
+    context.create().resource("/ui-framework/css", cssFolderProperties);
+    context.create().resource("/ui-framework/css/file-1.css", fileProperties);
+    cssFileProperties.put("jcr:data", file1InputStream);
+    context.create().resource("/ui-framework/css/file-1.css/jcr:content", cssFileProperties);
+    context.create().resource("/ui-framework/css/file-2.css", fileProperties);
+    cssFileProperties.put("jcr:data", file2InputStream);
+    context.create().resource("/ui-framework/css/file-2.css/jcr:content", cssFileProperties);
 
-    context.create().resource("/etc/vendor-libraries",vendorLibraryProperties);
-    context.create().resource("/etc/vendor-libraries/library-1", vendorLibraryProperties);
-    scriptTypeFolderProperties.put("include", "library-1.css");
-    context.create().resource("/etc/vendor-libraries/library-1/css", scriptTypeFolderProperties);
+    when(vendorLibraryRetrievalService.getVendorLibrary(any(), anyBoolean(),
+        anyBoolean())).thenReturn(vendorLibrary1).thenReturn(vendorLibrary2);
 
-    fileProperties.put("jcr:primaryType", "nt:file");
-    context.create().resource("/etc/vendor-libraries/library-1/css/library-1.css", fileProperties);
+    context.registerService(VendorLibraryRetrievalService.class, vendorLibraryRetrievalService);
+    context.registerInjectActivateService(cssCompilerService);
+    context.registerInjectActivateService(uiLibraryCompilationService);
+    context.registerInjectActivateService(compilationService);
 
-    context.create().resource("/etc/vendor-libraries/library-1/css/library-1.css/jcr:content",
-        fileJcrContentProperties);
+    uiFramework = resource.adaptTo(UiFrameworkResource.class);
 
-    context.create().resource("/etc/vendor-libraries/library-2", vendorLibraryProperties);
-    scriptTypeFolderProperties.put("include", "library-2.css");
-    context.create().resource("/etc/vendor-libraries/library-2/css", scriptTypeFolderProperties);
-
-    fileProperties.put("jcr:primaryType", "nt:file");
-    context.create().resource("/etc/vendor-libraries/library-1/css/library-2.css", fileProperties);
-
-    context.create().resource("/etc/vendor-libraries/library-1/css/library-2.css/jcr:content",
-        fileJcrContentProperties);
-
-    properties.put("kes:vendorLibraries", new String[]{"library-1", "library-2"});
-
-    resource = context.create().resource("/ui-framework", properties);
-    uiFramework = resource.adaptTo(UiFramework.class);
-
-    assertEquals(".test-output{}\n.test-output{}",
-        uiFrameworkOutputCompilationService.getUiFrameworkOutput(uiFramework, CSS));
+    assertEquals("file-3\nfile-4\nfile-1\nfile-2",
+        compilationService.getUiFrameworkSource(uiFramework, ScriptTypes.CSS));
+    verify(uiLibraryCompilationService, never()).getUiLibraryOutput( any(), any());
+    verify(uiLibraryCompilationService, times(3)).getLibraryScriptTypes(any(), any());
+    verify(uiLibraryCompilationService, times(3)).getUiLibrarySource(any(), any());
   }
 
   @Test
-  public void testGetCssOutputWhenHasVendorLibraryAndVendorLibraryIsInvalid() throws Exception {
-    context.registerInjectActivateService(uiFrameworkOutputCompilationService);
+  public void testGetUiFrameworkSourceWhenCssFileIsInvalidResourceType()
+      throws NoMatchingCompilerException, InvalidResourceTypeException,
+             VendorLibraryRetrievalException, VersionRetrievalException {
+    uiFrameworkProperties.put("kes:vendorLibraries",
+        new String[]{"vendor-library-1", "vendor-library-1"});
 
-    when(uiLibraryCompilationService.getUiLibraryOutput(any(), any(), any())).thenThrow(InvalidResourceTypeException.class);
+    resource = context.create().resource("/ui-framework", uiFrameworkProperties);
 
-    context.create().resource("/etc/vendor-libraries");
-    context.create().resource("/etc/vendor-libraries/library-1",vendorLibraryProperties);
-    scriptTypeFolderProperties.put("include", "library-1.css");
-    context.create().resource("/etc/vendor-libraries/library-1/css", scriptTypeFolderProperties);
+    when(vendorLibraryRetrievalService.getVendorLibrary(any(), anyBoolean(),
+        anyBoolean())).thenReturn(vendorLibrary1).thenReturn(vendorLibrary2);
 
-    fileProperties.put("jcr:primaryType", "nt:file");
-    context.create().resource("/etc/vendor-libraries/library-1/css/library-1.css", fileProperties);
+    doThrow(new InvalidResourceTypeException("", CssFile.class)).when(
+        uiLibraryCompilationService).getUiLibrarySource(any(), any());
 
-    context.create().resource("/etc/vendor-libraries/library-1/css/library-1.css/jcr:content",
-        fileJcrContentProperties);
+    context.registerService(VendorLibraryRetrievalService.class, vendorLibraryRetrievalService);
+    context.registerInjectActivateService(cssCompilerService);
+    context.registerInjectActivateService(uiLibraryCompilationService);
+    context.registerInjectActivateService(compilationService);
 
-    properties.put("kes:vendorLibraries", new String[]{"library-1"});
+    uiFramework = resource.adaptTo(UiFrameworkResource.class);
 
-    resource = context.create().resource("/ui-framework", properties);
-    uiFramework = resource.adaptTo(UiFramework.class);
-
-    assertEquals("",
-        uiFrameworkOutputCompilationService.getUiFrameworkOutput(uiFramework, CSS));
+    assertEquals("", compilationService.getUiFrameworkSource(uiFramework, ScriptTypes.CSS));
+    verify(uiLibraryCompilationService, never()).getUiLibraryOutput( any(), any());
+    verify(uiLibraryCompilationService, never()).getLibraryScriptTypes(any(), any());
+    verify(uiLibraryCompilationService, times(3)).getUiLibrarySource(any(), any());
   }
 
   @Test
-  public void testGetCssOutputWhenHasVendorLibraryAndUiFrameworkCss() throws Exception {
-    context.registerInjectActivateService(uiFrameworkOutputCompilationService);
+  public void testGetUiFrameworkSourceWhenHasAddonServices()
+      throws NoMatchingCompilerException, InvalidResourceTypeException {
+    cssFolderProperties.put("include", new String[]{"file-1.css", "file-2.css"});
 
-    when(uiLibraryCompilationService.getUiLibraryOutput(any(), any(), any())).thenReturn(".vendor-library{}").thenReturn(".ui-framework{}");
+    resource = context.create().resource("/ui-framework", uiFrameworkProperties);
+    context.create().resource("/ui-framework/css", cssFolderProperties);
+    context.create().resource("/ui-framework/css/file-1.css", fileProperties);
+    cssFileProperties.put("jcr:data", file1InputStream);
+    context.create().resource("/ui-framework/css/file-1.css/jcr:content", cssFileProperties);
+    context.create().resource("/ui-framework/css/file-2.css", fileProperties);
+    cssFileProperties.put("jcr:data", file2InputStream);
+    context.create().resource("/ui-framework/css/file-2.css/jcr:content", cssFileProperties);
 
-    context.create().resource("/etc/vendor-libraries");
-    context.create().resource("/etc/vendor-libraries/library-1",vendorLibraryProperties);
-    scriptTypeFolderProperties.put("include", "library-1.css");
-    context.create().resource("/etc/vendor-libraries/library-1/css", scriptTypeFolderProperties);
+    uiFramework = resource.adaptTo(UiFrameworkResource.class);
 
-    fileProperties.put("jcr:primaryType", "nt:file");
-    context.create().resource("/etc/vendor-libraries/library-1/css/library-1.css", fileProperties);
+    when(addonService1.getAppendedOutput(uiFramework, ScriptTypes.CSS)).thenReturn("addon-1");
+    when(addonService2.getAppendedOutput(uiFramework, ScriptTypes.CSS)).thenReturn("addon-2");
+    when(addonService3.getAppendedOutput(uiFramework, ScriptTypes.CSS)).thenReturn("addon-3");
 
-    context.create().resource("/etc/vendor-libraries/library-1/css/library-1.css/jcr:content",
-        fileJcrContentProperties);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService1);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService2);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService3);
+    context.registerInjectActivateService(cssCompilerService);
+    context.registerInjectActivateService(uiLibraryCompilationService);
+    context.registerInjectActivateService(compilationService);
 
-    properties.put("kes:vendorLibraries", new String[]{"library-1"});
-
-    resource = context.create().resource("/ui-framework", properties);
-    uiFramework = resource.adaptTo(UiFramework.class);
-
-    assertEquals(".vendor-library{}\n.ui-framework{}",
-        uiFrameworkOutputCompilationService.getUiFrameworkOutput(uiFramework, CSS));
+    assertEquals("file-1\nfile-2\naddon-1\naddon-2\naddon-3",
+        compilationService.getUiFrameworkSource(uiFramework, ScriptTypes.CSS));
+    verify(uiLibraryCompilationService, never()).getUiLibraryOutput( any(), any());
+    verify(uiLibraryCompilationService, times(1)).getLibraryScriptTypes(any(), any());
+    verify(uiLibraryCompilationService, times(1)).getUiLibrarySource(any(), any());
   }
 
   @Test
-  public void testGetCssOutputWhenUiFrameworkThrowsInvalidResourceType() throws Exception {
-    context.registerInjectActivateService(uiFrameworkOutputCompilationService);
+  public void testGetUiFrameworkScriptTypes()
+      throws NoMatchingCompilerException, InvalidResourceTypeException {
+    cssFolderProperties.put("include", new String[]{"file-1.css", "file-2.css"});
 
-    when(uiLibraryCompilationService.getUiLibraryOutput(any(), any(), any())).thenThrow(InvalidResourceTypeException.class);
+    resource = context.create().resource("/ui-framework", uiFrameworkProperties);
+    context.create().resource("/ui-framework/css", cssFolderProperties);
+    context.create().resource("/ui-framework/css/file-1.css", fileProperties);
+    cssFileProperties.put("jcr:data", file1InputStream);
+    context.create().resource("/ui-framework/css/file-1.css/jcr:content", cssFileProperties);
+    context.create().resource("/ui-framework/css/file-2.css", fileProperties);
+    cssFileProperties.put("jcr:data", file2InputStream);
+    context.create().resource("/ui-framework/css/file-2.css/jcr:content", cssFileProperties);
 
-    resource = context.create().resource("/ui-framework", properties);
-    uiFramework = resource.adaptTo(UiFramework.class);
+    uiFramework = resource.adaptTo(UiFrameworkResource.class);
 
-    assertEquals("",
-        uiFrameworkOutputCompilationService.getUiFrameworkOutput(uiFramework, CSS));
+    context.registerInjectActivateService(cssCompilerService);
+    context.registerInjectActivateService(uiLibraryCompilationService);
+    context.registerInjectActivateService(compilationService);
+
+    assertEquals(1,
+        compilationService.getUiFrameworkScriptTypes(uiFramework, ScriptTypes.CSS).size());
   }
 
   @Test
-  public void testGetCssOutputWhenHasComponentsWithUiFrameworkView() throws Exception {
-    context.registerInjectActivateService(uiFrameworkOutputCompilationService);
+  public void testGetUiFrameworkScriptTypesWhenHasVendorLibraries()
+      throws NoMatchingCompilerException, InvalidResourceTypeException,
+             VendorLibraryRetrievalException, VersionRetrievalException {
+    uiFrameworkProperties.put("kes:vendorLibraries",
+        new String[]{"vendor-library-1", "vendor-library-1"});
+    cssFolderProperties.put("include", new String[]{"file-1.css", "file-2.css"});
 
-    when(uiLibraryCompilationService.getUiLibraryOutput(any(), any(), any())).thenReturn(
-        ".test-output{}");
+    resource = context.create().resource("/ui-framework", uiFrameworkProperties);
+    context.create().resource("/ui-framework/css", cssFolderProperties);
+    context.create().resource("/ui-framework/css/file-1.css", fileProperties);
+    cssFileProperties.put("jcr:data", file1InputStream);
+    context.create().resource("/ui-framework/css/file-1.css/jcr:content", cssFileProperties);
+    context.create().resource("/ui-framework/css/file-2.css", fileProperties);
+    cssFileProperties.put("jcr:data", file2InputStream);
+    context.create().resource("/ui-framework/css/file-2.css/jcr:content", cssFileProperties);
 
-    context.create().resource("/apps/components");
+    when(vendorLibraryRetrievalService.getVendorLibrary(any(), anyBoolean(),
+        anyBoolean())).thenReturn(vendorLibrary1).thenReturn(vendorLibrary2);
 
-    scriptTypeFolderProperties.put("include", "library-1.css");
-    context.create().resource("/apps/components/component/test-code/css",
-        scriptTypeFolderProperties);
+    context.registerService(VendorLibraryRetrievalService.class, vendorLibraryRetrievalService);
+    context.registerInjectActivateService(cssCompilerService);
+    context.registerInjectActivateService(uiLibraryCompilationService);
+    context.registerInjectActivateService(compilationService);
 
-    context.create().resource("/apps/components/component/test-code/css/library-1.css",
-        fileProperties);
+    uiFramework = resource.adaptTo(UiFrameworkResource.class);
 
-    properties.put("kes:uiFrameworkCode", "test-code");
-
-    resource = context.create().resource("/ui-framework", properties);
-    uiFramework = resource.adaptTo(UiFramework.class);
-
-    assertEquals(".test-output{}", uiFramework.getOutput(CSS));
+    assertEquals(1,
+        compilationService.getUiFrameworkScriptTypes(uiFramework, ScriptTypes.CSS).size());
   }
 
   @Test
-  public void testGetCssOutputWhenHasAddonService() throws Exception {
-    when(uiFrameworkCompilationAddonService.getAppendedOutput(any(), any())).thenReturn(
-        ".addon-css{}");
-    context.registerService(UiFrameworkCompilationAddonService.class,
-        uiFrameworkCompilationAddonService);
-    context.registerInjectActivateService(uiFrameworkOutputCompilationService);
+  public void testGetUiFrameworkScriptTypesWhenHasAddonServices()
+      throws NoMatchingCompilerException, InvalidResourceTypeException {
 
-    when(uiLibraryCompilationService.getUiLibraryOutput(any(), any(), any())).thenReturn(
-        ".test-output{}");
+    resource = context.create().resource("/ui-framework", uiFrameworkProperties);
 
-    context.create().resource("/apps/components");
+    when(addonService1.getAppendedOutput(uiFramework, ScriptTypes.CSS)).thenReturn("addon-1");
+    when(addonService2.getAppendedOutput(uiFramework, ScriptTypes.CSS)).thenReturn("addon-2");
+    when(addonService3.getAppendedOutput(uiFramework, ScriptTypes.CSS)).thenReturn("addon-3");
 
-    scriptTypeFolderProperties.put("include", "library-1.css");
-    context.create().resource("/apps/components/component/test-code/css",
-        scriptTypeFolderProperties);
+    when(addonService1.getAddonScriptTypes(any(),any())).thenReturn(Collections.singletonList(ScriptTypes.CSS));
 
-    context.create().resource("/apps/components/component/test-code/css/library-1.css",
-        fileProperties);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService1);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService2);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService3);
+    context.registerInjectActivateService(cssCompilerService);
+    context.registerInjectActivateService(uiLibraryCompilationService);
+    context.registerInjectActivateService(compilationService);
 
-    properties.put("kes:uiFrameworkCode", "test-code");
+    uiFramework = resource.adaptTo(UiFrameworkResource.class);
 
-    resource = context.create().resource("/ui-framework", properties);
-    uiFramework = resource.adaptTo(UiFramework.class);
-
-    assertEquals(".test-output{}\n.addon-css{}", uiFramework.getOutput(CSS));
+    assertEquals(1,
+        compilationService.getUiFrameworkScriptTypes(uiFramework, ScriptTypes.CSS).size());
   }
 
   @Test
-  public void testGetCssOutputWhenHasAddonServiceAndThrowInvalidResourceTypeException() throws Exception {
-    when(uiFrameworkCompilationAddonService.getAppendedOutput(any(), any())).thenThrow(InvalidResourceTypeException.class);
-    context.registerService(UiFrameworkCompilationAddonService.class,
-        uiFrameworkCompilationAddonService);
-    context.registerInjectActivateService(uiFrameworkOutputCompilationService);
+  public void testGetUiFrameworkScriptTypesWhenHasWithInvalidResourceType()
+      throws NoMatchingCompilerException, InvalidResourceTypeException {
 
-    when(uiLibraryCompilationService.getUiLibraryOutput(any(), any(), any())).thenReturn(
-        ".test-output{}");
+    resource = context.create().resource("/ui-framework", uiFrameworkProperties);
 
-    context.create().resource("/apps/components");
+    when(addonService1.getAppendedOutput(uiFramework, ScriptTypes.CSS)).thenReturn("addon-1");
+    when(addonService2.getAppendedOutput(uiFramework, ScriptTypes.CSS)).thenReturn("addon-2");
+    when(addonService3.getAppendedOutput(uiFramework, ScriptTypes.CSS)).thenReturn("addon-3");
 
-    scriptTypeFolderProperties.put("include", "library-1.css");
-    context.create().resource("/apps/components/component/test-code/css",
-        scriptTypeFolderProperties);
+    when(addonService1.getAddonScriptTypes(any(),any())).thenThrow(new InvalidResourceTypeException("", VendorLibraryResource.class));
+    when(addonService2.getAddonScriptTypes(any(),any())).thenReturn(Collections.singletonList(ScriptTypes.CSS));
 
-    context.create().resource("/apps/components/component/test-code/css/library-1.css",
-        fileProperties);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService1);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService2);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService3);
+    context.registerInjectActivateService(cssCompilerService);
+    context.registerInjectActivateService(uiLibraryCompilationService);
+    context.registerInjectActivateService(compilationService);
 
-    properties.put("kes:uiFrameworkCode", "test-code");
+    uiFramework = resource.adaptTo(UiFrameworkResource.class);
 
-    resource = context.create().resource("/ui-framework", properties);
-    uiFramework = resource.adaptTo(UiFramework.class);
+    assertEquals(1,
+        compilationService.getUiFrameworkScriptTypes(uiFramework, ScriptTypes.CSS).size());
+  }
 
-    assertEquals(".test-output{}", uiFramework.getOutput(CSS));
+  @Test
+  public void testGetUiFrameworkScriptTypesWhenUiLibraryCompilationServiceIsNull()
+      throws NoMatchingCompilerException, InvalidResourceTypeException {
+    context.registerInjectActivateService(compilationService);
+
+    assertEquals(0,
+        compilationService.getUiFrameworkScriptTypes(uiFramework, ScriptTypes.CSS).size());
+  }
+
+  @Test
+  public void testGetAddonServices() {
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService1);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService2);
+    context.registerService(UiFrameworkCompilationAddonService.class, addonService3);
+
+    context.registerInjectActivateService(compilationService);
+
+    assertEquals(3, compilationService.getAddonServices().size());
   }
 }

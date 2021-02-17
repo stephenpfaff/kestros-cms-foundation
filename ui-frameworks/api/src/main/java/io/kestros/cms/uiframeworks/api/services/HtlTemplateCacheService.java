@@ -18,6 +18,7 @@
 
 package io.kestros.cms.uiframeworks.api.services;
 
+import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
@@ -43,8 +44,10 @@ public interface HtlTemplateCacheService extends ManagedCacheService, ManagedSer
    *
    * @param uiFramework UiFramework to cache compiled HtlTemplateFile output for.
    * @throws CacheBuilderException Failed to build HTL Template cache.
+   * @throws HtlTemplateFileRetrievalException Failed to find HTL template files.
    */
-  void cacheCompiledHtlTemplates(UiFramework uiFramework) throws CacheBuilderException;
+  void cacheCompiledHtlTemplates(UiFramework uiFramework)
+      throws CacheBuilderException, HtlTemplateFileRetrievalException;
 
   /**
    * Cache all CompiledHtlTemplate files for all UiFrameworks.

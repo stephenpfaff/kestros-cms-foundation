@@ -21,7 +21,8 @@ package io.kestros.cms.uiframeworks.api.services;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.uilibraries.filetypes.ScriptType;
+import io.kestros.commons.uilibraries.api.models.ScriptType;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 /**
@@ -38,6 +39,17 @@ public interface UiFrameworkCompilationAddonService extends ManagedService {
    * @throws InvalidResourceTypeException Specified UiFramework was invalid.
    */
   String getAppendedOutput(@Nonnull final UiFramework uiFramework,
+      @Nonnull final ScriptType scriptType) throws InvalidResourceTypeException;
+
+  /**
+   * Retrieves all ScriptTypes for a given UiFramework.
+   *
+   * @param uiFramework UiFramework.
+   * @param scriptType Baseline ScriptType.
+   * @return All ScriptTypes for a given UiFramework.
+   * @throws InvalidResourceTypeException UiFramework was invalid.
+   */
+  List<ScriptType> getAddonScriptTypes(@Nonnull final UiFramework uiFramework,
       @Nonnull final ScriptType scriptType) throws InvalidResourceTypeException;
 
 }

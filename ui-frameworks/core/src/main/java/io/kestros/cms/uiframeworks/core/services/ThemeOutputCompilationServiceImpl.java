@@ -18,16 +18,23 @@
 
 package io.kestros.cms.uiframeworks.core.services;
 
-import static io.kestros.commons.uilibraries.filetypes.ScriptType.LESS;
 
-import com.inet.lib.less.Less;
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.uiframeworks.api.models.Theme;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.services.ThemeOutputCompilationService;
+import io.kestros.cms.uiframeworks.api.services.UiFrameworkOutputCompilationService;
+import io.kestros.cms.uiframeworks.core.models.ThemeResource;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.uilibraries.exceptions.ScriptCompressionException;
-import io.kestros.commons.uilibraries.filetypes.ScriptType;
-import io.kestros.commons.uilibraries.services.compilation.UiLibraryCompilationService;
-import io.kestros.commons.uilibraries.services.minification.UiLibraryMinificationService;
+import io.kestros.commons.uilibraries.api.exceptions.NoMatchingCompilerException;
+import io.kestros.commons.uilibraries.api.models.FrontendLibrary;
+import io.kestros.commons.uilibraries.api.models.ScriptType;
+import io.kestros.commons.uilibraries.api.services.UiLibraryCompilationService;
+import io.kestros.commons.uilibraries.core.services.impl.UiLibraryCompilationServiceImpl;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.hc.api.FormattingResultLog;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -42,36 +49,57 @@ import org.slf4j.LoggerFactory;
  */
 @Component(immediate = true,
            service = ThemeOutputCompilationService.class)
-public class ThemeOutputCompilationServiceImpl implements ThemeOutputCompilationService {
+public class ThemeOutputCompilationServiceImpl extends UiLibraryCompilationServiceImpl
+    implements ThemeOutputCompilationService, PerformanceService {
 
   private static final Logger LOG = LoggerFactory.getLogger(
       ThemeOutputCompilationServiceImpl.class);
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private UiLibraryCompilationService uiLibraryCompilationService;
+  private PerformanceTrackerService performanceTrackerService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private UiLibraryMinificationService uiLibraryMinificationService;
+  private UiFrameworkOutputCompilationService uiFrameworkOutputCompilationService;
+
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private UiLibraryCompilationService uiLibraryCompilationService;
 
   @Override
-  public String getThemeOutput(Theme theme, ScriptType scriptType, Boolean minify)
-      throws InvalidResourceTypeException {
-    String uncompiledOutput = getUncompiledThemeOutput(theme, scriptType);
-    if (ScriptType.CSS.equals(scriptType) || LESS.equals(scriptType)) {
-      return Less.compile(null, uncompiledOutput, minify);
-    }
+  public List<ScriptType> getThemeScriptTypes(Theme theme, ScriptType scriptType) {
+    String tracker = startPerformanceTracking();
+    List<ScriptType> scriptTypes = new ArrayList<>();
+    scriptTypes.addAll(
+        uiFrameworkOutputCompilationService.getUiFrameworkScriptTypes(theme.getUiFramework(),
+            scriptType));
 
-    if (uiLibraryMinificationService != null && minify) {
-      try {
-        return uiLibraryMinificationService.getMinifiedOutput(uncompiledOutput, scriptType);
-      } catch (final ScriptCompressionException e) {
-        LOG.error("Unable to compress {} script for Theme {} when minification is {}. {}",
-            scriptType.getName(), theme.getPath(), minify, e.getMessage());
+    for (ScriptType themeScriptType : uiLibraryCompilationService.getLibraryScriptTypes(theme,
+        scriptType.getName())) {
+      if (!scriptTypes.contains(themeScriptType)) {
+        scriptTypes.add(themeScriptType);
       }
     }
-    return uncompiledOutput;
+
+    endPerformanceTracking(tracker);
+    return scriptTypes;
+  }
+
+  @Override
+  public String getUiLibraryOutput(FrontendLibrary library, ScriptType scriptType)
+      throws InvalidResourceTypeException, NoMatchingCompilerException {
+    String tracker = startPerformanceTracking();
+    if (library instanceof Theme) {
+      Theme theme = (Theme) library;
+      String themeSource = getThemeSource(theme, scriptType);
+      endPerformanceTracking(tracker);
+      return uiLibraryCompilationService.getCompiler(getThemeScriptTypes(theme, scriptType),
+          uiLibraryCompilationService.getCompilers()).getOutput(themeSource);
+    }
+    endPerformanceTracking(tracker);
+    throw new InvalidResourceTypeException(library.getPath(), ThemeResource.class,
+        "Failed to compile Theme output. Resource was not a valid Resource Theme resourceType");
   }
 
   @Override
@@ -81,12 +109,12 @@ public class ThemeOutputCompilationServiceImpl implements ThemeOutputCompilation
 
   @Override
   public void activate(ComponentContext componentContext) {
-
+    LOG.info("Activating {}.", getDisplayName());
   }
 
   @Override
   public void deactivate(ComponentContext componentContext) {
-
+    LOG.info("Deactivating {}.", getDisplayName());
   }
 
   @Override
@@ -103,16 +131,31 @@ public class ThemeOutputCompilationServiceImpl implements ThemeOutputCompilation
    * @throws InvalidResourceTypeException Thrown when a referenced dependency could not be
    *     adapted to UiLibrary.
    */
-  private String getUncompiledThemeOutput(Theme theme, ScriptType scriptType)
-      throws InvalidResourceTypeException {
-    final StringBuilder output = new StringBuilder();
-    output.append(theme.getUiFramework().getOutput(scriptType));
-    if (uiLibraryCompilationService != null) {
-      String uncompiledThemeLibrary = uiLibraryCompilationService.getUiLibraryOutput(theme,
-          scriptType, false);
-      output.append(uncompiledThemeLibrary);
+  @Override
+  public String getThemeSource(Theme theme, ScriptType scriptType)
+      throws NoMatchingCompilerException, InvalidResourceTypeException {
+    String tracker = startPerformanceTracking();
+    final StringBuilder source = new StringBuilder();
+    if (uiLibraryCompilationService != null && uiFrameworkOutputCompilationService != null) {
+      UiFramework uiFramework = theme.getUiFramework();
+      String uiFrameworkSource = uiFrameworkOutputCompilationService.getUiFrameworkSource(
+          uiFramework, scriptType);
+      if (StringUtils.isNotEmpty(uiFrameworkSource)) {
+        source.append(uiFrameworkSource);
+      }
+
+      String themeSource = uiLibraryCompilationService.getUiLibrarySource(theme, scriptType);
+      if (StringUtils.isNotEmpty(source.toString()) && StringUtils.isNotEmpty(themeSource)) {
+        source.append("\n");
+      }
+      source.append(themeSource);
     }
-    return output.toString();
+    endPerformanceTracking(tracker);
+    return source.toString();
   }
 
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
+  }
 }

@@ -70,7 +70,7 @@
       "inline-variations-component-code": {
         "jcr:primaryType": "nt:unstructured",
         "sling:resourceType": "kestros/commons/components/content/code",
-        "text": "&lt;sly\\n    data-sly-use.link=&quot;${'io.kestros.cms.components.basic.content.button.Button'}&quot;\\n    data-sly-use.context=&quot;${'io.kestros.cms.foundation.content.ComponentRequestContext'}&quot;/&gt;\\n\\n&lt;button href=&quot;${button.link}&quot; class=&quot;my-button-class ${context.inlineVariations}&quot;&gt;${button.text}&lt;/button&gt;",
+        "text": "&lt;sly\\n    data-sly-use.link=&quot;${'io.kestros.cms.components.basic.content.button.Button'}&quot;\\n    data-sly-use.context=&quot;${'io.kestros.cms.sitebuilding.api.models.ComponentRequestContext'}&quot;/&gt;\\n\\n&lt;button href=&quot;${button.link}&quot; class=&quot;my-button-class ${context.inlineVariations}&quot;&gt;${button.text}&lt;/button&gt;",
         "language": "html"
       }
     }

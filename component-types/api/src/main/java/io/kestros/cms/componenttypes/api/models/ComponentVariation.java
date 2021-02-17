@@ -18,24 +18,13 @@
 
 package io.kestros.cms.componenttypes.api.models;
 
-import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
-import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
-import io.kestros.commons.uilibraries.UiLibrary;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.models.annotations.Model;
+import io.kestros.cms.modeltypes.IconResource;
+import io.kestros.commons.uilibraries.api.models.FrontendLibrary;
 
 /**
  * Style variation types for ComponentUiFrameworkViews.
  */
-@KestrosModel(docPaths = {
-    "/content/guide-articles/kestros-cms/foundation/creating-new-component-types",
-    "/content/guide-articles/kestros-cms/foundation/implementing-ui-framework-views",
-    "/content/guide-articles/kestros-cms/foundation/defining-content-areas",
-    "/content/guide-articles/kestros-cms/foundation/creating-component-variations",
-    "/content/guide-articles/kestros-cms/foundation/grouping-components"})
-@Model(adaptables = Resource.class,
-       resourceType = "kes:ComponentVariation")
-public class ComponentVariation extends UiLibrary {
+public interface ComponentVariation extends FrontendLibrary, IconResource {
 
   /**
    * Whether the variation must be included in a componentTypes's content script. When false, the
@@ -44,17 +33,7 @@ public class ComponentVariation extends UiLibrary {
    * @return Whether the variation must be included in a componentTypes's content script. When
    *     false, the variation's class will be added to a component's wrapper div.
    */
-  @KestrosProperty(description =
-                       "When set to true, the variation will not be added to a component's "
-                       + "wrapper div when applied, and must be included in the component's "
-                       + "content script using inlineVariations.",
-                   jcrPropertyName = "inline",
-                   configurable = true,
-                   defaultValue = "false",
-                   sampleValue = "false")
-  public boolean isInlineVariation() {
-    return getProperty("inline", Boolean.FALSE);
-  }
+  boolean isInlineVariation();
 
   /**
    * Components without variation properties will be assigned this (and possibly other) variation by
@@ -63,22 +42,6 @@ public class ComponentVariation extends UiLibrary {
    * @return Components without variation properties will be assigned this (and possibly other)
    *     variation by default.
    */
-  @KestrosProperty(description = "When set to true, components without variation properties will "
-                                 + "be assigned this (and possibly other) variation by default.",
-                   jcrPropertyName = "inline",
-                   configurable = true,
-                   defaultValue = "false",
-                   sampleValue = "false")
-  public boolean isDefault() {
-    return getProperty("default", Boolean.FALSE);
-  }
+  boolean isDefault();
 
-  /**
-   * Font Awesome Icon class.
-   *
-   * @return Font Awesome Icon class.
-   */
-  public String getFontAwesomeIcon() {
-    return getProperty("fontAwesomeIcon", "fas fa-paint-brush");
-  }
 }

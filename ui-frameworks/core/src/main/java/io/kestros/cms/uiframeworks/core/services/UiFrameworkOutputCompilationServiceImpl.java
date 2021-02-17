@@ -18,14 +18,18 @@
 
 package io.kestros.cms.uiframeworks.core.services;
 
+import io.kestros.cms.performanceservices.api.services.PerformanceService;
+import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkCompilationAddonService;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkOutputCompilationService;
 import io.kestros.commons.osgiserviceutils.utils.OsgiServiceUtils;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.uilibraries.filetypes.ScriptType;
-import io.kestros.commons.uilibraries.services.compilation.UiLibraryCompilationService;
+import io.kestros.commons.uilibraries.api.exceptions.NoMatchingCompilerException;
+import io.kestros.commons.uilibraries.api.models.ScriptType;
+import io.kestros.commons.uilibraries.api.services.UiLibraryCompilationService;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
@@ -45,21 +49,25 @@ import org.slf4j.LoggerFactory;
            service = {UiFrameworkOutputCompilationService.class},
            property = "service.ranking:Integer=100")
 public class UiFrameworkOutputCompilationServiceImpl
-    implements UiFrameworkOutputCompilationService {
+    implements UiFrameworkOutputCompilationService, PerformanceService {
 
   private static final Logger LOG = LoggerFactory.getLogger(
       UiFrameworkOutputCompilationServiceImpl.class);
+
+  private ComponentContext componentContext;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
   private UiLibraryCompilationService uiLibraryCompilationService;
 
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private PerformanceTrackerService performanceTrackerService;
+
   @Override
   public String getDisplayName() {
     return "UI Framework Output Compilation Service";
   }
-
-  private ComponentContext componentContext;
 
   @Override
   public void activate(ComponentContext componentContext) {
@@ -68,37 +76,78 @@ public class UiFrameworkOutputCompilationServiceImpl
 
   @Override
   public void deactivate(ComponentContext componentContext) {
-
   }
 
   @Override
   public void runAdditionalHealthChecks(FormattingResultLog log) {
-
   }
 
   @Override
-  public String getUiFrameworkOutput(UiFramework uiFramework, ScriptType scriptType) {
-    final StringBuilder output = new StringBuilder();
+  public List<ScriptType> getUiFrameworkScriptTypes(UiFramework uiFramework,
+      ScriptType scriptType) {
+    String tracker = startPerformanceTracking();
+    List<ScriptType> scriptTypes = new ArrayList<>();
+    if (uiLibraryCompilationService != null) {
+      for (VendorLibrary vendorLibrary : uiFramework.getVendorLibraries()) {
+        for (ScriptType libraryScriptType : uiLibraryCompilationService.getLibraryScriptTypes(
+            vendorLibrary, scriptType.getName())) {
+          if (!scriptTypes.contains(libraryScriptType)) {
+            scriptTypes.add(libraryScriptType);
+          }
+        }
+      }
+
+      for (ScriptType libraryScriptType : uiLibraryCompilationService.getLibraryScriptTypes(
+          uiFramework, scriptType.getName())) {
+        if (!scriptTypes.contains(libraryScriptType)) {
+          scriptTypes.add(libraryScriptType);
+        }
+      }
+
+      for (UiFrameworkCompilationAddonService addonService : getAddonServices()) {
+        try {
+          for (ScriptType libraryScriptType : addonService.getAddonScriptTypes(uiFramework,
+              scriptType)) {
+            if (!scriptTypes.contains(libraryScriptType)) {
+              scriptTypes.add(libraryScriptType);
+            }
+          }
+        } catch (InvalidResourceTypeException e) {
+          LOG.warn(
+              String.format("Unable to append UiFramework %s for service %s.", scriptType.getName(),
+                  addonService.getDisplayName()));
+        }
+      }
+    }
+    endPerformanceTracking(tracker);
+    return scriptTypes;
+  }
+
+  @Override
+  public String getUiFrameworkSource(UiFramework uiFramework, ScriptType scriptType)
+      throws NoMatchingCompilerException {
+    final StringBuilder uiFrameworkSource = new StringBuilder();
+    final String tracker = startPerformanceTracking();
 
     for (VendorLibrary vendorLibrary : uiFramework.getVendorLibraries()) {
       try {
-        if (StringUtils.isNotEmpty(output.toString())) {
-          output.append("\n");
+        if (StringUtils.isNotEmpty(uiFrameworkSource.toString())) {
+          uiFrameworkSource.append("\n");
         }
-        output.append(vendorLibrary.getOutput(scriptType, false));
+        uiFrameworkSource.append(
+            uiLibraryCompilationService.getUiLibrarySource(vendorLibrary, scriptType));
       } catch (InvalidResourceTypeException e) {
         LOG.warn(e.getMessage());
       }
     }
     if (uiLibraryCompilationService != null) {
-
       try {
-        String uiFrameworkOutput = uiLibraryCompilationService.getUiLibraryOutput(uiFramework,
-            scriptType, false);
-        if (StringUtils.isNotEmpty(uiFrameworkOutput) && !output.toString().isEmpty()) {
-          output.append("\n");
+        String uiFrameworkOutput = uiLibraryCompilationService.getUiLibrarySource(uiFramework,
+            scriptType);
+        if (StringUtils.isNotEmpty(uiFrameworkOutput) && !uiFrameworkSource.toString().isEmpty()) {
+          uiFrameworkSource.append("\n");
         }
-        output.append(uiFrameworkOutput);
+        uiFrameworkSource.append(uiFrameworkOutput);
       } catch (InvalidResourceTypeException e) {
         LOG.warn(e.getMessage());
       }
@@ -107,17 +156,18 @@ public class UiFrameworkOutputCompilationServiceImpl
     for (UiFrameworkCompilationAddonService addonService : getAddonServices()) {
       try {
         String addonOutput = addonService.getAppendedOutput(uiFramework, scriptType);
-        if (StringUtils.isNotEmpty(addonOutput) && !output.toString().isEmpty()) {
-          output.append("\n");
+        if (StringUtils.isNotEmpty(addonOutput) && !uiFrameworkSource.toString().isEmpty()) {
+          uiFrameworkSource.append("\n");
         }
-        output.append(addonOutput);
+        uiFrameworkSource.append(addonOutput);
       } catch (InvalidResourceTypeException e) {
         LOG.warn(
             String.format("Unable to append UiFramework %s for service %s.", scriptType.getName(),
                 addonService.getDisplayName()));
       }
     }
-    return output.toString();
+    endPerformanceTracking(tracker);
+    return uiFrameworkSource.toString();
   }
 
   @Override
@@ -125,5 +175,10 @@ public class UiFrameworkOutputCompilationServiceImpl
   public List<UiFrameworkCompilationAddonService> getAddonServices() {
     return OsgiServiceUtils.getAllOsgiServicesOfType(componentContext,
         UiFrameworkCompilationAddonService.class);
+  }
+
+  @Override
+  public PerformanceTrackerService getPerformanceTrackerService() {
+    return performanceTrackerService;
   }
 }

@@ -21,6 +21,8 @@ package io.kestros.cms.uiframeworks.core.eventlisteners;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateCacheService;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -28,6 +30,7 @@ import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.osgi.service.component.ComponentContext;
 
 public class HtlTemplateCachePurgeEventListenerTest {
 
@@ -64,5 +67,22 @@ public class HtlTemplateCachePurgeEventListenerTest {
   @Test
   public void testGetServiceUserName() {
     assertEquals("kestros-htl-template-cache-purge", eventListener.getServiceUserName());
+  }
+
+  @Test
+  public void testGetDisplayName() {
+    assertEquals("HTL Template Cache Purge Event Listener", eventListener.getDisplayName());
+  }
+
+  @Test
+  public void testGetRequiredResourcePaths() {
+    assertEquals(0, eventListener.getRequiredResourcePaths().size());
+  }
+
+  @Test
+  public void testDeactivate() {
+    ComponentContext componentContext = spy(context.componentContext());
+    eventListener.deactivate(componentContext);
+    verifyZeroInteractions(componentContext);
   }
 }
