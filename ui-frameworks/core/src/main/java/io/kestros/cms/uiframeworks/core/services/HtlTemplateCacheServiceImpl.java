@@ -164,7 +164,9 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
       }
       attempts++;
     }
-    throw new CacheBuilderException(String.format("Failed to build HTL Template cache for UI Framework %s.", uiFramework.getPath()));
+    throw new CacheBuilderException(
+        String.format("Failed to build HTL Template cache for UI Framework %s.",
+            uiFramework.getPath()));
   }
 
   /**
