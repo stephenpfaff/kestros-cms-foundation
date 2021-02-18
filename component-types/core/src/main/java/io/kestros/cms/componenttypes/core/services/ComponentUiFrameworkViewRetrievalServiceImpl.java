@@ -170,14 +170,12 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
           } catch (ChildResourceNotFoundException childResourceNotFoundException) {
             try {
               ComponentType superType = componentType.getComponentSuperType();
-              if (superType != null) {
 
-                ComponentUiFrameworkView inheritedView = getComponentUiFrameworkView(superType,
-                    uiFramework);
-                if (!"common".equals(inheritedView.getName())) {
-                  endPerformanceTracking(tracker);
-                  return inheritedView;
-                }
+              ComponentUiFrameworkView inheritedView = getComponentUiFrameworkView(superType,
+                  uiFramework);
+              if (!"common".equals(inheritedView.getName())) {
+                endPerformanceTracking(tracker);
+                return inheritedView;
               }
             } catch (InvalidComponentUiFrameworkViewException
                      | InvalidComponentTypeException exception) {

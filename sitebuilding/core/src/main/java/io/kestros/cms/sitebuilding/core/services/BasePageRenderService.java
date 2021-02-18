@@ -55,7 +55,7 @@ public class BasePageRenderService implements PageRenderService, PerformanceServ
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private PerformanceTrackerService performanceTrackerService;
+  private transient PerformanceTrackerService performanceTrackerService;
 
   @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   private transient ComponentContext componentContext;
