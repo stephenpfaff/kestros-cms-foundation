@@ -131,7 +131,7 @@ public class HtlTemplateCacheServiceImplTest {
 
   @Test
   public void testCacheCompiledHtlTemplates()
-      throws LoginException, CacheBuilderException, HtlTemplateFileRetrievalException {
+      throws LoginException, HtlTemplateFileRetrievalException {
     doReturn(resourceResolverFactory).when(cacheService).getResourceResolverFactory();
     doReturn(resourceResolverFactory).when(
         uiFrameworkRetrievalService).getResourceResolverFactory();
@@ -155,7 +155,17 @@ public class HtlTemplateCacheServiceImplTest {
         templateFileJcrContentProperties);
 
     UiFrameworkResource uiFramework = resource.adaptTo(UiFrameworkResource.class);
-    cacheService.cacheCompiledHtlTemplates(uiFramework);
+    Exception exception = null;
+    try {
+      cacheService.cacheCompiledHtlTemplates(uiFramework);
+    } catch (CacheBuilderException e) {
+      exception = e;
+    }
+    assertNotNull(exception);
+    assertEquals(CacheBuilderException.class, exception.getClass());
+    assertEquals(
+        "Failed to build HTL Template cache for UI Framework /etc/ui-frameworks/ui-framework-1.",
+        exception.getMessage());
   }
 
   @Test
@@ -330,7 +340,8 @@ public class HtlTemplateCacheServiceImplTest {
 
     context.create().resource("/apps/kestros/cache/compiled-htl-templates");
 
-    Resource resource = context.create().resource("/etc/ui-frameworks/ui-framework-1", uiFrameworkProperties);
+    Resource resource = context.create().resource("/etc/ui-frameworks/ui-framework-1",
+        uiFrameworkProperties);
     context.create().resource("/etc/ui-frameworks/ui-framework-1/templates",
         templatesFolderProperties);
     context.create().resource("/etc/ui-frameworks/ui-framework-1/templates/template-file.html",
