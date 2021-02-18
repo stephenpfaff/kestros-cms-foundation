@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Baseline service for caching compiled HTL Template files for UiFrameworks with Kestros.
  */
+@SuppressFBWarnings("RI_REDUNDANT_INTERFACES")
 @Component(immediate = true,
            service = {ManagedCacheService.class, HtlTemplateCacheService.class},
            property = "service.ranking:Integer=100")
@@ -81,15 +82,15 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private UiFrameworkRetrievalService uiFrameworkRetrievalService;
+  private transient UiFrameworkRetrievalService uiFrameworkRetrievalService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private HtlTemplateFileRetrievalService htlTemplateFileRetrievalService;
+  private transient HtlTemplateFileRetrievalService htlTemplateFileRetrievalService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private PerformanceTrackerService performanceTrackerService;
+  private transient PerformanceTrackerService performanceTrackerService;
 
   @Override
   @Activate

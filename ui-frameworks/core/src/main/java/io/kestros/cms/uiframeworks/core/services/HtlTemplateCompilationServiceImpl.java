@@ -42,7 +42,8 @@ import org.slf4j.LoggerFactory;
 public class HtlTemplateCompilationServiceImpl
     implements HtlTemplateCompilationService, PerformanceService {
 
-  private static Logger LOG = LoggerFactory.getLogger(HtlTemplateCompilationServiceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+      HtlTemplateCompilationServiceImpl.class);
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)

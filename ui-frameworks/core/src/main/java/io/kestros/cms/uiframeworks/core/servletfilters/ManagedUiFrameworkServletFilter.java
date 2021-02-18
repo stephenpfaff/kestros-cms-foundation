@@ -79,42 +79,45 @@ public class ManagedUiFrameworkServletFilter implements Filter {
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
       FilterChain filterChain) throws IOException, ServletException {
     LOG.info("servlet filter.");
-    SlingHttpServletRequest request = (SlingHttpServletRequest) servletRequest;
-    SlingHttpServletResponse response = (SlingHttpServletResponse) servletResponse;
-    String requestUri = request.getRequestURI();
-    String scriptName = requestUri.split("/")[requestUri.split("/").length - 1];
-    String themeName = scriptName.split("\\.")[0];
-    String extension = scriptName.split("\\.")[1];
-    String uiFrameworkPath = requestUri.split("/themes")[0];
+    if (servletRequest instanceof SlingHttpServletRequest
+        && servletResponse instanceof SlingHttpServletResponse) {
+      SlingHttpServletRequest request = (SlingHttpServletRequest) servletRequest;
+      SlingHttpServletResponse response = (SlingHttpServletResponse) servletResponse;
+      String requestUri = request.getRequestURI();
+      String scriptName = requestUri.split("/")[requestUri.split("/").length - 1];
+      String themeName = scriptName.split("\\.")[0];
+      String extension = scriptName.split("\\.")[1];
+      String uiFrameworkPath = requestUri.split("/themes")[0];
 
-    if ("js".equals(extension)) {
-      extension = "JAVASCRIPT";
-    }
-    if (themeRetrievalService != null) {
-      try {
-        Theme theme = themeRetrievalService.getTheme(uiFrameworkPath + "/themes/" + themeName);
-        LOG.debug("Theme {} found. Virtual theme response not needed.", theme.getPath());
-        filterChain.doFilter(request, response);
-      } catch (ThemeRetrievalException exception) {
-        try {
-          Theme theme = themeRetrievalService.getVirtualTheme(
-              uiFrameworkPath + "/themes/" + themeName);
-          String output = themeOutputCompilationService.getUiLibraryOutput(theme,
-              ScriptTypes.valueOf(extension.toUpperCase(Locale.US)));
-
-          response.getWriter().write(output);
-
-        } catch (InvalidResourceTypeException e) {
-          response.setStatus(404);
-        } catch (InvalidThemeException e) {
-          response.setStatus(404);
-        } catch (ThemeRetrievalException e) {
-          response.setStatus(404);
-        } catch (NoMatchingCompilerException e) {
-          response.setStatus(404);
-        }
+      if ("js".equals(extension)) {
+        extension = "JAVASCRIPT";
       }
+      if (themeRetrievalService != null) {
+        try {
+          Theme theme = themeRetrievalService.getTheme(uiFrameworkPath + "/themes/" + themeName);
+          LOG.debug("Theme {} found. Virtual theme response not needed.", theme.getPath());
+          filterChain.doFilter(request, response);
+        } catch (ThemeRetrievalException exception) {
+          try {
+            Theme theme = themeRetrievalService.getVirtualTheme(
+                uiFrameworkPath + "/themes/" + themeName);
+            String output = themeOutputCompilationService.getUiLibraryOutput(theme,
+                ScriptTypes.valueOf(extension.toUpperCase(Locale.US)));
 
+            response.getWriter().write(output);
+
+          } catch (InvalidResourceTypeException e) {
+            response.setStatus(404);
+          } catch (InvalidThemeException e) {
+            response.setStatus(404);
+          } catch (ThemeRetrievalException e) {
+            response.setStatus(404);
+          } catch (NoMatchingCompilerException e) {
+            response.setStatus(404);
+          }
+        }
+
+      }
     }
   }
 

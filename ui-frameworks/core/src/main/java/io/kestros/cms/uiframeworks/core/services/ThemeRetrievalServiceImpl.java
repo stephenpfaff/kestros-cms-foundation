@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 public class ThemeRetrievalServiceImpl extends BaseServiceResolverService
     implements ThemeRetrievalService, PerformanceService {
 
-  private static Logger LOG = LoggerFactory.getLogger(ThemeRetrievalServiceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ThemeRetrievalServiceImpl.class);
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
