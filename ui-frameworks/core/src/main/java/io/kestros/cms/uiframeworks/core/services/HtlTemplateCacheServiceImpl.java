@@ -151,7 +151,7 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
   }
 
   @Override
-  public void cacheCompiledHtlTemplates(UiFramework uiFramework) {
+  public void cacheCompiledHtlTemplates(UiFramework uiFramework) throws CacheBuilderException {
     int attempts = 0;
     while (attempts < 100) {
       try {
@@ -164,6 +164,7 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
       }
       attempts++;
     }
+    throw new CacheBuilderException(String.format("Failed to build HTL Template cache for UI Framework %s.", uiFramework.getPath()));
   }
 
   /**
@@ -239,8 +240,6 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
 
   /**
    * Caches Compiled HTL Template files for all UiFrameworks.
-   *
-   * @throws CacheBuilderException Cached failed to build.
    */
   public void cacheAllUiFrameworkCompiledHtlTemplates() {
     if (uiFrameworkRetrievalService != null) {
@@ -260,7 +259,11 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
           getServiceResourceResolver().refresh();
         }
         for (final UiFramework uiFramework : uiFrameworkList) {
-          cacheCompiledHtlTemplates(uiFramework);
+          try {
+            cacheCompiledHtlTemplates(uiFramework);
+          } catch (CacheBuilderException e) {
+            LOG.error(e.getMessage());
+          }
         }
       }
     }
