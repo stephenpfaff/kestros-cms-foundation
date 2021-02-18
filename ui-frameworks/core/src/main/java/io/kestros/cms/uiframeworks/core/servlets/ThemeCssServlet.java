@@ -51,7 +51,7 @@ public class ThemeCssServlet extends BaseUiLibraryServlet {
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private ThemeRetrievalService themeRetrievalService;
+  private transient ThemeRetrievalService themeRetrievalService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
@@ -59,15 +59,15 @@ public class ThemeCssServlet extends BaseUiLibraryServlet {
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private UiLibraryConfigurationService uiLibraryConfigurationService;
+  private transient UiLibraryConfigurationService uiLibraryConfigurationService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private ThemeOutputCompilationService themeOutputCompilationService;
+  private transient ThemeOutputCompilationService themeOutputCompilationService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private UiLibraryMinificationService uiLibraryMinificationService;
+  private transient UiLibraryMinificationService uiLibraryMinificationService;
 
   @Override
   protected <T extends FrontendLibrary> T getLibrary(String libraryPath) {

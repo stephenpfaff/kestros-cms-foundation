@@ -56,20 +56,19 @@ public class SiteLevelJsServlet extends SiteLevelScriptServlet {
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private ThemeRetrievalService virtualThemeProviderService;
+  private transient ThemeRetrievalService virtualThemeProviderService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private UiFrameworkRetrievalService uiFrameworkRetrievalService;
+  private transient UiFrameworkRetrievalService uiFrameworkRetrievalService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private ThemeOutputCompilationService themeOutputCompilationService;
+  private transient ThemeOutputCompilationService themeOutputCompilationService;
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-
              policyOption = ReferencePolicyOption.GREEDY)
-  private UiLibraryMinificationService uiLibraryMinificationService;
+  private transient UiLibraryMinificationService uiLibraryMinificationService;
 
   @Override
   public UiLibraryCacheService getUiLibraryCacheService() {

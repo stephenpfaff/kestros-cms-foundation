@@ -20,24 +20,24 @@ package io.kestros.cms.uiframeworks.core.models;
 
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourcesAsType;
 
-import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
-import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateFileRetrievalService;
 import io.kestros.cms.versioning.api.models.VersionResource;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.uilibraries.api.models.FrontendLibrary;
 import io.kestros.commons.uilibraries.core.UiLibraryResource;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+
 /**
  * Baseline logic for {@link VendorLibraryResource} and {@link UiFrameworkResource}.
  */
+@SuppressFBWarnings("RI_REDUNDANT_INTERFACES")
 public abstract class BaseUiFrameworkLibraryResource extends UiLibraryResource
     implements FrontendLibrary, VersionResource {
 

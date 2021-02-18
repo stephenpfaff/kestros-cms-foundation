@@ -73,7 +73,7 @@ public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private PerformanceTrackerService performanceTrackerService;
+  private transient PerformanceTrackerService performanceTrackerService;
 
   @Override
   public List<ManagedUiFramework> getAllManagedUiFrameworks(Boolean includeEtc,
@@ -137,10 +137,14 @@ public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
 
   @Override
   public UiFramework getUiFramework(Theme theme) throws UiFrameworkRetrievalException {
-    Resource themeResource = ((ThemeResource) theme).getResource();
-    try {
-      return getFirstAncestorOfType(themeResource, UiFrameworkResource.class);
-    } catch (NoValidAncestorException e) {
+    if (theme instanceof ThemeResource) {
+      Resource themeResource = ((ThemeResource) theme).getResource();
+      try {
+        return getFirstAncestorOfType(themeResource, UiFrameworkResource.class);
+      } catch (NoValidAncestorException e) {
+        throw new UiFrameworkRetrievalException(theme);
+      }
+    } else {
       throw new UiFrameworkRetrievalException(theme);
     }
   }

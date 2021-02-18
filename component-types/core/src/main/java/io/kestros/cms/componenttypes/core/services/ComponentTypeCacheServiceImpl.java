@@ -51,7 +51,7 @@ public class ComponentTypeCacheServiceImpl extends BaseCacheService
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private PerformanceTrackerService performanceTrackerService;
+  private transient PerformanceTrackerService performanceTrackerService;
 
   private Map<String, List<String>> componentTypePathList = new HashMap<>();
 

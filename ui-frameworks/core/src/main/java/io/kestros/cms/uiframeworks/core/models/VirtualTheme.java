@@ -30,8 +30,8 @@ import org.apache.sling.api.resource.Resource;
  */
 public class VirtualTheme implements Theme {
 
-  private Theme theme;
-  private UiFramework uiFramework;
+  private final Theme theme;
+  private final UiFramework uiFramework;
 
   /**
    * Constructor.

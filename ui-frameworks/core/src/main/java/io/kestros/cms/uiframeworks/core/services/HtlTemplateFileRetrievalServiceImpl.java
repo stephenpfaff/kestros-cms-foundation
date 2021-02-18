@@ -50,7 +50,8 @@ import org.slf4j.LoggerFactory;
 public class HtlTemplateFileRetrievalServiceImpl
     implements HtlTemplateFileRetrievalService, PerformanceService {
 
-  private static Logger LOG = LoggerFactory.getLogger(HtlTemplateFileRetrievalServiceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(
+      HtlTemplateFileRetrievalServiceImpl.class);
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)

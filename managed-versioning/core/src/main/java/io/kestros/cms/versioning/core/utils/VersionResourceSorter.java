@@ -34,10 +34,21 @@ public class VersionResourceSorter implements Comparator<BaseResource>, Serializ
 
   @Override
   public int compare(BaseResource resource1, BaseResource resource2) {
-    VersionResource versionResource1 = (VersionResource) resource1;
-    VersionResource versionResource2 = (VersionResource) resource2;
+    VersionResource versionResource1;
+    VersionResource versionResource2;
     Version version1;
     Version version2;
+    if (resource1 instanceof VersionResource) {
+      versionResource1 = (VersionResource) resource1;
+    } else {
+      return -1;
+    }
+    if (resource2 instanceof VersionResource) {
+      versionResource2 = (VersionResource) resource2;
+    } else {
+      return 1;
+    }
+
     try {
       version1 = versionResource1.getVersion();
     } catch (VersionFormatException e) {
