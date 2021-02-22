@@ -19,6 +19,8 @@
 
 package io.kestros.cms.versioning.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 import org.apache.sling.api.resource.Resource;
 
@@ -55,6 +57,7 @@ public interface VersionableResource<T extends VersionResource> {
    *
    * @return Baseline Sling Resource.
    */
+  @JsonPropertyOrder
   Resource getResource();
 
   /**
@@ -62,6 +65,7 @@ public interface VersionableResource<T extends VersionResource> {
    *
    * @return Class the version service looks for when retrieving versions.
    */
+  @JsonIgnore
   Class<T> getVersionResourceType();
 
   /**
@@ -76,6 +80,7 @@ public interface VersionableResource<T extends VersionResource> {
    *
    * @return Latest managed version.
    */
+  @JsonIgnore
   T getCurrentVersion();
 
 }

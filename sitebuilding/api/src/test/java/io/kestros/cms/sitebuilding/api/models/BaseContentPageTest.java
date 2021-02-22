@@ -557,20 +557,6 @@ public class BaseContentPageTest {
   //        + "ComponentType resource.", exception.getMessage());
   //  }
 
-  @Test
-  public void testGetAllowedUiFrameworks() {
-    context.registerService(AllowedUiFrameworkService.class, allowedUiFrameworkService);
-    List<UiFramework> uiFrameworkList = new ArrayList<>();
-
-    resource = context.create().resource("/page", pageProperties);
-    baseContentPage = resource.adaptTo(BaseContentPage.class);
-    when(allowedUiFrameworkService.getAllowedUiFrameworks()).thenReturn(uiFrameworkList);
-
-    assertEquals(0, baseContentPage.getAllowedUiFrameworks().size());
-
-    assertNotNull(allowedUiFrameworkService);
-    verify(allowedUiFrameworkService, times(1)).getAllowedUiFrameworks();
-  }
 
   @Test
   public void testGetTopLevelComponents() {

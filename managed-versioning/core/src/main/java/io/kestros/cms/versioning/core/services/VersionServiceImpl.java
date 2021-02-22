@@ -22,7 +22,9 @@ import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.get
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenAsBaseResource;
 
+import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
 import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
+import io.kestros.cms.versioning.api.models.Version;
 import io.kestros.cms.versioning.api.models.VersionResource;
 import io.kestros.cms.versioning.api.models.VersionableResource;
 import io.kestros.cms.versioning.api.services.VersionService;
@@ -70,6 +72,19 @@ public class VersionServiceImpl implements VersionService {
             child.getClass().getSimpleName()));
       }
     } catch (ModelAdaptionException e) {
+      for (Object versionResourceObject : resource.getVersions()) {
+        if (versionResourceObject instanceof VersionResource) {
+          VersionResource versionResource = (VersionResource) versionResourceObject;
+          try {
+            if (versionResource.getVersion().getFormatted().equals(versionNumber)
+                && versionResource instanceof BaseResource) {
+              return (T) versionResource;
+            }
+          } catch (VersionFormatException exception) {
+            // todo trace log.
+          }
+        }
+      }
       throw new VersionRetrievalException(
           String.format("Failed to find version %s for %s %s. %s", versionNumber,
               resource.getClass().getSimpleName(), resource.getPath(), e.getMessage()));
@@ -123,8 +138,35 @@ public class VersionServiceImpl implements VersionService {
 
   @Override
   public <T extends BaseResource> T getClosestVersion(VersionableResource resource,
-      String versionNumber) {
-    return null;
+      String versionNumber) throws VersionRetrievalException {
+    // todo this.
+    try {
+      return getVersionResource(resource, versionNumber);
+    } catch (VersionRetrievalException e) {
+      T closestVersion = null;
+      Version desiredVersion = new Version(versionNumber);
+      for (Object loopedVersionObject : resource.getVersions()) {
+        if (loopedVersionObject instanceof VersionResource) {
+          VersionResource loopedVersion = (VersionResource) loopedVersionObject;
+
+          try {
+            if (loopedVersion.getVersion().compareTo(desiredVersion) == -1
+                && loopedVersion instanceof BaseResource) {
+              closestVersion = (T) loopedVersion;
+            } else {
+              return closestVersion;
+            }
+          } catch (VersionFormatException versionFormatException) {
+            versionFormatException.printStackTrace();
+          }
+        }
+      }
+      if (closestVersion != null) {
+        return closestVersion;
+      }
+    }
+    throw new VersionRetrievalException(
+        String.format("No versions earlier than %s", versionNumber));
   }
 
   BaseResource getVersionsFolderResource(VersionableResource versionableResource)

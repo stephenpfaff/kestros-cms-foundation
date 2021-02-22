@@ -34,10 +34,15 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.componenttypes.api.exceptions.ComponentTypeRetrievalException;
 import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
+import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentUiFrameworkViewException;
 import io.kestros.cms.componenttypes.api.models.ComponentType;
+import io.kestros.cms.componenttypes.api.models.ComponentUiFrameworkView;
 import io.kestros.cms.componenttypes.api.services.ComponentTypeRetrievalService;
+import io.kestros.cms.componenttypes.api.services.ComponentUiFrameworkViewRetrievalService;
 import io.kestros.cms.sitebuilding.api.utils.JcrPropertyUtils;
 import io.kestros.cms.sitebuilding.api.utils.RelativeDate;
+import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
+import io.kestros.cms.uiframeworks.api.exceptions.ThemeRetrievalException;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
 import io.kestros.cms.user.services.KestrosUserService;
@@ -48,6 +53,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeEx
 import io.kestros.commons.structuredslingmodels.exceptions.MatchingResourceTypeNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
+import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +103,10 @@ public class BaseComponent extends BaseResource {
   @OSGiService
   @Optional
   private ComponentTypeRetrievalService componentTypeRetrievalService;
+
+  @OSGiService
+  @Optional
+  private ComponentUiFrameworkViewRetrievalService componentUiFrameworkViewRetrievalService;
 
   private BaseContentPage containingPage = null;
   private ComponentType componentType = null;
@@ -428,6 +438,33 @@ public class BaseComponent extends BaseResource {
             + " persistence exception.", getPath());
       }
     }
+  }
+
+  /**
+   * ComponentUiFrameworkView that the current component will use when rendering.
+   *
+   * @return ComponentUiFrameworkView that the current component will use when rendering.
+   */
+  public ComponentUiFrameworkView getComponentUiFrameworkView() {
+    if (componentUiFrameworkViewRetrievalService != null) {
+      try {
+        return componentUiFrameworkViewRetrievalService.getComponentUiFrameworkView(
+            this.getComponentType(), this.getContainingPage().getTheme().getUiFramework());
+      } catch (InvalidComponentUiFrameworkViewException e) {
+        e.printStackTrace();
+      } catch (InvalidComponentTypeException e) {
+        e.printStackTrace();
+      } catch (InvalidThemeException e) {
+        e.printStackTrace();
+      } catch (ThemeRetrievalException exception) {
+        exception.printStackTrace();
+      } catch (ResourceNotFoundException e) {
+        e.printStackTrace();
+      } catch (NoValidAncestorException e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
   }
 
 }

@@ -123,6 +123,7 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
       @Nonnull UiFramework uiFramework)
       throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException {
     String tracker = startPerformanceTracking();
+    getServiceResourceResolver().refresh();
     Version version = null;
     try {
       version = uiFramework.getVersion();
@@ -136,7 +137,7 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
               = getManagedComponentUiFrameworkView(componentType, uiFramework);
           try {
             endPerformanceTracking(tracker);
-            return versionService.getVersionResource(managedComponentUiFrameworkView,
+            return versionService.getClosestVersion(managedComponentUiFrameworkView,
                 version.getFormatted());
           } catch (VersionRetrievalException e) {
             BaseResource versionsFolderResource = SlingModelUtils.getChildAsBaseResource("versions",

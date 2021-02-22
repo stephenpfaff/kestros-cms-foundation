@@ -90,7 +90,9 @@ public interface VersionService {
    * @param versionNumber Version number.
    * @param <T> extends BaseResource.
    * @return Closest matching version, for a given versionable.
+   * @throws VersionRetrievalException Failed to find version earlier than desired version number.
    */
-  <T extends BaseResource> T getClosestVersion(VersionableResource resource, String versionNumber);
+  <T extends BaseResource> T getClosestVersion(VersionableResource resource, String versionNumber)
+      throws VersionRetrievalException;
 
 }

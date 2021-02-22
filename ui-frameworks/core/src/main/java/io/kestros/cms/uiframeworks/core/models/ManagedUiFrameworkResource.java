@@ -63,6 +63,7 @@ public class ManagedUiFrameworkResource extends BaseResource
   }
 
   @Override
+  @JsonIgnore
   public Class getVersionResourceType() {
     return UiFrameworkResource.class;
   }

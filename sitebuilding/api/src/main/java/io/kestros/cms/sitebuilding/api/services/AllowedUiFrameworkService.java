@@ -18,6 +18,7 @@
 
 package io.kestros.cms.sitebuilding.api.services;
 
+import io.kestros.cms.sitebuilding.api.models.BaseContentPage;
 import io.kestros.cms.uiframeworks.api.models.ManagedUiFramework;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
@@ -31,15 +32,17 @@ public interface AllowedUiFrameworkService extends ManagedService {
   /**
    * List of allowed ManagedUiFrameworks. All versions will also be allowed.
    *
+   * @param page Page to retrieve alloed Frameworks for.
    * @return List of allowed ManagedUiFrameworks. All versions will also be allowed.
    */
-  List<ManagedUiFramework> getAllowedManagedUiFrameworks();
+  List<ManagedUiFramework> getAllowedManagedUiFrameworks(BaseContentPage page);
 
   /**
    * List of allowed UiFrameworks. List will not included versioned frameworks.
    *
+   * @param page Page to retrieve alloed Frameworks for.
    * @return List of allowed UiFrameworks. List will not included versioned frameworks.
    */
-  List<UiFramework> getAllowedUiFrameworks();
+  List<UiFramework> getAllowedUiFrameworks(BaseContentPage page);
 
 }

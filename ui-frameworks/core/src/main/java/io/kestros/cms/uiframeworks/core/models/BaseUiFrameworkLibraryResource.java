@@ -46,7 +46,6 @@ public abstract class BaseUiFrameworkLibraryResource extends UiLibraryResource
 
   protected abstract HtlTemplateFileRetrievalService getHtlTemplateFileRetrievalService();
 
-
   /**
    * List of CDN JavaScript script file URL that need to be included as their own script files.
    *
@@ -77,7 +76,7 @@ public abstract class BaseUiFrameworkLibraryResource extends UiLibraryResource
         BaseResource.class);
   }
 
-  private List<String> getExternalizedFilesProperty() {
+  protected List<String> getExternalizedFilesProperty() {
     return Arrays.asList(getProperties().get(PN_EXTERNALIZED_FILES, new String[]{}));
   }
 

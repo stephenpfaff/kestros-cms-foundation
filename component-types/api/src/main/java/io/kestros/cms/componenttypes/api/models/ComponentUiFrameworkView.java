@@ -18,8 +18,11 @@
 
 package io.kestros.cms.componenttypes.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.modeltypes.IconResource;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.versioning.api.models.VersionResource;
+import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import io.kestros.commons.uilibraries.api.models.FrontendLibrary;
 
 /**
@@ -41,5 +44,14 @@ public interface ComponentUiFrameworkView extends VersionResource, IconResource,
    * @return Component view name.
    */
   String getName();
+
+  /**
+   * UiFramework associated to the current view.
+   *
+   * @return UiFramework associated to the current view.
+   * @throws ResourceNotFoundException No UiFramework found for the specified framework code.
+   */
+  @JsonIgnore
+  UiFramework getUiFramework() throws ResourceNotFoundException;
 
 }

@@ -39,7 +39,6 @@ import javax.annotation.Nonnull;
  */
 public interface ComponentUiFrameworkViewRetrievalService extends ManagedService {
 
-
   /**
    * The common ComponentUiFrameworkView, to be shown when no other valid views are found.
    *

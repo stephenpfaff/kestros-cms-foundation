@@ -33,6 +33,7 @@ import io.kestros.cms.uiframeworks.api.services.UiFrameworkRetrievalService;
 import io.kestros.cms.uiframeworks.core.models.ManagedUiFrameworkResource;
 import io.kestros.cms.uiframeworks.core.models.ThemeResource;
 import io.kestros.cms.uiframeworks.core.models.UiFrameworkResource;
+import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
 import io.kestros.cms.versioning.api.services.VersionService;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
@@ -166,7 +167,12 @@ public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
       for (ManagedUiFramework managedUiFramework : this.getAllManagedUiFrameworks(includeEtc,
           includeLibs)) {
         if (code.equals(managedUiFramework.getFrameworkCode())) {
-          return versionService.getClosestVersion(managedUiFramework, version);
+          try {
+            return versionService.getClosestVersion(managedUiFramework, version);
+          } catch (VersionRetrievalException e) {
+            throw new UiFrameworkRetrievalException(
+                String.format("UiFramework found, but had no versions earlier than %s", version));
+          }
         }
       }
     }
