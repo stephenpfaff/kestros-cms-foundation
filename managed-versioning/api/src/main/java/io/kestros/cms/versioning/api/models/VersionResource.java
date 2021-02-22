@@ -40,6 +40,7 @@ public interface VersionResource<T extends VersionableResource> {
    *
    * @return Managing versionable Resource model Class.
    */
+  @JsonIgnore
   Class<T> getManagingResourceType();
 
   /**
@@ -47,6 +48,7 @@ public interface VersionResource<T extends VersionableResource> {
    *
    * @return Sling Resource.
    */
+  @JsonIgnore
   Resource getResource();
 
   /**
@@ -60,6 +62,7 @@ public interface VersionResource<T extends VersionableResource> {
 
   /**
    * Managing Versionable resource.
+   *
    * @param <S> extends BaseResource.
    * @return Managing Versionable resource.
    * @throws NoValidAncestorException Could not retrieve the root versionable resource.
@@ -80,18 +83,23 @@ public interface VersionResource<T extends VersionableResource> {
 
   /**
    * Version information.
+   *
    * @return Version information.
    * @throws VersionFormatException Version information was not formatted properly.
    */
   default Version getVersion() throws VersionFormatException {
-    String version = getResource().getValueMap().get("versionNumber", StringUtils.EMPTY);
-    if (StringUtils.isEmpty(version)) {
+    String versionProperty = getResource().getValueMap().get("versionNumber", StringUtils.EMPTY);
+    String version = "";
+    if (StringUtils.isEmpty(versionProperty)) {
       version = getResource().getName();
     }
     if (version.split("\\.").length == 3) {
       String[] versionParts = version.split("\\.");
       return new Version(parseInt(versionParts[0]), parseInt(versionParts[1]),
           parseInt(versionParts[2]));
+    }
+    if (StringUtils.isEmpty(versionProperty)) {
+      return null;
     }
     throw new VersionFormatException();
   }

@@ -171,12 +171,7 @@ public class ComponentUiFrameworkViewResource extends UiLibraryResource
   //    return output.toString();
   //  }
 
-  /**
-   * UiFramework associated to the current view.
-   *
-   * @return UiFramework associated to the current view.
-   * @throws ResourceNotFoundException No UiFramework found for the specified framework code.
-   */
+  @Override
   public UiFramework getUiFramework() throws ResourceNotFoundException {
     String version = "";
     try {
@@ -187,6 +182,18 @@ public class ComponentUiFrameworkViewResource extends UiLibraryResource
       LOG.error(e.getMessage());
     }
     try {
+      Resource parentResource = getResource().getParent();
+      if (parentResource != null && "versions".equals(parentResource.getName())) {
+        Resource viewResource = parentResource.getParent();
+        if (viewResource != null) {
+          ManagedComponentUiFrameworkViewResource managingRootResource = viewResource.adaptTo(
+              ManagedComponentUiFrameworkViewResource.class);
+          if (managingRootResource != null) {
+            return uiFrameworkRetrievalService.getUiFrameworkByCode(managingRootResource.getName(),
+                true, true, version);
+          }
+        }
+      }
       return uiFrameworkRetrievalService.getUiFrameworkByCode(getName(), true, true, version);
     } catch (UiFrameworkRetrievalException e) {
       LOG.error(e.getMessage());

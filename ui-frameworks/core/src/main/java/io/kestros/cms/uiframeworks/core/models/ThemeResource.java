@@ -44,6 +44,7 @@ public class ThemeResource extends UiLibraryResource implements Theme {
   @Optional
   private UiFrameworkRetrievalService uiFrameworkRetrievalService;
 
+  @JsonIgnore
   @Override
   public UiFramework getUiFramework() {
     if (uiFrameworkRetrievalService != null) {

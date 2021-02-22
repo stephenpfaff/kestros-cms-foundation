@@ -53,9 +53,10 @@ public class BasePageRenderService implements PageRenderService, PerformanceServ
 
   private static final long serialVersionUID = 7897119235609576690L;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient PerformanceTrackerService performanceTrackerService;
+  private PerformanceTrackerService performanceTrackerService;
 
   @SuppressFBWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
   private transient ComponentContext componentContext;

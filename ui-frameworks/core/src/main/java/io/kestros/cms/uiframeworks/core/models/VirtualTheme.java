@@ -18,6 +18,7 @@
 
 package io.kestros.cms.uiframeworks.core.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.commons.uilibraries.api.models.ScriptFile;
@@ -44,6 +45,7 @@ public class VirtualTheme implements Theme {
   }
 
   @Override
+  @JsonIgnore
   public UiFramework getUiFramework() {
     return uiFramework;
   }
@@ -54,6 +56,7 @@ public class VirtualTheme implements Theme {
   }
 
   @Override
+  @JsonIgnore
   public Resource getResource() {
     return theme.getResource();
   }

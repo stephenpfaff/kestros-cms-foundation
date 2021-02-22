@@ -80,17 +80,20 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
   @Reference
   private transient ResourceResolverFactory resourceResolverFactory;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient UiFrameworkRetrievalService uiFrameworkRetrievalService;
+  private UiFrameworkRetrievalService uiFrameworkRetrievalService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient HtlTemplateFileRetrievalService htlTemplateFileRetrievalService;
+  private HtlTemplateFileRetrievalService htlTemplateFileRetrievalService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient PerformanceTrackerService performanceTrackerService;
+  private PerformanceTrackerService performanceTrackerService;
 
   @Override
   @Activate

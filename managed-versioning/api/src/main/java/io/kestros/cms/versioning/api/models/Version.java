@@ -43,6 +43,20 @@ public class Version {
   }
 
   /**
+   * Constructs version object.
+   *
+   * @param versionNumber Formatted version number.
+   */
+  public Version(String versionNumber) {
+    if (versionNumber.split("\\.").length == 3) {
+      this.majorRelease = Integer.parseInt(versionNumber.split("\\.")[0]);
+      this.minorRelease = Integer.parseInt(versionNumber.split("\\.")[1]);
+      this.patchRelease = Integer.parseInt(versionNumber.split("\\.")[2]);
+    }
+
+  }
+
+  /**
    * Version formatted as a String.
    *
    * @return Version formatted as a String.

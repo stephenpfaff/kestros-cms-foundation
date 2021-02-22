@@ -18,9 +18,32 @@
 
 package io.kestros.cms.componenttypes.api.models;
 
+import java.util.List;
+
 /**
  * Titled list of ComponentTypes with the same 'componentGroup' property.
  */
 public interface ComponentTypeGroupModel {
+
+  /**
+   * Title.
+   *
+   * @return Title.
+   */
+  String getTitle();
+
+  /**
+   * All componentTypes within the group.
+   *
+   * @return All componentTypes within the group.
+   */
+  List<ComponentType> getComponentTypes();
+
+  /**
+   * Add a componentType to the group.
+   *
+   * @param componentType ComponentType to add to the group.
+   */
+  void addComponentType(ComponentType componentType);
 
 }

@@ -18,6 +18,7 @@
 
 package io.kestros.cms.uiframeworks.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.modeltypes.IconResource;
 import io.kestros.commons.uilibraries.api.models.FrontendLibrary;
 
@@ -31,6 +32,7 @@ public interface Theme extends FrontendLibrary, IconResource {
    *
    * @return Parent UiFramework.
    */
+  @JsonIgnore
   UiFramework getUiFramework();
 
 }

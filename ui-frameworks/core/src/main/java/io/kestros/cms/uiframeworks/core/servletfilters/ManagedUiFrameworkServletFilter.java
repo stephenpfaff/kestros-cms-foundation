@@ -25,6 +25,7 @@ import io.kestros.cms.uiframeworks.api.services.ThemeOutputCompilationService;
 import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.uilibraries.api.exceptions.NoMatchingCompilerException;
+import io.kestros.commons.uilibraries.api.models.ScriptType;
 import io.kestros.commons.uilibraries.api.services.UiLibraryMinificationService;
 import io.kestros.commons.uilibraries.basecompilers.filetypes.ScriptTypes;
 import java.io.IOException;
@@ -92,31 +93,36 @@ public class ManagedUiFrameworkServletFilter implements Filter {
       if ("js".equals(extension)) {
         extension = "JAVASCRIPT";
       }
-      if (themeRetrievalService != null) {
-        try {
-          Theme theme = themeRetrievalService.getTheme(uiFrameworkPath + "/themes/" + themeName);
-          LOG.debug("Theme {} found. Virtual theme response not needed.", theme.getPath());
-          filterChain.doFilter(request, response);
-        } catch (ThemeRetrievalException exception) {
+      if ("JAVASCRIPT".equals(extension) || "css".equals(extension)) {
+        if (themeRetrievalService != null) {
           try {
-            Theme theme = themeRetrievalService.getVirtualTheme(
-                uiFrameworkPath + "/themes/" + themeName);
-            String output = themeOutputCompilationService.getUiLibraryOutput(theme,
-                ScriptTypes.valueOf(extension.toUpperCase(Locale.US)));
+            Theme theme = themeRetrievalService.getTheme(uiFrameworkPath + "/themes/" + themeName);
+            LOG.debug("Theme {} found. Virtual theme response not needed.", theme.getPath());
+            filterChain.doFilter(request, response);
+          } catch (ThemeRetrievalException exception) {
+            try {
+              ScriptType scriptType = ScriptTypes.valueOf(extension.toUpperCase(Locale.US));
+              Theme theme = themeRetrievalService.getVirtualTheme(
+                  uiFrameworkPath + "/themes/" + themeName);
+              String output = themeOutputCompilationService.getUiLibraryOutput(theme, scriptType);
 
-            response.getWriter().write(output);
+              response.setContentType(scriptType.getOutputContentType());
+              response.getWriter().write(output);
 
-          } catch (InvalidResourceTypeException e) {
-            response.setStatus(404);
-          } catch (InvalidThemeException e) {
-            response.setStatus(404);
-          } catch (ThemeRetrievalException e) {
-            response.setStatus(404);
-          } catch (NoMatchingCompilerException e) {
-            response.setStatus(404);
+            } catch (InvalidResourceTypeException e) {
+              response.setStatus(404);
+            } catch (InvalidThemeException e) {
+              response.setStatus(404);
+            } catch (ThemeRetrievalException e) {
+              response.setStatus(404);
+            } catch (NoMatchingCompilerException e) {
+              response.setStatus(404);
+            }
           }
-        }
 
+        }
+      } else {
+        filterChain.doFilter(servletRequest, servletResponse);
       }
     }
   }

@@ -18,9 +18,14 @@
 
 package io.kestros.cms.componenttypes.core.models;
 
+import io.kestros.cms.componenttypes.api.models.ComponentUiFrameworkView;
 import io.kestros.cms.componenttypes.api.models.ManagedComponentUiFrameworkView;
+import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
 import io.kestros.cms.versioning.api.models.VersionResource;
 import io.kestros.commons.structuredslingmodels.BaseResource;
+import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
@@ -44,11 +49,34 @@ public class ManagedComponentUiFrameworkViewResource extends BaseResource
 
   @Override
   public List getVersions() {
-    return null;
+    List<ComponentUiFrameworkView> componentUiFrameworkViewList = new ArrayList<>();
+    try {
+      for (BaseResource versionResource : SlingModelUtils.getChildrenAsBaseResource(
+          getVersionsFolderResource())) {
+        ComponentUiFrameworkViewResource componentUiFrameworkViewResource
+            = versionResource.getResource().adaptTo(ComponentUiFrameworkViewResource.class);
+        try {
+          if (componentUiFrameworkViewResource != null
+              && componentUiFrameworkViewResource.getVersion() != null) {
+            componentUiFrameworkViewList.add(componentUiFrameworkViewResource);
+          }
+        } catch (VersionFormatException e) {
+          e.printStackTrace();
+        }
+      }
+    } catch (ChildResourceNotFoundException exception) {
+      //      exception.printStackTrace();
+      // todo log
+    }
+    return componentUiFrameworkViewList;
   }
 
   @Override
   public VersionResource getCurrentVersion() {
     return null;
+  }
+
+  private BaseResource getVersionsFolderResource() throws ChildResourceNotFoundException {
+    return SlingModelUtils.getChildAsBaseResource("versions", this);
   }
 }

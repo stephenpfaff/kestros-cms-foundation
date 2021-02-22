@@ -18,6 +18,7 @@
 
 package io.kestros.cms.uiframeworks.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.modeltypes.IconResource;
 import io.kestros.cms.versioning.api.models.VersionResource;
 import io.kestros.commons.structuredslingmodels.BaseResource;
@@ -70,6 +71,7 @@ public interface UiFramework extends FrontendLibrary, IconResource, VersionResou
    *
    * @return Path to compiled HTL Templates file.
    */
+  @JsonIgnore
   String getTemplatesPath();
 
   /**
@@ -78,6 +80,20 @@ public interface UiFramework extends FrontendLibrary, IconResource, VersionResou
    * @return HTL Template Files associated to the current UiFramework.
    */
   List<HtlTemplateFile> getTemplateFiles();
+
+  /**
+   * Additional JavaScript endpoints to be included into an implementing page's source code.
+   *
+   * @return Additional JavaScript endpoints to be included into an implementing page's source code.
+   */
+  List<String> getIncludedCdnJsScripts();
+
+  /**
+   * Additional CSS endpoints to be included into an implementing page's source code.
+   *
+   * @return Additional JavaScript endpoints to be included into an implementing page's source code.
+   */
+  List<String> getIncludedCdnCssScripts();
 
   /**
    * List files to externalize. (assets, icons, fonts, etc).

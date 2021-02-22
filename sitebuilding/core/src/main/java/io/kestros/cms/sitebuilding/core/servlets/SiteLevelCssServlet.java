@@ -18,6 +18,7 @@
 
 package io.kestros.cms.sitebuilding.core.servlets;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.uiframeworks.api.models.Theme;
 import io.kestros.cms.uiframeworks.api.services.ThemeOutputCompilationService;
 import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
@@ -49,26 +50,30 @@ public class SiteLevelCssServlet extends SiteLevelScriptServlet {
 
   private static final long serialVersionUID = 6383115665070503260L;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
   private UiLibraryCacheService uiLibraryCacheService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient ThemeRetrievalService virtualThemeProviderService;
+  private ThemeRetrievalService themeRetrievalService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient UiFrameworkRetrievalService uiFrameworkRetrievalService;
+  private UiFrameworkRetrievalService uiFrameworkRetrievalService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient ThemeOutputCompilationService themeOutputCompilationService;
+  private ThemeOutputCompilationService themeOutputCompilationService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient UiLibraryMinificationService uiLibraryMinificationService;
+  private UiLibraryMinificationService uiLibraryMinificationService;
 
   @Override
   public UiLibraryCacheService getUiLibraryCacheService() {
@@ -82,7 +87,7 @@ public class SiteLevelCssServlet extends SiteLevelScriptServlet {
 
   @Override
   public ThemeRetrievalService getThemeRetrievalService() {
-    return virtualThemeProviderService;
+    return themeRetrievalService;
   }
 
   @Override
@@ -97,7 +102,7 @@ public class SiteLevelCssServlet extends SiteLevelScriptServlet {
 
   @Override
   public ThemeRetrievalService getVirtualThemeProviderService() {
-    return virtualThemeProviderService;
+    return themeRetrievalService;
   }
 
   @Override

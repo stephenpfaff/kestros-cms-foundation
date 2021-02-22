@@ -43,7 +43,6 @@ import io.kestros.cms.sitebuilding.api.utils.RelativeDate;
 import io.kestros.cms.uiframeworks.api.exceptions.InvalidThemeException;
 import io.kestros.cms.uiframeworks.api.exceptions.ThemeRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.Theme;
-import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkRetrievalService;
 import io.kestros.cms.user.KestrosUser;
 import io.kestros.cms.user.exceptions.UserRetrievalException;
@@ -58,7 +57,6 @@ import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceExcep
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -326,29 +324,6 @@ public class BaseContentPage extends BasePage {
       LOG.warn("Unable to retrieve ComponentType for {}: {}", getPath(), exception.getMessage());
     }
     throw new InvalidComponentTypeException(getPath(), getResourceType());
-  }
-
-  /**
-   * All UiFrameworks that the current Page is allowed to use.
-   *
-   * @return All UiFrameworks that the current Page is allowed to use.
-   */
-  @JsonIgnore
-  @KestrosProperty(description = "All UiFrameworks that the current Page is allowed to use.",
-                   configurable = true,
-                   jcrPropertyName = "allowedUiFrameworks",
-                   defaultValue = "[all]")
-  public List<UiFramework> getAllowedUiFrameworks() {
-    //    final List<String> allowedFrameworkPaths = Arrays.asList(getAllowedUiFrameworkPaths());
-
-    //    if (!allowedFrameworkPaths.isEmpty()) {
-    //      return getResourcesAsType(allowedFrameworkPaths, getResourceResolver(), UiFramework
-    //      .class);
-    //    }
-    if (allowedUiFrameworkService != null) {
-      return allowedUiFrameworkService.getAllowedUiFrameworks();
-    }
-    return Collections.emptyList();
   }
 
   /**

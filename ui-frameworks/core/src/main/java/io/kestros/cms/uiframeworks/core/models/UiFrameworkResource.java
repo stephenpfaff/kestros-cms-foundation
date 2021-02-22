@@ -20,6 +20,7 @@ package io.kestros.cms.uiframeworks.core.models;
 
 import static io.kestros.cms.uiframeworks.core.DesignConstants.PN_UI_FRAMEWORK_CODE;
 import static io.kestros.cms.uiframeworks.core.DesignConstants.PN_VENDOR_LIBRARIES;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourcesAsType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
@@ -31,6 +32,7 @@ import io.kestros.cms.uiframeworks.api.services.HtlTemplateFileRetrievalService;
 import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
 import io.kestros.cms.uiframeworks.api.services.VendorLibraryRetrievalService;
 import io.kestros.cms.versioning.api.models.VersionableResource;
+import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
@@ -74,6 +76,7 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
   private HtlTemplateCacheService htlTemplateCacheService;
 
   @Override
+  @JsonIgnore
   public String getFrameworkCode() {
     VersionableResource versionableResource = null;
     try {
@@ -88,6 +91,7 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
   }
 
   @Override
+  @JsonIgnore
   public List<VendorLibrary> getVendorLibraries() {
     List<VendorLibrary> vendorLibraryList = new ArrayList<>();
 
@@ -97,7 +101,7 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
           vendorLibraryList.add(vendorLibraryRetrievalService.getVendorLibrary(vendorLibrary,
               isIncludeEtcVendorLibraries(), isIncludeLibsVendorLibraries()));
         } catch (Exception e) {
-          LOG.warn("Unable to retrieve vendor library {} for UiFramework {}. {}", vendorLibrary,
+          LOG.debug("Unable to retrieve vendor library {} for UiFramework {}. {}", vendorLibrary,
               getPath(), e.getMessage());
         }
       }
@@ -123,7 +127,56 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
     return getProperty("includeLibsVendorLibraries", Boolean.FALSE);
   }
 
+  /**
+   * List of CDN JavaScript script file URL that need to be included as their own script files.
+   *
+   * @return List of CDN JavaScript script file URL that need to be included as their own script
+   *     files.
+   */
+  public List<String> getIncludedCdnJsScripts() {
+    List<String> includedCdnJsScripts = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : this.getVendorLibraries()) {
+      includedCdnJsScripts.addAll(vendorLibrary.getIncludedCdnJsScripts());
+    }
+    includedCdnJsScripts.addAll(Arrays.asList(getProperty("includedCdnJsScripts", new String[]{})));
+    return includedCdnJsScripts;
+  }
+
+  /**
+   * List of CDN CSS script file URL that need to be included as their own script files.
+   *
+   * @return List of CDN CSS script file URL that need to be included as their own script files.
+   */
+  public List<String> getIncludedCdnCssScripts() {
+    List<String> includedCdnCssScripts = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : this.getVendorLibraries()) {
+      includedCdnCssScripts.addAll(vendorLibrary.getIncludedCdnCssScripts());
+    }
+    includedCdnCssScripts.addAll(
+        Arrays.asList(getProperty("includedCdnCssScripts", new String[]{})));
+    return includedCdnCssScripts;
+  }
+
+  /**
+   * List of files that should be externalized (fonts, images, etc).
+   *
+   * @return List of files that should be externalized (fonts, images, etc).
+   */
+  @Nonnull
+  @JsonIgnore
+  public List<BaseResource> getExternalizedFiles() {
+    List<BaseResource> externalizedFiles = new ArrayList<>();
+    for (VendorLibrary vendorLibrary : this.getVendorLibraries()) {
+      externalizedFiles.addAll(vendorLibrary.getExternalizedFiles());
+    }
+    externalizedFiles.addAll(
+        getResourcesAsType(getExternalizedFilesProperty(), getResourceResolver(),
+            BaseResource.class));
+    return externalizedFiles;
+  }
+
   @Override
+  @JsonIgnore
   public String getTemplatesPath() {
     try {
       return htlTemplateCacheService.getCompiledTemplateFilePath(this);
@@ -154,11 +207,13 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
   }
 
   @Override
+  @JsonIgnore
   public Class getManagingResourceType() {
     return ManagedUiFrameworkResource.class;
   }
 
   @Override
+  @JsonIgnore
   public List<HtlTemplateFile> getTemplateFiles() {
     final List<HtlTemplateFile> htlTemplateFiles = new ArrayList<>();
     for (VendorLibrary vendorLibrary : getVendorLibraries()) {

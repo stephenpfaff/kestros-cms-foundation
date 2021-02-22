@@ -18,6 +18,7 @@
 
 package io.kestros.cms.uiframeworks.core.servlets;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.uiframeworks.api.services.ThemeOutputCompilationService;
 import io.kestros.cms.uiframeworks.api.services.ThemeRetrievalService;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
@@ -49,25 +50,30 @@ public class ThemeCssServlet extends BaseUiLibraryServlet {
 
   private static final Logger LOG = LoggerFactory.getLogger(ThemeCssServlet.class);
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient ThemeRetrievalService themeRetrievalService;
+  private ThemeRetrievalService themeRetrievalService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
   private UiLibraryCacheService uiLibraryCacheService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient UiLibraryConfigurationService uiLibraryConfigurationService;
+  private UiLibraryConfigurationService uiLibraryConfigurationService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient ThemeOutputCompilationService themeOutputCompilationService;
+  private ThemeOutputCompilationService themeOutputCompilationService;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient UiLibraryMinificationService uiLibraryMinificationService;
+  private UiLibraryMinificationService uiLibraryMinificationService;
 
   @Override
   protected <T extends FrontendLibrary> T getLibrary(String libraryPath) {

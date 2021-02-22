@@ -20,6 +20,7 @@ package io.kestros.cms.versioning.core.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
 import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
@@ -130,6 +131,24 @@ public class VersionServiceImplTest {
     SampleVersion version = resource.adaptTo(SampleVersion.class);
     assertEquals("/content/versionable/versions/2.0.0",
         versionService.getPreviousVersion(version).getPath());
+  }
+
+  @Test
+  public void testGetClosestVersion()
+      throws ChildResourceNotFoundException, NoValidAncestorException, VersionRetrievalException {
+    context.create().resource("/content/versionable/versions/1.2.3", versionProperties);
+    context.create().resource("/content/versionable/versions/2.4.2", versionProperties);
+    context.create().resource("/content/versionable/versions/3.0.0", versionProperties);
+
+    versionable = resource.adaptTo(SampleVersionable.class);
+
+    assertEquals("/content/versionable/versions/3.0.0",
+        versionService.getClosestVersion(versionable, "3.0.1").getPath());
+    assertEquals("/content/versionable/versions/3.0.0",
+        versionService.getClosestVersion(versionable, "3.0.0").getPath());
+    assertEquals("/content/versionable/versions/1.2.3",
+        versionService.getClosestVersion(versionable, "1.2.3").getPath());
+    assertNull(        versionService.getClosestVersion(versionable, "0.0.0"));
   }
 
   @Test
