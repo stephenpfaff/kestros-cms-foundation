@@ -448,7 +448,7 @@ public class BaseComponent extends BaseResource {
   public ComponentUiFrameworkView getComponentUiFrameworkView() {
     if (componentUiFrameworkViewRetrievalService != null) {
       try {
-        return componentUiFrameworkViewRetrievalService.getComponentUiFrameworkView(
+        return componentUiFrameworkViewRetrievalService.getComponentUiFrameworkViewWithFallback(
             this.getComponentType(), this.getContainingPage().getTheme().getUiFramework());
       } catch (InvalidComponentUiFrameworkViewException e) {
         e.printStackTrace();

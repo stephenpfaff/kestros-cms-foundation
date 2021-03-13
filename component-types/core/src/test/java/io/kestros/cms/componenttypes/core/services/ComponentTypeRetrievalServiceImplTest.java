@@ -28,7 +28,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import io.kestros.cms.componenttypes.api.exceptions.ComponentTypeRetrievalException;
-import io.kestros.cms.componenttypes.api.exceptions.InvalidComponentTypeException;
 import io.kestros.cms.componenttypes.api.models.ComponentType;
 import io.kestros.cms.componenttypes.api.models.ComponentUiFrameworkView;
 import io.kestros.cms.componenttypes.core.models.ComponentUiFrameworkViewResource;
@@ -36,9 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
 import org.junit.Rule;
@@ -200,7 +197,7 @@ public class ComponentTypeRetrievalServiceImplTest {
     }
     assertNotNull(exception);
     assertEquals(ComponentTypeRetrievalException.class, exception.getClass());
-    assertEquals("Unable to adapt '/apps/component-type/view': Invalid ResourceType.",
+    assertEquals("Unable to adapt '/apps/component-type/view': No parent component type.",
         exception.getMessage());
   }
 
@@ -228,7 +225,7 @@ public class ComponentTypeRetrievalServiceImplTest {
     }
     assertNotNull(exception);
     assertEquals(ComponentTypeRetrievalException.class, exception.getClass());
-    assertEquals("Unable to adapt '/libs/component-type/view': Unable to find ComponentType for ComponentUiFrameworkView.",
+    assertEquals("Unable to adapt '/libs/component-type/view': No parent component type.",
         exception.getMessage());
   }
 

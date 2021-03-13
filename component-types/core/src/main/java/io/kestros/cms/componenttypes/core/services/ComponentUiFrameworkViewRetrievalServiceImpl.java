@@ -36,19 +36,20 @@ import io.kestros.cms.componenttypes.core.models.ComponentUiFrameworkViewResourc
 import io.kestros.cms.componenttypes.core.models.ManagedComponentUiFrameworkViewResource;
 import io.kestros.cms.performanceservices.api.services.PerformanceService;
 import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
+import io.kestros.cms.uiframeworks.api.models.ManagedUiFramework;
+import io.kestros.cms.uiframeworks.api.models.ManagedVendorLibrary;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkRetrievalService;
 import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
 import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
 import io.kestros.cms.versioning.api.models.Version;
 import io.kestros.cms.versioning.api.services.VersionService;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
-import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
-import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
+import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
-import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,7 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Retrieves ComponentUiFrameworkViewResource objects.
+ * ComponentUiFrameworkViewRetrievalService.
  */
 @Component(immediate = true,
            service = ComponentUiFrameworkViewRetrievalService.class)
@@ -117,92 +118,20 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
     throw new InvalidComponentTypeException("", componentType.getPath());
   }
 
-  @Override
   @Nonnull
-  public ComponentUiFrameworkView getComponentUiFrameworkView(@Nonnull ComponentType componentType,
-      @Nonnull UiFramework uiFramework)
-      throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException {
+  @Override
+  public ComponentUiFrameworkView getComponentUiFrameworkViewFromStandaloneUiFramework(
+      @Nonnull ComponentType componentType, @Nonnull UiFramework uiFramework)
+      throws InvalidComponentUiFrameworkViewException, ChildResourceNotFoundException {
     String tracker = startPerformanceTracking();
     getServiceResourceResolver().refresh();
-    Version version = null;
-    try {
-      version = uiFramework.getVersion();
-    } catch (VersionFormatException e) {
-      LOG.trace(e.getMessage());
-    }
-    try {
-      if (versionService != null && version != null) {
-        try {
-          ManagedComponentUiFrameworkView managedComponentUiFrameworkView
-              = getManagedComponentUiFrameworkView(componentType, uiFramework);
-          try {
-            endPerformanceTracking(tracker);
-            return versionService.getClosestVersion(managedComponentUiFrameworkView,
-                version.getFormatted());
-          } catch (VersionRetrievalException e) {
-            BaseResource versionsFolderResource = SlingModelUtils.getChildAsBaseResource("versions",
-                managedComponentUiFrameworkView.getResource());
 
-            ComponentUiFrameworkViewResource componentUiFrameworkViewResource
-                = getChildAsBaseResource(version.getFormatted(),
-                versionsFolderResource).getResource().adaptTo(
-                ComponentUiFrameworkViewResource.class);
-            if (componentUiFrameworkViewResource != null) {
-              endPerformanceTracking(tracker);
-              return componentUiFrameworkViewResource;
-            }
-          }
-        } catch (ModelAdaptionException e) {
-          endPerformanceTracking(tracker);
-          return getCommonUiFrameworkView(componentType);
-          //          throw new InvalidComponentUiFrameworkViewException(componentType.getPath(),
-          //          uiFramework);
-        }
-      } else if (componentType instanceof ComponentTypeResource) {
-        ComponentTypeResource componentTypeResource = (ComponentTypeResource) componentType;
-        BaseResource frameworkViewResource;
-        try {
-          frameworkViewResource = getChildAsBaseResource(uiFramework.getFrameworkCode(),
-              componentTypeResource);
-        } catch (ChildResourceNotFoundException e) {
-          try {
-            frameworkViewResource = getChildAsBaseResource(uiFramework.getName(),
-                componentTypeResource);
-          } catch (ChildResourceNotFoundException childResourceNotFoundException) {
-            try {
-              ComponentType superType = componentType.getComponentSuperType();
-
-              ComponentUiFrameworkView inheritedView = getComponentUiFrameworkView(superType,
-                  uiFramework);
-              if (!"common".equals(inheritedView.getName())) {
-                endPerformanceTracking(tracker);
-                return inheritedView;
-              }
-            } catch (InvalidComponentUiFrameworkViewException
-                     | InvalidComponentTypeException exception) {
-              LOG.debug(e.getMessage());
-            }
-            endPerformanceTracking(tracker);
-            return getCommonUiFrameworkView(componentType);
-            //            throw new InvalidComponentUiFrameworkViewException
-            //            (componentTypeResource.getPath(),
-            //                uiFramework);
-          }
-        }
-        ComponentUiFrameworkViewResource view = frameworkViewResource.getResource().adaptTo(
-            ComponentUiFrameworkViewResource.class);
-        if (view != null) {
-          endPerformanceTracking(tracker);
-          return view;
-        }
-      } else {
-        endPerformanceTracking(tracker);
-        return getCommonUiFrameworkView(componentType);
-        //        throw new InvalidComponentTypeException(componentType.getPath(),
-        //            "Supplied componentType was not a ComponentTypeResource.");
-      }
-    } catch (InvalidCommonUiFrameworkException e) {
-      LOG.error("Unable to determine version for UI");
+    ComponentUiFrameworkViewResource componentUiFrameworkViewResource = getChildAsBaseResource(
+        uiFramework.getFrameworkCode(), componentType.getResource()).getResource().adaptTo(
+        ComponentUiFrameworkViewResource.class);
+    if (componentUiFrameworkViewResource != null) {
+      endPerformanceTracking(tracker);
+      return componentUiFrameworkViewResource;
     }
     endPerformanceTracking(tracker);
     throw new InvalidComponentUiFrameworkViewException(componentType.getPath(), uiFramework);
@@ -210,64 +139,208 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
 
   @Nonnull
   @Override
-  public ManagedComponentUiFrameworkView getManagedComponentUiFrameworkView(
-      @Nonnull ComponentType componentType, @Nonnull UiFramework uiFramework)
-      throws ChildResourceNotFoundException, InvalidResourceTypeException {
+  public ComponentUiFrameworkView getComponentUiFrameworkViewFromStandaloneVendorLibrary(
+      @Nonnull ComponentType componentType, @Nonnull VendorLibrary vendorLibrary)
+      throws InvalidComponentUiFrameworkViewException, ResourceNotFoundException {
     String tracker = startPerformanceTracking();
-    if (componentType instanceof ComponentTypeResource) {
-      ComponentTypeResource componentTypeResource = (ComponentTypeResource) componentType;
-      BaseResource frameworkCodeResource = null;
-      try {
-        frameworkCodeResource = getChildAsBaseResource(uiFramework.getFrameworkCode(),
-            componentTypeResource);
-      } catch (ChildResourceNotFoundException e) {
-        try {
-          frameworkCodeResource = getChildAsBaseResource(uiFramework.getName(),
-              componentTypeResource);
-        } catch (ChildResourceNotFoundException exception) {
-          if (componentTypeResource.getPath().startsWith("/libs")) {
-            String appsComponentTypePath = componentTypeResource.getPath().replaceFirst("/libs/",
-                "/apps/");
-            try {
-              BaseResource appsComponentTypeResource = getResourceAsBaseResource(
-                  appsComponentTypePath, getServiceResourceResolver());
-              frameworkCodeResource = getChildAsBaseResource(uiFramework.getFrameworkCode(),
-                  appsComponentTypeResource);
-            } catch (ResourceNotFoundException resourceNotFoundException) {
-              resourceNotFoundException.printStackTrace();
-            }
-          }
-        }
-      }
-      if (frameworkCodeResource != null && frameworkCodeResource.getResource().getChild("versions")
-                                           != null) {
-        ManagedComponentUiFrameworkViewResource managedComponentUiFrameworkViewResource
-            = frameworkCodeResource.getResource().adaptTo(
-            ManagedComponentUiFrameworkViewResource.class);
-        if (managedComponentUiFrameworkViewResource != null) {
-          endPerformanceTracking(tracker);
-          return managedComponentUiFrameworkViewResource;
-        }
-      }
+    getServiceResourceResolver().refresh();
+
+    ComponentUiFrameworkViewResource componentUiFrameworkViewResource = getResourceAsBaseResource(
+        componentType.getPath() + vendorLibrary.getPath(),
+        getServiceResourceResolver()).getResource().adaptTo(ComponentUiFrameworkViewResource.class);
+    if (componentUiFrameworkViewResource != null) {
+      endPerformanceTracking(tracker);
+      return componentUiFrameworkViewResource;
     }
     endPerformanceTracking(tracker);
-    throw new InvalidResourceTypeException(
-        String.format("%s/%s", componentType.getPath(), uiFramework.getFrameworkCode()),
-        ManagedComponentUiFrameworkViewResource.class);
+    throw new ResourceNotFoundException(componentType.getPath() + vendorLibrary.getPath());
   }
 
-  @Override
   @Nonnull
-  public List<ComponentUiFrameworkView> getComponentViews(@Nonnull UiFramework uiFramework,
-      @Nonnull Boolean includeApps, @Nonnull Boolean includeLibsCommons,
-      @Nonnull Boolean includeAllLibs) {
+  @Override
+  public ComponentUiFrameworkView getComponentUiFrameworkViewWithFallback(
+      @Nonnull ComponentType componentType, @Nonnull UiFramework uiFramework)
+      throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException {
+    try {
+      return getComponentUiFrameworkViewFromStandaloneUiFramework(componentType, uiFramework);
+    } catch (ChildResourceNotFoundException exception) {
+      LOG.trace(exception.getMessage());
+    }
+    try {
+      ManagedUiFramework managedUiFramework = (ManagedUiFramework) uiFramework.getRootResource();
+      return getComponentUiFrameworkViewFromManagedUiFramework(componentType, managedUiFramework,
+          uiFramework.getVersion());
+    } catch (VersionFormatException | ChildResourceNotFoundException
+               | InvalidResourceTypeException | NoValidAncestorException e) {
+      LOG.trace(e.getMessage());
+    }
+    try {
+      return getComponentUiFrameworkViewFromVendorLibraryList(componentType, uiFramework);
+    } catch (ResourceNotFoundException e) {
+      LOG.trace(e.getMessage());
+    }
+    try {
+      return getCommonUiFrameworkView(componentType);
+    } catch (InvalidCommonUiFrameworkException | InvalidComponentTypeException e) {
+      LOG.trace(e.getMessage());
+    }
+    throw new InvalidComponentUiFrameworkViewException(componentType.getPath(), uiFramework);
+  }
+
+  @Nonnull
+  @Override
+  public ComponentUiFrameworkView getComponentUiFrameworkViewFromManagedUiFramework(
+      @Nonnull ComponentType componentType, @Nonnull ManagedUiFramework managedUiFramework,
+      @Nonnull Version maxVersion)
+      throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException,
+             ChildResourceNotFoundException, InvalidResourceTypeException {
+    if (versionService != null) {
+      try {
+        ManagedComponentUiFrameworkView managedComponentUiFrameworkView
+            = getManagedComponentUiFrameworkViewFromManagedUiFramework(componentType,
+            managedUiFramework);
+        return versionService.getClosestVersion(managedComponentUiFrameworkView,
+            maxVersion.getFormatted());
+      } catch (VersionRetrievalException e) {
+        LOG.trace(e.getMessage());
+      }
+    }
+    throw new InvalidComponentUiFrameworkViewException(componentType.getPath(), managedUiFramework,
+        maxVersion);
+  }
+
+  @Nonnull
+  @Override
+  public ComponentUiFrameworkView getComponentUiFrameworkViewFromManagedVendorLibrary(
+      @Nonnull ComponentType componentType, @Nonnull ManagedVendorLibrary managedVendorLibrary,
+      @Nonnull Version maxVersion)
+      throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException,
+             ChildResourceNotFoundException, InvalidResourceTypeException {
+    if (versionService != null) {
+      try {
+        ManagedComponentUiFrameworkView managedComponentUiFrameworkView
+            = getManagedComponentUiFrameworkViewFromManagedVendorLibrary(componentType,
+            managedVendorLibrary);
+        return versionService.getClosestVersion(managedComponentUiFrameworkView,
+            maxVersion.getFormatted());
+      } catch (VersionRetrievalException | ResourceNotFoundException e) {
+        LOG.trace(e.getMessage());
+      }
+    }
+    throw new InvalidComponentUiFrameworkViewException(componentType.getPath(),
+        managedVendorLibrary, maxVersion);
+  }
+
+  @Nonnull
+  @Override
+  public ComponentUiFrameworkView getComponentUiFrameworkViewFromVendorLibraryList(
+      @Nonnull ComponentType componentType, @Nonnull UiFramework uiFramework)
+      throws ResourceNotFoundException {
+
+    List<VendorLibrary> vendorLibraryList = uiFramework.getVendorLibraries();
+    for (int i = vendorLibraryList.size() - 1; i >= 0; i--) {
+      VendorLibrary vendorLibrary = vendorLibraryList.get(i);
+
+      if (versionService != null) {
+        try {
+          ManagedVendorLibrary managedVendorLibrary
+              = (ManagedVendorLibrary) vendorLibrary.getRootResource();
+          return getComponentUiFrameworkViewFromManagedVendorLibrary(componentType,
+              managedVendorLibrary, vendorLibrary.getVersion());
+        } catch (NoValidAncestorException e) {
+          try {
+            return getComponentUiFrameworkViewFromStandaloneVendorLibrary(componentType,
+                vendorLibrary);
+          } catch (ResourceNotFoundException resourceNotFoundException) {
+            LOG.debug(resourceNotFoundException.getMessage());
+          } catch (InvalidComponentUiFrameworkViewException exception) {
+            LOG.debug(exception.getMessage());
+          }
+
+        } catch (VersionFormatException exception) {
+          LOG.debug(exception.getMessage());
+        } catch (ChildResourceNotFoundException exception) {
+          LOG.debug(exception.getMessage());
+        } catch (InvalidResourceTypeException exception) {
+          LOG.debug(exception.getMessage());
+        } catch (InvalidComponentTypeException e) {
+          LOG.debug(e.getMessage());
+        } catch (InvalidComponentUiFrameworkViewException exception) {
+          LOG.debug(exception.getMessage());
+        }
+      } else {
+        try {
+          return getComponentUiFrameworkViewFromStandaloneVendorLibrary(componentType,
+              vendorLibrary);
+        } catch (InvalidComponentUiFrameworkViewException exception) {
+          LOG.debug(exception.getMessage());
+        }
+      }
+
+    }
+    throw new ResourceNotFoundException("");
+  }
+
+  @Nonnull
+  @Override
+  public ManagedComponentUiFrameworkView getManagedComponentUiFrameworkViewFromManagedUiFramework(
+      @Nonnull ComponentType componentType, @Nonnull ManagedUiFramework managedUiFramework)
+      throws ChildResourceNotFoundException, InvalidResourceTypeException {
+    if (versionService != null) {
+      ManagedComponentUiFrameworkViewResource managedComponentUiFrameworkViewResource
+          = getChildAsBaseResource(managedUiFramework.getFrameworkCode(),
+          componentType.getResource()).getResource().adaptTo(
+          ManagedComponentUiFrameworkViewResource.class);
+      if (managedComponentUiFrameworkViewResource != null) {
+        return managedComponentUiFrameworkViewResource;
+      }
+    }
+    throw new ChildResourceNotFoundException(managedUiFramework.getFrameworkCode(),
+        componentType.getPath());
+  }
+
+  @Nonnull
+  @Override
+  public ManagedComponentUiFrameworkView getManagedComponentUiFrameworkViewFromManagedVendorLibrary(
+      @Nonnull ComponentType componentType, @Nonnull ManagedVendorLibrary managedVendorLibrary)
+      throws ChildResourceNotFoundException, InvalidResourceTypeException,
+             ResourceNotFoundException {
+    if (versionService != null) {
+      ManagedComponentUiFrameworkViewResource managedComponentUiFrameworkViewResource = null;
+      try {
+        managedComponentUiFrameworkViewResource = getResourceAsBaseResource(
+            componentType.getPath() + managedVendorLibrary.getPath(),
+            getServiceResourceResolver()).getResource().adaptTo(
+            ManagedComponentUiFrameworkViewResource.class);
+      } catch (ResourceNotFoundException e) {
+        if (componentType.getPath().startsWith("/libs/")) {
+          String componentTypePath = componentType.getPath().replace("/libs/", "/apps/");
+          managedComponentUiFrameworkViewResource = getResourceAsBaseResource(
+              componentTypePath + managedVendorLibrary.getPath(),
+              getServiceResourceResolver()).getResource().adaptTo(
+              ManagedComponentUiFrameworkViewResource.class);
+        }
+      }
+      if (managedComponentUiFrameworkViewResource != null) {
+        return managedComponentUiFrameworkViewResource;
+      }
+    }
+    throw new ChildResourceNotFoundException(managedVendorLibrary.getPath(),
+        componentType.getPath());
+  }
+
+  @Nonnull
+  @Override
+  public List<ComponentUiFrameworkView> getComponentViews(UiFramework uiFramework,
+      Boolean includeApps, Boolean includeLibsCommons, Boolean includeAllLibs) {
     String tracker = startPerformanceTracking();
     List<ComponentUiFrameworkView> componentUiFrameworkViewList = new ArrayList<>();
     if (componentTypeRetrievalService != null) {
       for (ComponentType componentType : componentTypeRetrievalService.getAllComponentTypes(
           includeApps, includeLibsCommons, includeAllLibs)) {
         try {
-          componentUiFrameworkViewList.add(getComponentUiFrameworkView(componentType, uiFramework));
+          componentUiFrameworkViewList.add(
+              getComponentUiFrameworkViewWithFallback(componentType, uiFramework));
         } catch (InvalidComponentUiFrameworkViewException e) {
           LOG.warn("Unable to add ComponentView for componentType {} and UiFramework {} to "
                    + "componentViews list. {}", componentType.getPath(), uiFramework.getPath(),
@@ -287,40 +360,18 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
     return componentUiFrameworkViewList;
   }
 
+  @Nonnull
+  @Override
+  public List<ComponentUiFrameworkView> getComponentViews(VendorLibrary vendorLibrary,
+      Boolean includeApps, Boolean includeLibsCommons, Boolean includeAllLibs) {
+    return Collections.emptyList();
+  }
 
   @Nonnull
   @Override
   public List<ComponentUiFrameworkView> getUiFrameworkViews(@Nonnull ComponentType componentType,
       Boolean includeEtcFrameworks, Boolean includeLibsFrameworks) {
-    String tracker = startPerformanceTracking();
-    List<ComponentUiFrameworkView> uiFrameworkViewList = new ArrayList<>();
-    try {
-      uiFrameworkViewList.add(getCommonUiFrameworkView(componentType));
-    } catch (Exception e) {
-      LOG.debug("Unable to retrieve common view for componentType {}. {}", componentType.getPath(),
-          e.getMessage());
-    }
-    if (uiFrameworkRetrievalService != null) {
-      for (UiFramework uiFramework :
-          uiFrameworkRetrievalService.getAllUnmanagedUiFrameworksAndManagedUiFrameworkVersions(
-          includeEtcFrameworks, includeLibsFrameworks)) {
-        try {
-          ComponentUiFrameworkView view = getComponentUiFrameworkView(componentType, uiFramework);
-          if (!"common".equals(view.getName())) {
-            uiFrameworkViewList.add(view);
-          }
-
-        } catch (InvalidComponentTypeException e) {
-          LOG.debug("Unable to retrieve view for componentType {} and UiFramework {}. {}",
-              componentType.getPath(), uiFramework.getPath(), e.getMessage());
-        } catch (InvalidComponentUiFrameworkViewException e) {
-          LOG.debug("Unable to retrieve view for componentType {} and UiFramework {}. {} ",
-              componentType.getPath(), uiFramework.getPath(), e.getMessage());
-        }
-      }
-    }
-    endPerformanceTracking(tracker);
-    return uiFrameworkViewList;
+    return Collections.emptyList();
   }
 
   @Override

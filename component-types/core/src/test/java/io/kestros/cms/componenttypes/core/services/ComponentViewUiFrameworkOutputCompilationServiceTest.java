@@ -144,7 +144,8 @@ public class ComponentViewUiFrameworkOutputCompilationServiceTest {
     assertEquals(2, componentTypeRetrievalService.getAllComponentTypes(true, true, true).size());
     assertEquals(".component-1{}\n.component-2{}",
         compilationService.getAppendedOutput(uiFramework, ScriptTypes.CSS));
-    verify(componentUiFrameworkViewService, times(1)).getComponentViews(any(), any(), any(), any());
+    verify(componentUiFrameworkViewService, times(1)).getComponentViews(any(UiFramework.class),
+        any(), any(), any());
   }
 
   @Test
@@ -174,7 +175,8 @@ public class ComponentViewUiFrameworkOutputCompilationServiceTest {
     assertEquals(2, componentTypeRetrievalService.getAllComponentTypes(true, true, true).size());
     assertEquals(".component-1{}\n.variation-1{}\n.component-2{}\n.variation-2{}",
         compilationService.getAppendedOutput(uiFramework, ScriptTypes.CSS));
-    verify(componentUiFrameworkViewService, times(1)).getComponentViews(any(), any(), any(), any());
+    verify(componentUiFrameworkViewService, times(1)).getComponentViews(any(UiFramework.class),
+        any(), any(), any());
   }
 
 }

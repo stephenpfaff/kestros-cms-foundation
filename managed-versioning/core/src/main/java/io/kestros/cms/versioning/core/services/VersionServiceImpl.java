@@ -36,6 +36,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorExcept
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,11 +110,13 @@ public class VersionServiceImpl implements VersionService {
   @Override
   public <T extends BaseResource> T getPreviousVersion(VersionResource resource)
       throws NoValidAncestorException {
-    List<T> versionResources = getVersionHistory(resource.getRootResource());
-    for (int i = 0; i < versionResources.size(); i++) {
-      if (versionResources.get(i).getName().equals(resource.getResource().getName())) {
-        if (i > 0) {
-          return versionResources.get(i - 1);
+    if (resource.getRootResource() != null) {
+      List<T> versionResources = getVersionHistory(resource.getRootResource());
+      for (int i = 0; i < versionResources.size(); i++) {
+        if (versionResources.get(i).getName().equals(resource.getResource().getName())) {
+          if (i > 0) {
+            return versionResources.get(i - 1);
+          }
         }
       }
     }
@@ -137,6 +140,7 @@ public class VersionServiceImpl implements VersionService {
   }
 
   @Override
+  @Nonnull
   public <T extends BaseResource> T getClosestVersion(VersionableResource resource,
       String versionNumber) throws VersionRetrievalException {
     // todo this.
@@ -153,7 +157,7 @@ public class VersionServiceImpl implements VersionService {
             if (loopedVersion.getVersion().compareTo(desiredVersion) == -1
                 && loopedVersion instanceof BaseResource) {
               closestVersion = (T) loopedVersion;
-            } else {
+            } else if (closestVersion != null) {
               return closestVersion;
             }
           } catch (VersionFormatException versionFormatException) {

@@ -32,6 +32,13 @@ public interface VendorLibrary
     extends FrontendLibrary, ThirdPartyResource, IconResource, VersionResource {
 
   /**
+   * Compiled HTL Template file.
+   *
+   * @return Compiled HTL Template file.
+   */
+  String getTemplatesPath();
+
+  /**
    * HTL Template files contained within the library.
    *
    * @return HTL Template files contained within the library.

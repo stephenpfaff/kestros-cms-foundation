@@ -30,9 +30,11 @@ import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService
 import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateCacheService;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateFileRetrievalService;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkRetrievalService;
+import io.kestros.cms.uiframeworks.api.services.VendorLibraryRetrievalService;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.osgiserviceutils.exceptions.CachePurgeException;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
@@ -43,6 +45,7 @@ import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundExcep
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.hc.api.FormattingResultLog;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -88,6 +91,11 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
   @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
+  private VendorLibraryRetrievalService venLibRetrievalService;
+
+  @SuppressFBWarnings("SE_BAD_FIELD")
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
   private HtlTemplateFileRetrievalService htlTemplateFileRetrievalService;
 
   @SuppressFBWarnings("SE_BAD_FIELD")
@@ -101,6 +109,7 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
     super.activate(componentContext);
     //    try {
     this.cacheAllUiFrameworkCompiledHtlTemplates();
+    this.cacheAllVendorLibraryCompiledHtlTemplates();
     //    } catch (CacheBuilderException e) {
     //      LOG.error("Failed to rebuild compiled HTL Template files during bundle activation. {}",
     //          e.getMessage());
@@ -117,8 +126,25 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
     if (getServiceResourceResolver() != null) {
       try {
         if (getAllDescendantsOfType(getCacheRootResource(), HtmlFile.class).size() == 0) {
-          log.warn("HtlTemplateCacheService has no cached compilation files.");
+          log.info("No Cached HTL Template files. Attempting to cache files for all UiFrameworks.");
+          cacheAllUiFrameworkCompiledHtlTemplates();
+          cacheAllVendorLibraryCompiledHtlTemplates();
+          if (getAllDescendantsOfType(getCacheRootResource(), HtmlFile.class).size() == 0) {
+            log.warn("HtlTemplateCacheService has no cached compilation files.");
+          }
         }
+        for (UiFramework uiFramework :
+            uiFrameworkRetrievalService.getAllUnmanagedUiFrameworksAndManagedUiFrameworkVersions(
+            true, true)) {
+          if (StringUtils.isEmpty(uiFramework.getTemplatesPath())) {
+            try {
+              cacheCompiledHtlTemplates(uiFramework);
+            } catch (CacheBuilderException e) {
+              LOG.warn(e.getMessage());
+            }
+          }
+        }
+
       } catch (ResourceNotFoundException e) {
         log.critical("Root template cache folder not found.");
       }
@@ -148,8 +174,29 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
           getServiceResourceResolver()).getPath();
     } catch (final ResourceNotFoundException e) {
       cacheAllUiFrameworkCompiledHtlTemplates();
+      cacheAllVendorLibraryCompiledHtlTemplates();
       return getResourceAsBaseResource(
           getServiceCacheRootPath() + uiFramework.getPath() + EXTENSION_HTML,
+          getServiceResourceResolver()).getPath();
+    }
+  }
+
+  @Nonnull
+  @Override
+  public String getCompiledTemplateFilePath(@Nonnull VendorLibrary vendorLibrary)
+      throws ResourceNotFoundException {
+    BaseResource getCacheRootResource = getResourceAsBaseResource(getServiceCacheRootPath(),
+        getServiceResourceResolver());
+    LOG.trace("Searching for HTL Template File cache in {}", getCacheRootResource.getPath());
+    try {
+      return getResourceAsBaseResource(
+          getServiceCacheRootPath() + vendorLibrary.getPath() + EXTENSION_HTML,
+          getServiceResourceResolver()).getPath();
+    } catch (final ResourceNotFoundException e) {
+      cacheAllUiFrameworkCompiledHtlTemplates();
+      cacheAllVendorLibraryCompiledHtlTemplates();
+      return getResourceAsBaseResource(
+          getServiceCacheRootPath() + vendorLibrary.getPath() + EXTENSION_HTML,
           getServiceResourceResolver()).getPath();
     }
   }
@@ -171,6 +218,25 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
     throw new CacheBuilderException(
         String.format("Failed to build HTL Template cache for UI Framework %s.",
             uiFramework.getPath()));
+  }
+
+  @Override
+  public void cacheCompiledHtlTemplates(VendorLibrary vendorLibrary) throws CacheBuilderException {
+    int attempts = 0;
+    while (attempts < 100) {
+      try {
+        cacheCompiledHtlTemplates(vendorLibrary, attempts);
+        return;
+      } catch (CacheBuilderException e) {
+        LOG.debug(e.getMessage());
+      } catch (HtlTemplateFileRetrievalException e) {
+        LOG.debug(e.getMessage());
+      }
+      attempts++;
+    }
+    throw new CacheBuilderException(
+        String.format("Failed to build HTL Template cache for Vendor Library %s.",
+            vendorLibrary.getPath()));
   }
 
   /**
@@ -208,6 +274,44 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
       throw new CacheBuilderException(String.format(
           "Failed to Build HTL Template cache for UiFramework %s. HtlTemplateFileRetrievalService"
           + " was null.", uiFramework.getPath()));
+    }
+  }
+
+  /**
+   * Cache compiled HtlTemplate files for a specified UiFramework.
+   *
+   * @param vendorLibrary Vendor Library.
+   * @param attempts Number of attempts.
+   * @throws CacheBuilderException Failed cache building.
+   * @throws HtlTemplateFileRetrievalException failed to retrieve HTL Template files.
+   */
+  public void cacheCompiledHtlTemplates(VendorLibrary vendorLibrary, final int attempts)
+      throws CacheBuilderException, HtlTemplateFileRetrievalException {
+    final StringBuilder templatesOutput = new StringBuilder();
+
+    if (htlTemplateFileRetrievalService != null) {
+      for (HtlTemplateFile file : htlTemplateFileRetrievalService.getHtlTemplatesFromVendorLibrary(
+          vendorLibrary)) {
+        if (StringUtils.isNotEmpty(templatesOutput)) {
+          templatesOutput.append("\n");
+        }
+        try {
+          templatesOutput.append(file.getFileContent());
+        } catch (IOException e) {
+          throw new CacheBuilderException(e.getMessage());
+        }
+      }
+      if (StringUtils.isNotEmpty(templatesOutput.toString())) {
+        cacheOutput(templatesOutput.toString(), vendorLibrary);
+      } else {
+        throw new CacheBuilderException(String.format(
+            "Failed to Build HTL Template cache for UiFramework %s. Compiled HTL Template file "
+            + "was empty.", vendorLibrary.getPath()));
+      }
+    } else {
+      throw new CacheBuilderException(String.format(
+          "Failed to Build HTL Template cache for UiFramework %s. HtlTemplateFileRetrievalService"
+          + " was null.", vendorLibrary.getPath()));
     }
   }
 
@@ -290,11 +394,41 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
     //      }
   }
 
+  @Override
+  public void cacheAllVendorLibraryCompiledHtlTemplates() {
+    if (venLibRetrievalService != null) {
+      if (getServiceResourceResolver() == null) {
+        this.serviceResourceResolver = getOpenServiceResourceResolverOrNullAndLogExceptions(
+            getServiceUserName(), getServiceResourceResolver(), getResourceResolverFactory(), this);
+      }
+
+      if (getServiceResourceResolver() != null) {
+        int attempts = 0;
+        LOG.info("Attempting to cache compiled HTL Template files for all UiFrameworks.");
+        List<VendorLibrary> vendorLibraryList
+            = venLibRetrievalService.getAllUnmanagedUiFrameworksAndManagedVendorLibraryVersions(
+            true, true);
+
+        if (vendorLibraryList.size() == 0) {
+          getServiceResourceResolver().refresh();
+        }
+        for (final VendorLibrary vendorLibrary : vendorLibraryList) {
+          try {
+            cacheCompiledHtlTemplates(vendorLibrary);
+          } catch (CacheBuilderException e) {
+            LOG.error(e.getMessage());
+          }
+        }
+      }
+    }
+  }
+
 
   @Override
   protected void doPurge(final ResourceResolver resourceResolver) throws CachePurgeException {
     super.doPurge(resourceResolver);
     cacheAllUiFrameworkCompiledHtlTemplates();
+    cacheAllVendorLibraryCompiledHtlTemplates();
   }
 
   @Override
@@ -310,6 +444,12 @@ public class HtlTemplateCacheServiceImpl extends JcrFileCacheService
   private void cacheOutput(final String output, final UiFramework uiFramework)
       throws CacheBuilderException {
     final String fileName = uiFramework.getPath() + ".html";
+    createCacheFile(output, fileName, new HtmlFileType());
+  }
+
+  private void cacheOutput(final String output, final VendorLibrary vendorLibrary)
+      throws CacheBuilderException {
+    final String fileName = vendorLibrary.getPath() + ".html";
     createCacheFile(output, fileName, new HtmlFileType());
   }
 

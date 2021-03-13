@@ -35,8 +35,10 @@ import io.kestros.cms.versioning.api.services.VersionService;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -71,6 +73,18 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
   private PerformanceTrackerService performanceTrackerService;
+
+  @Override
+  public List<VendorLibrary> getAllUnmanagedUiFrameworksAndManagedVendorLibraryVersions(
+      Boolean includeEtc, Boolean includeLibs) {
+    List<VendorLibrary> vendorLibraryList = new ArrayList<>();
+    for (ManagedVendorLibrary managedVendorLibrary : getAllManagedVendorLibraries(includeEtc,
+        includeLibs)) {
+      vendorLibraryList.addAll(managedVendorLibrary.getVersions());
+    }
+    vendorLibraryList.addAll(getAllUnmanagedVendorLibraries(includeEtc, includeLibs));
+    return vendorLibraryList;
+  }
 
   @Override
   public ManagedVendorLibrary getManagedVendorLibrary(String name, boolean includeEtc,
@@ -151,6 +165,19 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
     }
     endPerformanceTracking(tracker);
     throw new VendorLibraryRetrievalException(name);
+  }
+
+  @Override
+  public VendorLibrary getVendorLibrary(String path)
+      throws VendorLibraryRetrievalException, VersionRetrievalException {
+    try {
+      return SlingModelUtils.getResourceAsType(path, getServiceResourceResolver(),
+          VendorLibraryResource.class);
+    } catch (InvalidResourceTypeException exception) {
+      throw new VendorLibraryRetrievalException(path);
+    } catch (ResourceNotFoundException e) {
+      throw new VendorLibraryRetrievalException(path);
+    }
   }
 
   @Override

@@ -46,6 +46,13 @@ public interface ComponentUiFrameworkView extends VersionResource, IconResource,
   String getName();
 
   /**
+   * Path to compiled HTL templates file.
+   *
+   * @return Path to compiled HTL templates file.
+   */
+  String getTemplatesPath();
+
+  /**
    * UiFramework associated to the current view.
    *
    * @return UiFramework associated to the current view.

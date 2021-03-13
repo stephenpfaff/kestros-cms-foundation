@@ -28,7 +28,6 @@ import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
 import java.util.Collections;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.Optional;
@@ -48,7 +47,7 @@ public class ManagedUiFrameworkResource extends BaseResource
 
   @Override
   public String getFrameworkCode() {
-    return getProperty(PN_UI_FRAMEWORK_CODE, StringUtils.EMPTY);
+    return getProperty(PN_UI_FRAMEWORK_CODE, getName());
   }
 
   @Override

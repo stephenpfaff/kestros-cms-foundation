@@ -19,6 +19,7 @@
 package io.kestros.cms.componenttypes.core.services;
 
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getChildrenAsBaseResource;
+import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getFirstAncestorOfType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getParentResourceAsType;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsBaseResource;
 import static io.kestros.commons.structuredslingmodels.utils.SlingModelUtils.getResourceAsType;
@@ -39,6 +40,7 @@ import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.ModelAdaptionException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoParentResourceException;
+import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,27 +120,31 @@ public class ComponentTypeRetrievalServiceImpl extends BaseServiceResolverServic
         return getParentResourceAsType(componentUiFrameworkViewResource,
             ComponentTypeResource.class);
       } catch (InvalidResourceTypeException e) {
-        if (componentUiFrameworkView.getPath().startsWith("/apps")) {
-          String libsPath = componentUiFrameworkView.getPath().replaceFirst("/apps/", "/libs/");
-          libsPath = libsPath.replace("/" + componentUiFrameworkView.getName(), "");
-          try {
-            endPerformanceTracking(tracker);
-            return getResourceAsType(libsPath, getServiceResourceResolver(),
-                ComponentTypeResource.class);
-          } catch (ResourceNotFoundException resourceNotFoundException) {
-            endPerformanceTracking(tracker);
-            throw new ComponentTypeRetrievalException(componentUiFrameworkView.getPath(),
-                "No parent component type.");
-          } catch (InvalidResourceTypeException invalidResourceTypeException) {
-            endPerformanceTracking(tracker);
-            throw new ComponentTypeRetrievalException(componentUiFrameworkView.getPath(),
-                "Invalid ResourceType.");
-          }
-        } else {
+        try {
+          endPerformanceTracking(tracker);
+          return getFirstAncestorOfType(componentUiFrameworkViewResource,
+              ComponentTypeResource.class, true);
+        } catch (NoValidAncestorException noValidAncestorException) {
           endPerformanceTracking(tracker);
           throw new ComponentTypeRetrievalException(componentUiFrameworkView.getPath(),
-              "Unable to find ComponentType for ComponentUiFrameworkView.");
+              "No parent component type.");
         }
+        //        String libsPath = componentUiFrameworkView.getPath().replaceFirst("/apps/",
+        //        "/libs/");
+        //        libsPath = libsPath.replace("/" + componentUiFrameworkView.getName(), "");
+        //        try {
+        //          endPerformanceTracking(tracker);
+        //          return getResourceAsType(libsPath, getServiceResourceResolver(),
+        //              ComponentTypeResource.class);
+        //        } catch (ResourceNotFoundException resourceNotFoundException) {
+        //          endPerformanceTracking(tracker);
+        //          throw new ComponentTypeRetrievalException(componentUiFrameworkView.getPath(),
+        //              "No parent component type.");
+        //        } catch (InvalidResourceTypeException invalidResourceTypeException) {
+        //          endPerformanceTracking(tracker);
+        //          throw new ComponentTypeRetrievalException(componentUiFrameworkView.getPath(),
+        //              "Invalid ResourceType.");
+        //        }
       } catch (NoParentResourceException e) {
         endPerformanceTracking(tracker);
         throw new ComponentTypeRetrievalException(componentUiFrameworkView.getPath(),

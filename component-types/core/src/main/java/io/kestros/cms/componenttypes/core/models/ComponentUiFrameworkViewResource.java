@@ -28,9 +28,13 @@ import io.kestros.cms.componenttypes.api.services.ComponentTypeRetrievalService;
 import io.kestros.cms.componenttypes.api.services.ComponentUiFrameworkViewRetrievalService;
 import io.kestros.cms.componenttypes.api.services.ComponentVariationRetrievalService;
 import io.kestros.cms.uiframeworks.api.exceptions.UiFrameworkRetrievalException;
+import io.kestros.cms.uiframeworks.api.exceptions.VendorLibraryRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
 import io.kestros.cms.uiframeworks.api.services.UiFrameworkRetrievalService;
+import io.kestros.cms.uiframeworks.api.services.VendorLibraryRetrievalService;
 import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
+import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
 import io.kestros.cms.versioning.api.services.VersionService;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
@@ -78,6 +82,10 @@ public class ComponentUiFrameworkViewResource extends UiLibraryResource
   @OSGiService
   @Optional
   private UiFrameworkRetrievalService uiFrameworkRetrievalService;
+
+  @OSGiService
+  @Optional
+  private VendorLibraryRetrievalService vendorLibraryRetrievalService;
 
   @Override
   public String getTitle() {
@@ -170,6 +178,34 @@ public class ComponentUiFrameworkViewResource extends UiLibraryResource
   //
   //    return output.toString();
   //  }
+
+  @Override
+  public String getTemplatesPath() {
+    UiFramework uiFramework = null;
+    try {
+      uiFramework = getUiFramework();
+    } catch (ResourceNotFoundException e) {
+      e.printStackTrace();
+    }
+    if (uiFramework != null) {
+      return uiFramework.getTemplatesPath();
+    } else if (vendorLibraryRetrievalService != null) {
+      try {
+        String vendorLibraryPath = getPath().split(
+            getComponentType().getName().replaceFirst("/libs/", "").replaceFirst("/apps/", ""))[1];
+        VendorLibrary vendorLibrary = vendorLibraryRetrievalService.getVendorLibrary(
+            vendorLibraryPath);
+        return vendorLibrary.getTemplatesPath();
+      } catch (ComponentTypeRetrievalException e) {
+        e.printStackTrace();
+      } catch (VendorLibraryRetrievalException e) {
+        e.printStackTrace();
+      } catch (VersionRetrievalException e) {
+        e.printStackTrace();
+      }
+    }
+    return StringUtils.EMPTY;
+  }
 
   @Override
   public UiFramework getUiFramework() throws ResourceNotFoundException {

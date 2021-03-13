@@ -87,7 +87,7 @@ public class UiFrameworkResource extends BaseUiFrameworkLibraryResource implemen
     if (versionableResource != null && versionableResource instanceof ManagedUiFrameworkResource) {
       return ((ManagedUiFrameworkResource) versionableResource).getFrameworkCode();
     }
-    return getProperty(PN_UI_FRAMEWORK_CODE, StringUtils.EMPTY);
+    return getProperty(PN_UI_FRAMEWORK_CODE, getName());
   }
 
   @Override

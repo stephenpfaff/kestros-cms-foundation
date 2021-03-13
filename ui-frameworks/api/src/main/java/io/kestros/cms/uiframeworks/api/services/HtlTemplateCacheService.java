@@ -18,12 +18,13 @@
 
 package io.kestros.cms.uiframeworks.api.services;
 
-import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.UiFramework;
+import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.osgiserviceutils.services.ManagedService;
 import io.kestros.commons.osgiserviceutils.services.cache.ManagedCacheService;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import javax.annotation.Nonnull;
 
 /**
  * Stores and maintains HTL Template caches.
@@ -40,14 +41,31 @@ public interface HtlTemplateCacheService extends ManagedCacheService, ManagedSer
   String getCompiledTemplateFilePath(UiFramework uiFramework) throws ResourceNotFoundException;
 
   /**
+   * Compiled template file path for a given {@link VendorLibrary}.
+   *
+   * @param vendorLibrary Vendor Library to lookup HTL Template file path for.
+   * @return Compiled template file path for a given {@link UiFramework}.
+   * @throws ResourceNotFoundException UiFramework templates root not found.
+   */
+  @Nonnull
+  String getCompiledTemplateFilePath(@Nonnull VendorLibrary vendorLibrary)
+      throws ResourceNotFoundException;
+
+  /**
    * Cache compiled HtlTemplate files for a specified UiFramework.
    *
    * @param uiFramework UiFramework to cache compiled HtlTemplateFile output for.
    * @throws CacheBuilderException Failed to build HTL Template cache.
-   * @throws HtlTemplateFileRetrievalException Failed to find HTL template files.
    */
-  void cacheCompiledHtlTemplates(UiFramework uiFramework)
-      throws CacheBuilderException, HtlTemplateFileRetrievalException;
+  void cacheCompiledHtlTemplates(UiFramework uiFramework) throws CacheBuilderException;
+
+  /**
+   * Cache compiled HtlTemplate files for a specified UiFramework.
+   *
+   * @param vendorLibrary VendorLibrary to cache compiled HtlTemplateFile output for.
+   * @throws CacheBuilderException Failed to build HTL Template cache.
+   */
+  void cacheCompiledHtlTemplates(VendorLibrary vendorLibrary) throws CacheBuilderException;
 
   /**
    * Cache all CompiledHtlTemplate files for all UiFrameworks.
@@ -55,5 +73,12 @@ public interface HtlTemplateCacheService extends ManagedCacheService, ManagedSer
    * @throws CacheBuilderException Failed to build HTL Template cache.
    */
   void cacheAllUiFrameworkCompiledHtlTemplates() throws CacheBuilderException;
+
+  /**
+   * Cache all CompiledHtlTemplate files for all UiFrameworks.
+   *
+   * @throws CacheBuilderException Failed to build HTL Template cache.
+   */
+  void cacheAllVendorLibraryCompiledHtlTemplates() throws CacheBuilderException;
 
 }
