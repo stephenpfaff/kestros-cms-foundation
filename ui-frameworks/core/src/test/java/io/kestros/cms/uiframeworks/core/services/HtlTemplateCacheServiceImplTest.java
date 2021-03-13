@@ -32,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
+import io.kestros.cms.uiframeworks.api.models.UiFramework;
 import io.kestros.cms.uiframeworks.core.models.UiFrameworkResource;
 import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
 import io.kestros.commons.osgiserviceutils.exceptions.CachePurgeException;
@@ -201,7 +202,7 @@ public class HtlTemplateCacheServiceImplTest {
         templateFileJcrContentProperties);
 
     cacheService.cacheAllUiFrameworkCompiledHtlTemplates();
-    verify(cacheService, times(2)).cacheCompiledHtlTemplates(any());
+    verify(cacheService, times(2)).cacheCompiledHtlTemplates(any(UiFramework.class));
   }
 
   @Test
@@ -238,9 +239,9 @@ public class HtlTemplateCacheServiceImplTest {
         templateFileJcrContentProperties);
 
     cacheService.cacheAllUiFrameworkCompiledHtlTemplates();
-    verify(cacheService, times(2)).cacheCompiledHtlTemplates(any());
+    verify(cacheService, times(2)).cacheCompiledHtlTemplates(any(UiFramework.class));
     cacheService.doPurge(context.resourceResolver());
-    verify(cacheService, times(4)).cacheCompiledHtlTemplates(any());
+    verify(cacheService, times(4)).cacheCompiledHtlTemplates(any(UiFramework.class));
   }
 
   @Test
@@ -285,7 +286,7 @@ public class HtlTemplateCacheServiceImplTest {
 
     verify(log, times(4)).critical(anyString());
     verify(log, times(1)).warn("HtlTemplateCacheService has no cached compilation files.");
-    verify(log, never()).info(anyString());
+    verify(log, times(1)).info("No Cached HTL Template files. Attempting to cache files for all UiFrameworks.");
     verify(log, never()).debug(anyString());
   }
 

@@ -22,9 +22,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.uiframeworks.api.exceptions.HtlTemplateFileRetrievalException;
 import io.kestros.cms.uiframeworks.api.models.HtlTemplateFile;
 import io.kestros.cms.uiframeworks.api.models.VendorLibrary;
+import io.kestros.cms.uiframeworks.api.services.HtlTemplateCacheService;
 import io.kestros.cms.uiframeworks.api.services.HtlTemplateFileRetrievalService;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosModel;
 import io.kestros.commons.structuredslingmodels.annotation.KestrosProperty;
+import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -50,6 +52,10 @@ public class VendorLibraryResource extends BaseUiFrameworkLibraryResource implem
   @OSGiService
   @Optional
   private HtlTemplateFileRetrievalService htlTemplateFileRetrievalService;
+
+  @OSGiService
+  @Optional
+  private HtlTemplateCacheService htlTemplateCacheService;
 
   @Override
   protected HtlTemplateFileRetrievalService getHtlTemplateFileRetrievalService() {
@@ -78,6 +84,16 @@ public class VendorLibraryResource extends BaseUiFrameworkLibraryResource implem
     return getProperties().get("documentationUrl", StringUtils.EMPTY);
   }
 
+
+  @Override
+  public String getTemplatesPath() {
+    try {
+      return htlTemplateCacheService.getCompiledTemplateFilePath(this);
+    } catch (ResourceNotFoundException e) {
+      LOG.error(e.getMessage());
+    }
+    return StringUtils.EMPTY;
+  }
 
   /**
    * HTL Template Files associated to the current Vendor Library.

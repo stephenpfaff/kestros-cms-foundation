@@ -74,8 +74,8 @@ public class ScriptRetrievalServiceImpl implements ScriptRetrievalService, Perfo
     String tracker = startPerformanceTracking();
     if (componentUiFrameworkViewRetrievalService != null) {
       ComponentUiFrameworkView view
-          = componentUiFrameworkViewRetrievalService.getComponentUiFrameworkView(componentType,
-          uiFramework);
+          = componentUiFrameworkViewRetrievalService.getComponentUiFrameworkViewWithFallback(
+          componentType, uiFramework);
       if (view instanceof ComponentUiFrameworkViewResource) {
         ComponentUiFrameworkViewResource viewResource = (ComponentUiFrameworkViewResource) view;
         try {

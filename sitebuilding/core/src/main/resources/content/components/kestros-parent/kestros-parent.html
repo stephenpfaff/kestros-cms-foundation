@@ -20,9 +20,15 @@
     data-sly-use.parentComponent="${'io.kestros.cms.sitebuilding.api.models.ParentComponent'}"
     data-sly-use.parentComponentEditContext="${'io.kestros.cms.sitebuilding.api.models.ParentComponentEditContext'}"/>
 
+<sly data-sly-use.component="${'io.kestros.cms.sitebuilding.api.models.BaseComponent'}"/>
+
+
+
 <sly data-sly-test="${parentComponentEditContext.editMode}">
   <!-- Component path: ${parentComponent.path} -->
   <!-- ComponentType path: ${parentComponent.componentType.path} -->
+  <!-- Component UI Framework View path: ${component.componentUiFrameworkView.path} -->
+  <!-- Templates File path: ${component.componentUiFrameworkView.templatesPath} -->
   <div id="${parentComponent.id}"
        data-path="${parentComponent.path}"
        class="kestros-component-editable component-${parentComponent.componentType.name}${parentComponent.cssClass ? ' ' : ''}${parentComponent.cssClass}${parentComponentEditContext.wrapperVariations ? ' ' : ''}${parentComponentEditContext.wrapperVariations}">

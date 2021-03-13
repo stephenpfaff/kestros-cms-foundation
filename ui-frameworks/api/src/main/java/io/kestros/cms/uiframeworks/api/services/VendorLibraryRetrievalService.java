@@ -31,6 +31,16 @@ import java.util.List;
 public interface VendorLibraryRetrievalService extends ManagedService {
 
   /**
+   * Retrieves all managed and unmanaged UiFrameworks.
+   *
+   * @param includeEtc Whether to search in /etc.
+   * @param includeLibs Whether to search in /libs.
+   * @return All ManagedUiFrameworks and UiFrameworks.
+   */
+  List<VendorLibrary> getAllUnmanagedUiFrameworksAndManagedVendorLibraryVersions(Boolean includeEtc,
+      Boolean includeLibs);
+
+  /**
    * Retrieves a specified ManagedVendorLibrary.
    *
    * @param name Library name.
@@ -53,6 +63,17 @@ public interface VendorLibraryRetrievalService extends ManagedService {
    * @throws VersionRetrievalException Failed to find the specified VendorLibrary version.
    */
   VendorLibrary getVendorLibrary(String name, boolean includeEtc, boolean includeLibs)
+      throws VendorLibraryRetrievalException, VersionRetrievalException;
+
+  /**
+   * Retrieves a specified VendorLibrary.
+   *
+   * @param path Library path.
+   * @return A specified VendorLibrary.
+   * @throws VendorLibraryRetrievalException Failed to find the specified ManagedVendorLibrary.
+   * @throws VersionRetrievalException Failed to find the specified VendorLibrary version.
+   */
+  VendorLibrary getVendorLibrary(String path)
       throws VendorLibraryRetrievalException, VersionRetrievalException;
 
   /**

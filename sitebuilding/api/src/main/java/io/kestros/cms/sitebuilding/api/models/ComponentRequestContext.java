@@ -268,7 +268,7 @@ public class ComponentRequestContext extends BaseRequestContext {
     }
 
     final ComponentUiFrameworkView componentUiFrameworkView
-        = componentUiFrameworkViewRetrievalService.getComponentUiFrameworkView(
+        = componentUiFrameworkViewRetrievalService.getComponentUiFrameworkViewWithFallback(
         getComponent().getComponentType(), getUiFramework());
     this.componentUiFrameworkView = componentUiFrameworkView;
     LOG.trace("Finished retrieving Component UI FrameworkView.");

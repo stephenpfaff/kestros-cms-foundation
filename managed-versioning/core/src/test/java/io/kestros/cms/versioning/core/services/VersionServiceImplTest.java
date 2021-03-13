@@ -20,7 +20,6 @@ package io.kestros.cms.versioning.core.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
 import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
@@ -148,7 +147,15 @@ public class VersionServiceImplTest {
         versionService.getClosestVersion(versionable, "3.0.0").getPath());
     assertEquals("/content/versionable/versions/1.2.3",
         versionService.getClosestVersion(versionable, "1.2.3").getPath());
-    assertNull(        versionService.getClosestVersion(versionable, "0.0.0"));
+    Exception exception = null;
+    try {
+      versionService.getClosestVersion(versionable, "0.0.0");
+    } catch (Exception e) {
+      exception = e;
+    }
+    assertNotNull(exception);
+    assertEquals(VersionRetrievalException.class, exception.getClass());
+    assertEquals("No versions earlier than 0.0.0", exception.getMessage());
   }
 
   @Test

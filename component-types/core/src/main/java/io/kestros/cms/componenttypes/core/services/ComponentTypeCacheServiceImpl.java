@@ -18,6 +18,7 @@
 
 package io.kestros.cms.componenttypes.core.services;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.kestros.cms.componenttypes.api.services.ComponentTypeCacheService;
 import io.kestros.cms.performanceservices.api.services.PerformanceService;
 import io.kestros.cms.performanceservices.api.services.PerformanceTrackerService;
@@ -49,9 +50,10 @@ public class ComponentTypeCacheServiceImpl extends BaseCacheService
 
   private static final long serialVersionUID = -7190437579645105257L;
 
+  @SuppressFBWarnings("SE_BAD_FIELD")
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
-  private transient PerformanceTrackerService performanceTrackerService;
+  private PerformanceTrackerService performanceTrackerService;
 
   private Map<String, List<String>> componentTypePathList = new HashMap<>();
 

@@ -24,6 +24,7 @@ import io.kestros.cms.versioning.api.models.VersionableResource;
 import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  * Performs version lookups.
@@ -90,8 +91,10 @@ public interface VersionService {
    * @param versionNumber Version number.
    * @param <T> extends BaseResource.
    * @return Closest matching version, for a given versionable.
-   * @throws VersionRetrievalException Failed to find version earlier than desired version number.
+   * @throws VersionRetrievalException Failed to find version earlier than desired version
+   *     number.
    */
+  @Nonnull
   <T extends BaseResource> T getClosestVersion(VersionableResource resource, String versionNumber)
       throws VersionRetrievalException;
 
