@@ -171,7 +171,8 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
       return getComponentUiFrameworkViewFromManagedUiFramework(componentType, managedUiFramework,
           uiFramework.getVersion());
     } catch (VersionFormatException | ChildResourceNotFoundException
-               | InvalidResourceTypeException | NoValidAncestorException e) {
+             | InvalidResourceTypeException | NoValidAncestorException
+             | InvalidComponentUiFrameworkViewException e) {
       LOG.trace(e.getMessage());
     }
     try {
@@ -287,10 +288,29 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
       @Nonnull ComponentType componentType, @Nonnull ManagedUiFramework managedUiFramework)
       throws ChildResourceNotFoundException, InvalidResourceTypeException {
     if (versionService != null) {
-      ManagedComponentUiFrameworkViewResource managedComponentUiFrameworkViewResource
-          = getChildAsBaseResource(managedUiFramework.getFrameworkCode(),
-          componentType.getResource()).getResource().adaptTo(
-          ManagedComponentUiFrameworkViewResource.class);
+      ManagedComponentUiFrameworkViewResource managedComponentUiFrameworkViewResource = null;
+
+      try {
+        managedComponentUiFrameworkViewResource = getChildAsBaseResource(
+            managedUiFramework.getFrameworkCode(),
+            componentType.getResource()).getResource().adaptTo(
+            ManagedComponentUiFrameworkViewResource.class);
+      } catch (ChildResourceNotFoundException e) {
+        if (managedUiFramework != null) {
+          if (componentType.getPath().startsWith("/libs/")) {
+            String componentTypePath = componentType.getPath().replace("/libs/", "/apps/");
+            try {
+              managedComponentUiFrameworkViewResource = getResourceAsBaseResource(
+                  componentTypePath + "/" + managedUiFramework.getFrameworkCode(),
+                  getServiceResourceResolver()).getResource().adaptTo(
+                  ManagedComponentUiFrameworkViewResource.class);
+            } catch (ResourceNotFoundException resourceNotFoundException) {
+              throw new ChildResourceNotFoundException(managedUiFramework.getFrameworkCode(),
+                  componentTypePath);
+            }
+          }
+        }
+      }
       if (managedComponentUiFrameworkViewResource != null) {
         return managedComponentUiFrameworkViewResource;
       }

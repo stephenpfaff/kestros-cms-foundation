@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
+import org.apache.felix.hc.api.FormattingResultLog;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.ComponentContext;
@@ -75,6 +76,14 @@ public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
   private transient PerformanceTrackerService performanceTrackerService;
+
+  @Override
+  public void runAdditionalHealthChecks(FormattingResultLog log) {
+    super.runAdditionalHealthChecks(log);
+    if (getAllUnmanagedUiFrameworksAndManagedUiFrameworkVersions(true, true).isEmpty()) {
+      log.warn("No Managed or Standalone UiFrameworks found.");
+    }
+  }
 
   @Override
   public List<ManagedUiFramework> getAllManagedUiFrameworks(Boolean includeEtc,
@@ -128,6 +137,9 @@ public class UiFrameworkRetrievalServiceImpl extends BaseServiceResolverService
   public List<UiFramework> getAllUnmanagedUiFrameworksAndManagedUiFrameworkVersions(
       Boolean includeEtc, Boolean includeLibs) {
     List<UiFramework> uiFrameworkList = new ArrayList<>();
+    if (getServiceResourceResolver() != null) {
+      getServiceResourceResolver().refresh();
+    }
     for (ManagedUiFramework managedUiFramework : getAllManagedUiFrameworks(includeEtc,
         includeLibs)) {
       uiFrameworkList.addAll(managedUiFramework.getVersions());
