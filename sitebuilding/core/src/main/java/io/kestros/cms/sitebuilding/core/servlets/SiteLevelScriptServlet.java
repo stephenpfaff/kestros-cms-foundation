@@ -115,9 +115,9 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
   public void doGet(@Nonnull final SlingHttpServletRequest request,
       @Nonnull final SlingHttpServletResponse response) {
     final String[] selectors = request.getRequestPathInfo().getSelectors();
+    boolean performCache = false;
     if (selectors.length == 2) {
       try {
-        boolean performCache = false;
         String output = null;
 
         final UiFramework uiFramework = getUiFrameworkRetrievalService().getUiFrameworkByCode(
@@ -130,8 +130,8 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
                 isMinified(request));
           } catch (CacheRetrievalException e) {
             performCache = true;
-          } catch (ThemeRetrievalException exception) {
-            exception.printStackTrace();
+          } catch (ThemeRetrievalException e) {
+            LOG.warn(e.getMessage());
           }
         }
 
@@ -144,7 +144,7 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
           try {
             output = getUiLibraryMinificationService().getMinifiedOutput(output, getScriptType());
           } catch (ScriptCompressionException e) {
-            e.printStackTrace();
+            LOG.warn(e.getMessage());
           }
         }
 
@@ -168,11 +168,11 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
             request.getResource().getPath(), exception.getMessage());
         response.setStatus(400);
       } catch (UiFrameworkRetrievalException e) {
-        e.printStackTrace();
-      } catch (ThemeRetrievalException exception) {
-        exception.printStackTrace();
+        LOG.warn(e.getMessage());
+      } catch (ThemeRetrievalException e) {
+        LOG.warn(e.getMessage());
       } catch (NoMatchingCompilerException e) {
-        e.printStackTrace();
+        LOG.warn(e.getMessage());
       }
     } else if (selectors.length == 5) {
       UiFramework uiFramework = null;
@@ -189,33 +189,6 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
         uiFramework = getUiFrameworkRetrievalService().getUiFrameworkByCode(uiFrameworkCode, true,
             true, version.getFormatted());
 
-        //        BaseResource uiFrameworksRoot = DesignUtils.getUiFrameworksEtcRootResource(
-        //            request.getResourceResolver());
-        //        for (ManagedUiFramework managedUiFramework : SlingModelUtils.getChildrenOfType(
-        //            uiFrameworksRoot, ManagedUiFramework.class)) {
-        //          for (Object version : managedUiFramework.getVersions()) {
-        //            if (version instanceof BaseResource) {
-        //              try {
-        //                UiFramework adaptedFramework = SlingModelUtils.adaptTo((BaseResource)
-        //                version,
-        //                    UiFramework.class);
-        //                if (adaptedFramework.getFrameworkCode().equals(uiFrameworkCode)) {
-        //                  if (majorVersion.equals(adaptedFramework.getVersion().getMajorVersion())
-        //                      && minorVersion.equals(adaptedFramework.getVersion()
-        //                      .getMinorVersion())
-        //                      && patchVersion.equals(adaptedFramework.getVersion()
-        //                      .getPatchVersion())) {
-        //                    uiFramework = adaptedFramework;
-        //                  }
-        //                }
-        //              } catch (InvalidResourceTypeException e) {
-        //                e.printStackTrace();
-        //              } catch (VersionFormatException e) {
-        //                e.printStackTrace();
-        //              }
-        //            }
-        //          }
-        //        }
         if (uiFramework != null && getVirtualThemeProviderService() != null) {
           theme = getVirtualThemeProviderService().getVirtualTheme(
               uiFramework.getPath() + "/themes/" + themeName);
@@ -229,22 +202,34 @@ public abstract class SiteLevelScriptServlet extends SlingSafeMethodsServlet {
             try {
               output = getUiLibraryMinificationService().getMinifiedOutput(output, getScriptType());
             } catch (ScriptCompressionException e) {
-              e.printStackTrace();
+              LOG.warn(e.getMessage());
             }
           }
 
           response.setContentType(getScriptType().getOutputContentType());
           response.setStatus(200);
           response.getWriter().write(output);
+
+          if (StringUtils.isNotEmpty(output)) {
+            if (getUiLibraryCacheService() != null && performCache) {
+              try {
+                theme = getThemeRetrievalService().getTheme(selectors[1], uiFramework);
+                getUiLibraryCacheService().cacheUiLibraryScript(theme.getPath(), output,
+                    getScriptType(), isMinified(request));
+              } catch (final CacheBuilderException e) {
+                LOG.warn("Unable to build UiFramework Cache. {}", e.getMessage());
+              }
+            }
+          }
         }
       } catch (InvalidThemeException | InvalidResourceTypeException | IOException e) {
         response.setStatus(400);
       } catch (UiFrameworkRetrievalException e) {
-        e.printStackTrace();
-      } catch (ThemeRetrievalException exception) {
-        exception.printStackTrace();
+        LOG.warn(e.getMessage());
+      } catch (ThemeRetrievalException e) {
+        LOG.warn(e.getMessage());
       } catch (NoMatchingCompilerException e) {
-        e.printStackTrace();
+        LOG.warn(e.getMessage());
       }
 
     } else {

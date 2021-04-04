@@ -106,6 +106,21 @@
       <artifactId>org.apache.felix.healthcheck.annotation</artifactId>
     </dependency>
 
+    <!-- Sightly Renderer -->
+    <dependency>
+      <artifactId>org.apache.sling.scripting.sightly.runtime</artifactId>
+      <version>1.1.0-1.4.0</version>
+      <groupId>org.apache.sling</groupId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>org.apache.sling.scripting.sightly.compiler</artifactId>
+      <version>1.1.2-1.4.0</version>
+      <groupId>org.apache.sling</groupId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Less Compilation -->
     <dependency>
       <groupId>de.inetsoftware</groupId>

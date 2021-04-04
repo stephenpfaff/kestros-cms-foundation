@@ -22,11 +22,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.kestros.cms.modeltypes.IconResource;
 import java.io.IOException;
 import javax.annotation.Nonnull;
+import org.apache.sling.api.resource.Resource;
 
 /**
  * HTML File that contains HTL Templates.
  */
 public interface HtlTemplateFile extends IconResource {
+
+  /**
+   * Title of the current HTL Template file.  Derived from the file name by replacing `-` with ` `,
+   * removing `.html` and capitalizing the first letter of each word.
+   *
+   * @return Title of the current HTL Template file.
+   */
+  @Nonnull
+  Resource getResource();
 
   /**
    * Title of the current HTL Template file.  Derived from the file name by replacing `-` with ` `,

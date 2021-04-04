@@ -169,10 +169,9 @@ public class BaseScriptProviderService extends BaseServiceResolverService
         endPerformanceTracking(tracker);
         return resolvedScriptPath;
       }
-    } catch (InvalidComponentUiFrameworkViewException e) {
-      e.printStackTrace();
-    } catch (ScriptRetrievalException e) {
-      e.printStackTrace();
+    } catch (InvalidComponentUiFrameworkViewException | ScriptRetrievalException e) {
+      LOG.error("Unable to retrieve script {} for resource {}, componentType. {}", scriptName,
+          parentComponent.getPath(), componentType.getPath(), e.getMessage());
     }
     endPerformanceTracking(tracker);
     return null;

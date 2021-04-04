@@ -43,7 +43,10 @@ import org.osgi.service.component.annotations.Reference;
                ResourceChangeListener.CHANGES + "=REMOVED",
                ResourceChangeListener.CHANGES + "=PROVIDER_ADDED",
                ResourceChangeListener.CHANGES + "=PROVIDER_REMOVED",
-               ResourceChangeListener.PATHS + "=/etc", ResourceChangeListener.PATHS + "=/libs"},
+               ResourceChangeListener.PATHS + "=/etc/ui-frameworks",
+               ResourceChangeListener.PATHS + "=/etc/ui-vendor-libraries",
+               ResourceChangeListener.PATHS + "=/libs/kestros/ui-frameworks",
+               ResourceChangeListener.PATHS + "=/libs/kestros/vendor-libraries"},
            immediate = true)
 public class HtlTemplateCachePurgeEventListener extends BaseCachePurgeOnResourceChangeEventListener
     implements ManagedService {

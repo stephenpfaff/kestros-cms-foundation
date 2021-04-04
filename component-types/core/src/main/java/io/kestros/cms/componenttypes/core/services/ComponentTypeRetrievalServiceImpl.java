@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.hc.api.FormattingResultLog;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.ComponentContext;
@@ -83,9 +84,10 @@ public class ComponentTypeRetrievalServiceImpl extends BaseServiceResolverServic
   public ComponentType getComponentType(@Nonnull String path)
       throws ComponentTypeRetrievalException {
     String tracker = startPerformanceTracking();
+    getServiceResourceResolver().refresh();
     try {
       return getResourceAsType(path, getServiceResourceResolver(), ComponentTypeResource.class);
-    } catch (InvalidResourceTypeException e) {
+    } catch (ResourceNotFoundException | InvalidResourceTypeException e) {
       String libsPath = "";
       if (path.startsWith("/apps/")) {
         libsPath = path.replace("/apps/", "/libs/");
@@ -94,8 +96,11 @@ public class ComponentTypeRetrievalServiceImpl extends BaseServiceResolverServic
       }
       try {
         endPerformanceTracking(tracker);
-        return getResourceAsType(libsPath, getServiceResourceResolver(),
-            ComponentTypeResource.class);
+        if (!libsPath.equals(path) && StringUtils.isNotEmpty(libsPath)) {
+          return getComponentType(libsPath);
+        } else {
+          throw new ComponentTypeRetrievalException(path, e.getMessage());
+        }
       } catch (ModelAdaptionException invalidResourceTypeException) {
         endPerformanceTracking(tracker);
         throw new ComponentTypeRetrievalException(path, e.getMessage());
@@ -112,6 +117,7 @@ public class ComponentTypeRetrievalServiceImpl extends BaseServiceResolverServic
   public ComponentType getComponentType(@Nonnull ComponentUiFrameworkView componentUiFrameworkView)
       throws ComponentTypeRetrievalException {
     String tracker = startPerformanceTracking();
+    getServiceResourceResolver().refresh();
     if (componentUiFrameworkView instanceof ComponentUiFrameworkViewResource) {
       ComponentUiFrameworkViewResource componentUiFrameworkViewResource
           = (ComponentUiFrameworkViewResource) componentUiFrameworkView;
