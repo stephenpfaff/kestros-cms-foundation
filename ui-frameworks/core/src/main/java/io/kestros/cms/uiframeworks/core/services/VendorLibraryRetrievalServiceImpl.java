@@ -90,32 +90,40 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
   public ManagedVendorLibrary getManagedVendorLibrary(String name, boolean includeEtc,
       boolean includeLibs) throws VendorLibraryRetrievalException {
     String tracker = startPerformanceTracking();
-    try {
-      if (includeEtc) {
+    getServiceResourceResolver().refresh();
+    if (includeEtc) {
+      try {
+        BaseResource etcRootResource = getEtcVendorLibrariesRootResources();
         endPerformanceTracking(tracker);
-        return getChildAsType(name, getEtcVendorLibrariesRootResources(),
-            ManagedVendorLibraryResource.class);
+        return getChildAsType(name, etcRootResource, ManagedVendorLibraryResource.class);
+      } catch (Exception e) {
+        LOG.trace(e.getMessage());
       }
-      if (includeLibs) {
-        endPerformanceTracking(tracker);
-        return getChildAsType(name, getLibsVendorLibrariesRootResources(),
-            ManagedVendorLibraryResource.class);
-      } else {
-        endPerformanceTracking(tracker);
-        throw new VendorLibraryRetrievalException(name,
-            "Neither /etc nor /libs/kestros were included in ManagedVendorLibrary lookup, no "
-            + "search attempted.");
-      }
-    } catch (ModelAdaptionException e) {
-      endPerformanceTracking(tracker);
-      throw new VendorLibraryRetrievalException(name, e.getMessage());
     }
+    if (includeLibs) {
+      try {
+        BaseResource libsRootResource = getLibsVendorLibrariesRootResources();
+        endPerformanceTracking(tracker);
+        return getChildAsType(name, libsRootResource, ManagedVendorLibraryResource.class);
+      } catch (Exception e) {
+        LOG.trace(e.getMessage());
+      }
+    } else {
+      endPerformanceTracking(tracker);
+      throw new VendorLibraryRetrievalException(name,
+          "Neither /etc nor /libs/kestros were included in ManagedVendorLibrary lookup, no "
+          + "search attempted.");
+    }
+    endPerformanceTracking(tracker);
+    throw new VendorLibraryRetrievalException(name,
+        "Library Not found under /etc or /libs/kestros.");
   }
 
   @Override
   public VendorLibrary getVendorLibrary(String name, boolean includeEtc, boolean includeLibs)
       throws VendorLibraryRetrievalException, VersionRetrievalException {
     String tracker = startPerformanceTracking();
+    getServiceResourceResolver().refresh();
     boolean isManaged = name.contains("/");
 
     if (isManaged) {
@@ -170,6 +178,7 @@ public class VendorLibraryRetrievalServiceImpl extends BaseServiceResolverServic
   @Override
   public VendorLibrary getVendorLibrary(String path)
       throws VendorLibraryRetrievalException, VersionRetrievalException {
+    getServiceResourceResolver().refresh();
     try {
       return SlingModelUtils.getResourceAsType(path, getServiceResourceResolver(),
           VendorLibraryResource.class);

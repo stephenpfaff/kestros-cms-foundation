@@ -93,8 +93,10 @@ public class ComponentUiFrameworkViewResource extends UiLibraryResource
       return getProperty(JCR_TITLE, getUiFramework().getTitle());
     } catch (ResourceNotFoundException e) {
       LOG.debug("UiFramework not found for Component View {} while retrieving title.", getPath());
+    } catch (Exception e) {
+      LOG.debug(e.getMessage());
     }
-    return super.getTitle();
+    return getName();
   }
 
   /**

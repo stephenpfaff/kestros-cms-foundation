@@ -92,6 +92,7 @@ public class ThemeRetrievalServiceImpl extends BaseServiceResolverService
   @Override
   public Theme getTheme(String themePath) throws ThemeRetrievalException {
     String tracker = startPerformanceTracking();
+    getServiceResourceResolver().refresh();
     try {
       endPerformanceTracking(tracker);
       return getResourceAsType(themePath, getServiceResourceResolver(), ThemeResource.class);

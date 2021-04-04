@@ -44,6 +44,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Appends {@link ComponentUiFrameworkViewResource} and {@link ComponentVariationResource} CSS and
@@ -54,6 +56,9 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
                ComponentViewUiFrameworkOutputCompilationService.class})
 public class ComponentViewUiFrameworkOutputCompilationServiceImpl
     implements ComponentViewUiFrameworkOutputCompilationService, PerformanceService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(
+      ComponentViewUiFrameworkOutputCompilationServiceImpl.class);
 
   @Reference(cardinality = ReferenceCardinality.OPTIONAL,
              policyOption = ReferencePolicyOption.GREEDY)
@@ -127,9 +132,9 @@ public class ComponentViewUiFrameworkOutputCompilationServiceImpl
               output.append(variationOutput);
             }
           } catch (ComponentVariationRetrievalException e) {
-            e.printStackTrace();
+            LOG.debug(e.getMessage());
           } catch (NoMatchingCompilerException e) {
-            e.printStackTrace();
+            LOG.debug(e.getMessage());
           }
         }
       }

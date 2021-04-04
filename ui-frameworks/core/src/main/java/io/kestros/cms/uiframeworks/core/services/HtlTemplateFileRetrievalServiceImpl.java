@@ -87,11 +87,14 @@ public class HtlTemplateFileRetrievalServiceImpl
   @Override
   public List<HtlTemplateFile> getHtlTemplatesFromVendorLibrary(VendorLibrary vendorLibrary)
       throws HtlTemplateFileRetrievalException {
+    LOG.trace("Performance Tracking.");
     String tracker = startPerformanceTracking();
     List<HtlTemplateFile> htlTemplateFileList = new ArrayList<>();
     try {
+      LOG.trace("Getting templates folder.");
       BaseResource templatesFolderResource = getChildAsBaseResource("templates",
           vendorLibrary.getResource());
+      LOG.trace("Getting child resources.");
       htlTemplateFileList.addAll(
           getChildrenOfFileType(templatesFolderResource, HtlTemplateFileResource.class));
     } catch (ChildResourceNotFoundException e) {
@@ -100,7 +103,9 @@ public class HtlTemplateFileRetrievalServiceImpl
           String.format("Failed to retrieve HTL Template for %s %s. Templates folder not found.",
               vendorLibrary.getClass().getSimpleName(), vendorLibrary.getPath()));
     }
+    LOG.trace("Ending Performance Tracking.");
     endPerformanceTracking(tracker);
+    LOG.trace("Returning.");
     return htlTemplateFileList;
   }
 

@@ -155,9 +155,8 @@ public class VendorLibraryRetrievalServiceImplTest {
     }
     assertNotNull(exception);
     assertEquals(
-        "Unable to adapt 'managed-vendor-library-3': Unable to adapt 'managed-vendor-library-3': "
-        + "Neither /etc nor /libs/kestros were included in ManagedVendorLibrary lookup, no search"
-        + " attempted.", exception.getMessage());
+        "Unable to adapt 'managed-vendor-library-3': Neither /etc nor /libs/kestros were included"
+        + " in ManagedVendorLibrary lookup, no search attempted.", exception.getMessage());
   }
 
   @Test
@@ -171,8 +170,8 @@ public class VendorLibraryRetrievalServiceImplTest {
       exception = e;
     }
     assertNotNull(exception);
-    assertEquals("Unable to adapt 'does-not-exist': Unable to adapt 'does-not-exist' under "
-                 + "'/etc/vendor-libraries': Child not found.", exception.getMessage());
+    assertEquals("Unable to adapt 'does-not-exist': Library Not found under /etc or /libs/kestros.",
+        exception.getMessage());
   }
 
   @Test
@@ -342,8 +341,10 @@ public class VendorLibraryRetrievalServiceImplTest {
   @Test
   public void testGetAllManagedVendorLibrariesWhenRootResourcesNotFound()
       throws LoginException, PersistenceException {
-    context.resourceResolver().delete(context.resourceResolver().getResource("/etc/vendor-libraries"));
-    context.resourceResolver().delete(context.resourceResolver().getResource("/libs/kestros/vendor-libraries"));
+    context.resourceResolver().delete(
+        context.resourceResolver().getResource("/etc/vendor-libraries"));
+    context.resourceResolver().delete(
+        context.resourceResolver().getResource("/libs/kestros/vendor-libraries"));
     doReturn(resourceResolverFactory).when(
         vendorLibraryRetrievalService).getResourceResolverFactory();
     when(resourceResolverFactory.getServiceResourceResolver(any())).thenReturn(
@@ -369,8 +370,10 @@ public class VendorLibraryRetrievalServiceImplTest {
   @Test
   public void testGetAllUnmanagedVendorLibrariesWhenRootResourcesNotFound()
       throws LoginException, PersistenceException {
-    context.resourceResolver().delete(context.resourceResolver().getResource("/etc/vendor-libraries"));
-    context.resourceResolver().delete(context.resourceResolver().getResource("/libs/kestros/vendor-libraries"));
+    context.resourceResolver().delete(
+        context.resourceResolver().getResource("/etc/vendor-libraries"));
+    context.resourceResolver().delete(
+        context.resourceResolver().getResource("/libs/kestros/vendor-libraries"));
     doReturn(resourceResolverFactory).when(
         vendorLibraryRetrievalService).getResourceResolverFactory();
     when(resourceResolverFactory.getServiceResourceResolver(any())).thenReturn(

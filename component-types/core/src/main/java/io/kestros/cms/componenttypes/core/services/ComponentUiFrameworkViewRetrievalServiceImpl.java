@@ -29,6 +29,7 @@ import io.kestros.cms.componenttypes.api.models.ComponentType;
 import io.kestros.cms.componenttypes.api.models.ComponentUiFrameworkView;
 import io.kestros.cms.componenttypes.api.models.ManagedComponentUiFrameworkView;
 import io.kestros.cms.componenttypes.api.services.ComponentTypeRetrievalService;
+import io.kestros.cms.componenttypes.api.services.ComponentUiFrameworkViewCacheService;
 import io.kestros.cms.componenttypes.api.services.ComponentUiFrameworkViewRetrievalService;
 import io.kestros.cms.componenttypes.core.models.CommonUiFrameworkViewResource;
 import io.kestros.cms.componenttypes.core.models.ComponentTypeResource;
@@ -45,11 +46,15 @@ import io.kestros.cms.versioning.api.exceptions.VersionFormatException;
 import io.kestros.cms.versioning.api.exceptions.VersionRetrievalException;
 import io.kestros.cms.versioning.api.models.Version;
 import io.kestros.cms.versioning.api.services.VersionService;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheBuilderException;
+import io.kestros.commons.osgiserviceutils.exceptions.CacheRetrievalException;
 import io.kestros.commons.osgiserviceutils.services.BaseServiceResolverService;
+import io.kestros.commons.structuredslingmodels.BaseResource;
 import io.kestros.commons.structuredslingmodels.exceptions.ChildResourceNotFoundException;
 import io.kestros.commons.structuredslingmodels.exceptions.InvalidResourceTypeException;
 import io.kestros.commons.structuredslingmodels.exceptions.NoValidAncestorException;
 import io.kestros.commons.structuredslingmodels.exceptions.ResourceNotFoundException;
+import io.kestros.commons.structuredslingmodels.utils.SlingModelUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -95,6 +100,10 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
              policyOption = ReferencePolicyOption.GREEDY)
   private ComponentTypeRetrievalService componentTypeRetrievalService;
 
+  @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+             policyOption = ReferencePolicyOption.GREEDY)
+  private ComponentUiFrameworkViewCacheService componentUiFrameworkViewCacheService;
+
   @Nonnull
   @Override
   public CommonUiFrameworkView getCommonUiFrameworkView(@Nonnull ComponentType componentType)
@@ -126,13 +135,26 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
     String tracker = startPerformanceTracking();
     getServiceResourceResolver().refresh();
 
-    ComponentUiFrameworkViewResource componentUiFrameworkViewResource = getChildAsBaseResource(
-        uiFramework.getFrameworkCode(), componentType.getResource()).getResource().adaptTo(
-        ComponentUiFrameworkViewResource.class);
-    if (componentUiFrameworkViewResource != null) {
-      endPerformanceTracking(tracker);
-      return componentUiFrameworkViewResource;
+    try {
+      ComponentUiFrameworkViewResource componentUiFrameworkViewResource = getChildAsBaseResource(
+          uiFramework.getFrameworkCode(), componentType.getResource()).getResource().adaptTo(
+          ComponentUiFrameworkViewResource.class);
+      if (componentUiFrameworkViewResource != null) {
+        endPerformanceTracking(tracker);
+        return componentUiFrameworkViewResource;
+      }
+    } catch (ChildResourceNotFoundException e) {
+      LOG.debug(e.getMessage());
     }
+
+    try {
+      ComponentType superType = componentType.getComponentSuperType();
+      endPerformanceTracking(tracker);
+      return getComponentUiFrameworkViewFromStandaloneUiFramework(superType, uiFramework);
+    } catch (InvalidComponentTypeException e) {
+      LOG.debug(e.getMessage());
+    }
+
     endPerformanceTracking(tracker);
     throw new InvalidComponentUiFrameworkViewException(componentType.getPath(), uiFramework);
   }
@@ -145,13 +167,27 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
     String tracker = startPerformanceTracking();
     getServiceResourceResolver().refresh();
 
-    ComponentUiFrameworkViewResource componentUiFrameworkViewResource = getResourceAsBaseResource(
-        componentType.getPath() + vendorLibrary.getPath(),
-        getServiceResourceResolver()).getResource().adaptTo(ComponentUiFrameworkViewResource.class);
-    if (componentUiFrameworkViewResource != null) {
-      endPerformanceTracking(tracker);
-      return componentUiFrameworkViewResource;
+    try {
+      ComponentUiFrameworkViewResource componentUiFrameworkViewResource = getResourceAsBaseResource(
+          componentType.getPath() + vendorLibrary.getPath(),
+          getServiceResourceResolver()).getResource().adaptTo(
+          ComponentUiFrameworkViewResource.class);
+      if (componentUiFrameworkViewResource != null) {
+        endPerformanceTracking(tracker);
+        return componentUiFrameworkViewResource;
+      }
+    } catch (ResourceNotFoundException e) {
+      LOG.trace(e.getMessage());
     }
+
+    try {
+      ComponentType superType = componentType.getComponentSuperType();
+      endPerformanceTracking(tracker);
+      return getComponentUiFrameworkViewFromStandaloneVendorLibrary(superType, vendorLibrary);
+    } catch (InvalidComponentTypeException e) {
+      LOG.debug(e.getMessage());
+    }
+
     endPerformanceTracking(tracker);
     throw new ResourceNotFoundException(componentType.getPath() + vendorLibrary.getPath());
   }
@@ -163,16 +199,15 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
       throws InvalidComponentUiFrameworkViewException, InvalidComponentTypeException {
     try {
       return getComponentUiFrameworkViewFromStandaloneUiFramework(componentType, uiFramework);
-    } catch (ChildResourceNotFoundException exception) {
+    } catch (InvalidComponentUiFrameworkViewException | ChildResourceNotFoundException exception) {
       LOG.trace(exception.getMessage());
     }
     try {
       ManagedUiFramework managedUiFramework = (ManagedUiFramework) uiFramework.getRootResource();
       return getComponentUiFrameworkViewFromManagedUiFramework(componentType, managedUiFramework,
           uiFramework.getVersion());
-    } catch (VersionFormatException | ChildResourceNotFoundException
-             | InvalidResourceTypeException | NoValidAncestorException
-             | InvalidComponentUiFrameworkViewException e) {
+    } catch (VersionFormatException | ChildResourceNotFoundException | InvalidResourceTypeException
+                   | NoValidAncestorException | InvalidComponentUiFrameworkViewException e) {
       LOG.trace(e.getMessage());
     }
     try {
@@ -353,8 +388,27 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
   @Override
   public List<ComponentUiFrameworkView> getComponentViews(UiFramework uiFramework,
       Boolean includeApps, Boolean includeLibsCommons, Boolean includeAllLibs) {
-    String tracker = startPerformanceTracking();
     List<ComponentUiFrameworkView> componentUiFrameworkViewList = new ArrayList<>();
+
+    if (componentUiFrameworkViewCacheService != null) {
+      try {
+        List<String> viewPaths
+            = componentUiFrameworkViewCacheService.getCachedComponentUiFrameworkViewPaths(
+            uiFramework, includeAllLibs, includeAllLibs, includeLibsCommons);
+        for (BaseResource viewResource : SlingModelUtils.getResourcesAsBaseResource(viewPaths,
+            getServiceResourceResolver())) {
+          ComponentUiFrameworkViewResource componentUiFrameworkViewResource
+              = viewResource.getResource().adaptTo(ComponentUiFrameworkViewResource.class);
+          if (componentUiFrameworkViewResource != null) {
+            componentUiFrameworkViewList.add(componentUiFrameworkViewResource);
+          }
+        }
+        return componentUiFrameworkViewList;
+      } catch (CacheRetrievalException e) {
+        LOG.debug(e.getMessage());
+      }
+    }
+
     if (componentTypeRetrievalService != null) {
       for (ComponentType componentType : componentTypeRetrievalService.getAllComponentTypes(
           includeApps, includeLibsCommons, includeAllLibs)) {
@@ -376,7 +430,31 @@ public class ComponentUiFrameworkViewRetrievalServiceImpl extends BaseServiceRes
           "Unable to retrieve ComponentUiFrameworkViews for {}. ComponentTypeRetrievalService was"
           + " null.", uiFramework.getPath());
     }
-    endPerformanceTracking(tracker);
+
+    if (componentUiFrameworkViewCacheService != null) {
+      List<String> appsPaths = new ArrayList<>();
+      List<String> libsPaths = new ArrayList<>();
+      List<String> libsCommonsPaths = new ArrayList<>();
+
+      for (ComponentUiFrameworkView view : componentUiFrameworkViewList) {
+        if (view.getPath().startsWith("/apps/")) {
+          appsPaths.add(view.getPath());
+        } else {
+          if (view.getPath().startsWith("/libs/")) {
+            libsPaths.add(view.getPath());
+          }
+          if (view.getPath().startsWith("/libs/commons")) {
+            libsCommonsPaths.add(view.getPath());
+          }
+        }
+      }
+      try {
+        componentUiFrameworkViewCacheService.cacheComponentUiFrameworkViewPathList(uiFramework,
+            appsPaths, libsPaths, libsCommonsPaths);
+      } catch (CacheBuilderException e) {
+        LOG.warn(e.getMessage());
+      }
+    }
     return componentUiFrameworkViewList;
   }
 
